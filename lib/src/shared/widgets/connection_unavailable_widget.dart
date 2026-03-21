@@ -6,7 +6,7 @@ class ConnectionUnavailableWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Center(child: Text('Connect unavaialbe')),
+      child: Center(child: Text('Connect unavailable')),
     );
   }
 }

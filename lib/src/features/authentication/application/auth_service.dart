@@ -57,7 +57,7 @@ class AuthService implements AuthRepository{
       return const AuthState.error(AppException.errorWithMessage('Please enter a valid email address'));
     }
     if(!Validator.isValidPassword(password)){
-      return const AuthState.error(AppException.errorWithMessage('Your passwwod is not valid'));
+      return const AuthState.error(AppException.errorWithMessage('Your password is not valid'));
     }
 
     final params = {

@@ -76,7 +76,7 @@ class Product{
       'title': title,
       'price': price,
       'availableQuantity': availableQuantity,
-      if(discountPrecent != null) 'discointPrecent': discountPrecent,
+      if (discountPrecent != null) 'discountPrecent': discountPrecent,
       'reviews': reviewsData.map( (review) => review.toJson()).toList(),
     };
   }

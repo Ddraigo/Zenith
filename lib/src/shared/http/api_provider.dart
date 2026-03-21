@@ -3,7 +3,6 @@
 import 'dart:io';
 
 import 'package:app_demo/src/features/authentication/application/token_service.dart';
-import 'package:app_demo/src/features/authentication/data/token_repository.dart';
 import 'package:app_demo/src/shared/http/api_response.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:app_demo/src/shared/http/interceptor/dio_connectivity_request_retrier.dart';
@@ -63,10 +62,10 @@ class ApiProvider {
     if(newBaseUrl != null){
       url = newBaseUrl + path;
     }else{
-      url = this._baseUrl + path;
+      url = _baseUrl + path;
     }
 
-    var content = 'application/x-www-form-urlencode';
+    var content = 'application/x-www-form-urlencoded';
     
     if(contentType == ContentType.json){
       content = 'application/json';
@@ -79,10 +78,10 @@ class ApiProvider {
       };
       final _appToken = await _tokenService.fetchToken();
       if(_appToken != null){
-        headers['Authorization'] = 'Bearer ${_appToken}';
+        headers['Authorization'] = 'Bearer $_appToken';
       }
       if(token != null){
-        headers['Authorization'] = 'Bearer ${token}';
+        headers['Authorization'] = 'Bearer $token';
       }
 
       final response = await _dio.post(
@@ -160,13 +159,13 @@ class ApiProvider {
     if(newBaseUrl != null){
       url = newBaseUrl + path;
     }else{
-      url = this._baseUrl + path;
+      url = _baseUrl + path;
     }
 
-    var content = 'application/-x-www-form-urlencode';
+    var content = 'application/x-www-form-urlencoded';
 
     if(contentType == ContentType.json){
-      content = 'application/json; charset=uft-8';
+      content = 'application/json; charset=utf-8';
     }
 
     final headers = {
@@ -176,7 +175,7 @@ class ApiProvider {
 
     final _appToken = await _tokenService.fetchToken();
     if(_appToken != null){
-      headers['Authorization'] = 'Bearer ${_appToken}';
+      headers['Authorization'] = 'Bearer $_appToken';
     }
 
     try {

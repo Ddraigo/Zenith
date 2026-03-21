@@ -13,90 +13,88 @@ class ButtonCustom extends StatelessWidget {
       this.label,
       required this.type,
       this.padding,
-      this.minimumSize = const Size(double.infinity, 56),
+      this.minimumSize,
       required this.onPressed,
-      this.borderRadius = 5,
+      this.borderRadius,
       this.textAlign = TextAlign.center, 
       this.iconSize = 24
       }) : assert(
         (label != null && label != '') || (icon != null && icon != ''),
-        'Button ít nhất phải có lable hoặc icon',
+        'Button ít nhất phải có label hoặc icon',
       );
 
   final Color? backgroundColor, foregroundColor, borderColor;
   final String? icon, label;
   final ButtonType type;
   final EdgeInsetsGeometry? padding;
-  final Size minimumSize;
-  final VoidCallback onPressed;
-  final double borderRadius;
+  final Size? minimumSize;
+  final VoidCallback? onPressed;
+  final double? borderRadius;
   final TextAlign textAlign;
   final double? iconSize;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final child = _buildContent(colorScheme);
+    final child = _buildContent();
+
+    final ButtonStyle? customStyle = _style(context, colorScheme);
 
     return switch (type) {
       ButtonType.elevated => ElevatedButton(
           onPressed: onPressed,
-          style: ElevatedButton.styleFrom(
-              maximumSize: minimumSize,
-              alignment: Alignment.center,
-              minimumSize: minimumSize,
-              foregroundColor: foregroundColor,
-              backgroundColor: backgroundColor,
-              padding: padding,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(borderRadius),
-              )),
+          style: customStyle,
           child: child,
         ),
       ButtonType.outlined => OutlinedButton(
           onPressed: onPressed,
-          style: OutlinedButton.styleFrom(
-            backgroundColor: backgroundColor,
-            foregroundColor: foregroundColor,
-            padding: padding,
-            maximumSize: minimumSize,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(borderRadius),
-            ),
-            side: BorderSide(color: borderColor ?? colorScheme.onInverseSurface),
-          ),
+          style: customStyle,
           child: child,
         ),
       ButtonType.text => TextButton(
           onPressed: onPressed,
-          style: TextButton.styleFrom(
-            backgroundColor: backgroundColor,
-            foregroundColor: foregroundColor,
-            padding: padding,
-            maximumSize: minimumSize,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(borderRadius),
-            ),
-          ),
+          style: customStyle,
           child: child,
         ),
       ButtonType.filled => FilledButton(
           onPressed: onPressed,
-          style: FilledButton.styleFrom(
-            backgroundColor: backgroundColor,
-            foregroundColor: foregroundColor,
-            padding: padding,
-            maximumSize: minimumSize,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(borderRadius),
-            ),
-          ),
+          style: customStyle,
           child: child,
         ),
     };
   }
 
-  Widget _buildContent(ColorScheme colorScheme) {
+  ButtonStyle? _style(BuildContext context, ColorScheme colorScheme){
+    if(backgroundColor == null &&
+    foregroundColor == null &&
+    borderColor == null &&
+    minimumSize == null &&
+    borderRadius == null){
+      return null;
+    }
+
+    final shape = borderRadius == null ? null
+    : RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(borderRadius!),
+    );
+
+    return ButtonStyle(
+      backgroundColor: backgroundColor != null ?
+      WidgetStatePropertyAll(backgroundColor)
+      : null,
+      foregroundColor: foregroundColor != null ? 
+      WidgetStatePropertyAll(foregroundColor) 
+      : null,
+      padding: padding != null ? WidgetStatePropertyAll(padding) : null,
+      minimumSize: minimumSize != null ? WidgetStatePropertyAll(minimumSize) : null,
+      shape: shape != null ? WidgetStatePropertyAll(shape) : null,
+      side: type == ButtonType.outlined ? WidgetStatePropertyAll(
+        BorderSide(color: borderColor ?? colorScheme.outline),
+      ) : null,
+    );
+  }
+
+  Widget _buildContent() {
     final hasIcon = icon != null && icon!.isNotEmpty;
     final hasLable = label != null && label!.isNotEmpty;
 
@@ -104,6 +102,7 @@ class ButtonCustom extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 6),
         child: Row(
+          mainAxisSize: MainAxisSize.min,
         children: [
           SvgPicture.asset(
             width: iconSize,
@@ -120,7 +119,7 @@ class ButtonCustom extends StatelessWidget {
             width: 24,
           ),
         ],
-            ),
+        ),
       );
     }
     if (hasIcon) {

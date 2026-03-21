@@ -76,6 +76,7 @@ class TokenService implements TokenRepository{
       } on Exception catch (e) {
         throw FormatException('');
       }
+    return _token;
   }
   
 

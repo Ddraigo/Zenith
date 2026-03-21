@@ -3,29 +3,31 @@ import 'package:app_demo/src/features/authentication/presentation/widget/onboard
 import 'package:app_demo/src/features/authentication/presentation/widget/onboarding/onboarding_page.dart';
 import 'package:app_demo/src/features/authentication/presentation/widget/onboarding/onboarding_skip.dart';
 import 'package:app_demo/src/features/authentication/presentation/widget/login/login_screen.dart';
+import 'package:app_demo/src/routes/app_router.dart';
 import 'package:app_demo/src/shared/constants/images_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
-  
+
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _OnboardingScreenState();
-  
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends ConsumerState<OnboardingScreen>{
+class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   late final PageController _pageController;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _pageController = PageController();
   }
 
   @override
-  void dispose(){
+  void dispose() {
     _pageController.dispose();
     super.dispose();
   }
@@ -36,72 +38,62 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>{
     final isLastPage = currentPage == 2;
     return SafeArea(
       child: Scaffold(
-        body: Stack(
+        body: Column(
           children: [
             PageView(
               controller: _pageController,
-              onPageChanged: (index) => ref.read(onboardingPageProvider.notifier).state = index,
+              onPageChanged: (index) =>
+                  ref.read(onboardingPageProvider.notifier).state = index,
               children: const [
                 OnBoardingPage(
-                  title: 'Purchase Online !!',
-                  image: MyImages.onBoardingImage4,
+                  title: 'Welcome to the most tastiest app',
+                  image: MyImages.onBoardingImage1,
                   subTitle:
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing,sed do eiusmod tempor ut labore',
-                  invertColors: false,
-                  shape: MyImages.onBoardingImage1,
-                  onLeft: true,
+                      'You know, this app is edible meaning you can eat it!',
+
                   index: 1,
                 ),
                 OnBoardingPage(
-                  title: 'Track order !!',
-                  image: MyImages.onBoardingImage5,
+                  title: 'We use nitro on bicycles for delivery!',
+                  image: MyImages.onBoardingImage2,
                   subTitle:
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing,sed do eiusmod tempor ut labore',
-                  invertColors: true,
-                  shape: MyImages.onBoardingImage2,
-                  onLeft: true,
+                      'For very fast delivery we use nitro on bicycles, kidding, but we’re very fast.',
                   index: 2,
                 ),
                 OnBoardingPage(
-                  title: 'Get your order !!',
-                  image: MyImages.onBoardingImage6,
+                  title: 'We’re the besties of birthday peoples',
+                  image: MyImages.onBoardingImage3,
                   subTitle:
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing,sed do eiusmod tempor ut labore',
-                  invertColors: false,
-                  shape: MyImages.onBoardingImage3,
-                  onLeft: false,
+                      'We send cakes to our plus members, (only one cake per person)',
                   index: 3,
                 ),
               ],
             ),
-            Positioned(
-              bottom: 30,
-              right: 20,
-              left: 30,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  OnBoardingDotNavigation(controller: _pageController, count: 3,),
-                  OnBoardingSkip(
+            OnBoardingDotNavigation(controller: _pageController, count: 3),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  flex: 1,
+                  child: OnboardingNext(
                     isLastPage: isLastPage,
-                    onPressed: (){
-                      if(isLastPage){
-                        Navigator.push(context, 
-                          MaterialPageRoute(
-                            builder: (context) => const LoginScreen(),
-                          )
-                        );
-                      }else{
-                        _pageController.nextPage(
-                          duration: const Duration(milliseconds: 300), 
-                          curve: Curves.easeIn
-                        );
-                      }
+                    onPressed: () {
+                      _pageController.nextPage(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeIn,
+                      );
                     },
                   ),
-                ],
-              ),
+                ),
+                Flexible(
+                  flex: 2,
+                  child: OnBoardingSkip(
+                    onPressed: () => context.go(AppRouter.loginPath),
+                    
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -109,11 +101,3 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>{
     );
   }
 }
-  
-
-
-
-
-
-
-

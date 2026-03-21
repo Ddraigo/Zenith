@@ -63,12 +63,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ),
                           Text(
                             'Welcome to E-com',
-                            style: MyTextStyle.headingH4,
+                            style: MyTextStyle.poppinsHeading1,
                           ),
                           Text(
                             'Sign in to continue',
-                            style: MyTextStyle.bodyTextSmallNormal.copyWith(
-                              color: colorScheme.onSurfaceVariant,
+                            style: MyTextStyle.poppinsHeading2.copyWith(
+                              color: colorScheme.onSecondary,
                             ),
                           ),
                         ],
@@ -89,9 +89,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ),
                           Text(
                             'OR',
-                            style: MyTextStyle.bodyTextNormal.copyWith(
+                            style: MyTextStyle.poppinsMedium700.copyWith(
                               color: colorScheme.outline,
-                              fontWeight: FontWeight.bold,
                             ),
                           ),
                           Expanded(
@@ -183,7 +182,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           ),
           child: Text(
             'Forgot Password?',
-            style: MyTextStyle.linkSmall,
+            style: MyTextStyle.poppinsMedium700.copyWith(
+              color: colorScheme.tertiaryContainer,
+            ),
           ),
         ),
       ],
@@ -197,20 +198,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       children: [
         Text(
           'Don’t have a account?',
-          style: MyTextStyle.bodyTextSmallNormal.copyWith(
-            color: colorScheme.outline,
+          style: MyTextStyle.poppinsMedium400.copyWith(
+            color: colorScheme.tertiary,
           ),
         ),
         TextButton(
           onPressed: () => context.go(AppRouter.signUpPath),
           style: TextButton.styleFrom(
             padding: EdgeInsets.all(0),
-            foregroundColor: colorScheme.primary,
+            foregroundColor: colorScheme.onPrimaryContainer,
             overlayColor: Colors.transparent,
           ),
           child: Text(
             'Register',
-            style: MyTextStyle.linkSmall,
+            style: MyTextStyle.poppinsMedium600,
           ),
         ),
       ],

@@ -28,69 +28,57 @@ class TextFieldCustom extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final Color activeColor = color ?? colorScheme.primary;
-    final Color inActiveColor = colorScheme.outline;
+    final Color inActiveColor =  colorScheme.onTertiaryContainer;
     final Color errorColor = colorScheme.error;
 
     return ListenableBuilder(
-        listenable: focusNode,
-        builder: (context, _) {
-          final bool isFocused = focusNode.hasFocus;
-          final bool hasError = errorText != null && errorText!.isNotEmpty;
-          Color iconColor;
-          if (hasError) {
-            iconColor = errorColor;
-          } else if (isFocused) {
-            iconColor = activeColor;
-          } else {
-            iconColor = inActiveColor;
-          }
-          return TextField(
-            focusNode: focusNode,
-            style: MyTextStyle.formTextNormal,
-            obscureText: obscureText,
-            onChanged: onChanged,
-            decoration: InputDecoration(
-              hintText: hintText,
-              hintStyle: isFocused
-                  ? MyTextStyle.formTextFill
-                  : MyTextStyle.formTextNormal,
-              contentPadding: EdgeInsets.symmetric(vertical: 16),
-              prefixIcon: Padding(
-                padding: const EdgeInsets.only(left: 16, right: 12),
-                child: SvgPicture.asset(
-                  icon,
-                  width: 24,
-                  height: 24,
-                  colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
-                ),
-              ),
-              prefixIconConstraints: const BoxConstraints(
-                minHeight: 24,
-                minWidth: 48,
-              ),
-              prefixIconColor: isFocused ? activeColor : inActiveColor,
-              errorText: errorText,
-              errorStyle: MyTextStyle.formTextFill.copyWith(color: errorColor),
-              enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5),
-                  borderSide: BorderSide(
+      listenable: focusNode,
+      builder: (context, _) {
+        final bool isFocused = focusNode.hasFocus;
+        final bool hasError = errorText != null && errorText!.isNotEmpty;
+
+        final Color iconColor = hasError
+            ? errorColor
+            : isFocused
+                ? activeColor
+                : inActiveColor;
+
+        final TextStyle hintStyle = hasError
+            ? MyTextStyle.poppinsMedium400.copyWith(color: errorColor)
+            : isFocused
+                ? MyTextStyle.poppinsLarge600.copyWith(color: activeColor)
+                : MyTextStyle.poppinsMedium400.copyWith(
                     color: inActiveColor,
-                    width: 1,
-                  )),
-              focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5),
-                  borderSide: BorderSide(
-                    color: activeColor,
-                    width: 2,
-                  )),
-              errorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5),
-                  borderSide: BorderSide(
-                    color: errorColor,
-                    width: 2,
-                  )),
+                  );
+
+        return TextField(
+          controller: controller,
+          focusNode: focusNode,
+          
+          obscureText: obscureText,
+          onChanged: onChanged,
+          style: MyTextStyle.poppinsMedium400,
+          decoration: InputDecoration(
+            hintText: hintText,
+            hintStyle: hintStyle,
+            fillColor: hasError ? colorScheme.errorContainer : colorScheme.surfaceContainerLow,
+            errorText: errorText,
+            prefixIcon: Padding(
+              padding: const EdgeInsets.only(left: 16, right: 12),
+              child: SvgPicture.asset(
+                icon,
+                width: 24,
+                height: 24,
+                colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+              ),
             ),
-          );
-        });
+            prefixIconConstraints: const BoxConstraints(
+              minHeight: 24,
+              minWidth: 52,
+            ),
+          ),
+        );
+      },
+    );
   }
 }

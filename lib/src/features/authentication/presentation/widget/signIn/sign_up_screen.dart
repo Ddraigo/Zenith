@@ -41,10 +41,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     _fullNameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
-
-
-    ghgh
-
     _fullNameFocusNode.dispose();
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
@@ -86,12 +82,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           ),
                           Text(
                             'Let’s Get Started',
-                            style: MyTextStyle.headingH4,
+                            style: MyTextStyle.poppinsHeading1,
                           ),
                           Text(
                             'Create an new account',
-                            style: MyTextStyle.bodyTextSmallNormal.copyWith(
-                              color: colorScheme.onSurfaceVariant,
+                            style: MyTextStyle.poppinsHeading2.copyWith(
+                              color: colorScheme.onSecondary,
                             ),
                           ),
                         ],
@@ -168,20 +164,20 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       children: [
         Text(
           'Have a account?',
-          style: MyTextStyle.bodyTextSmallNormal.copyWith(
-            color: colorScheme.outline,
+          style: MyTextStyle.poppinsMedium400.copyWith(
+            color: colorScheme.tertiary,
           ),
         ),
         TextButton(
           onPressed: () => context.go(AppRouter.loginPath),
           style: TextButton.styleFrom(
             padding: EdgeInsets.all(0),
-            foregroundColor: colorScheme.primary,
+            foregroundColor: colorScheme.onPrimaryContainer,
             overlayColor: Colors.transparent,
           ),
           child: Text(
             'Sign in',
-            style: MyTextStyle.linkSmall,
+            style: MyTextStyle.poppinsMedium600,
           ),
         ),
       ],

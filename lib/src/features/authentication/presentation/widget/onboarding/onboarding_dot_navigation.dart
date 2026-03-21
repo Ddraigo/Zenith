@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnBoardingDotNavigation extends StatelessWidget {
@@ -18,7 +19,9 @@ class OnBoardingDotNavigation extends StatelessWidget {
       effect: ExpandingDotsEffect(
         activeDotColor: colorScheme.primary,
         dotColor: colorScheme.outlineVariant,
-        dotHeight: 6,
+        dotHeight: 12.h,
+        dotWidth: 12.w
+
       ),
     );
   }

@@ -2,6 +2,17 @@
 class MyImages{
   
   // Images/photo/png....
+  static const String onBoardingImage1 = 'images/onboarding/chef_cooking.svg';
+  static const String onBoardingImage2 = 'images/onboarding/delivery_guy.svg.svg';
+  static const String onBoardingImage3 = 'images/onboarding/birthday_girl.svg';
+  static const String onBoardingImage4 = 'images/onboarding/burger.svg';
+
+  // logo
+  static const String logoDefault = 'logo/logo_default.svg';
+  static const String logoIcon = 'logo/logo_icon.svg';
+  static const String logoMedium = 'logo/logo_medium.svg';
+  static const String logoSmall = 'logo/logo_small.svg';
+
 
 
   // Icons
@@ -14,11 +25,6 @@ class MyImages{
 
 
   // Shape 
-  static const String onBoardingImage1 = 'shapes/onboarding/onboarding_1.svg';
-  static const String onBoardingImage2 = 'shapes/onboarding/onboarding_2.svg';
-  static const String onBoardingImage3 = 'shapes/onboarding/onboarding_3.svg';
-  static const String onBoardingImage4 = 'shapes/onboarding/onboarding_4.svg';
-  static const String onBoardingImage5 = 'shapes/onboarding/onboarding_5.svg';
-  static const String onBoardingImage6 = 'shapes/onboarding/onboarding_6.svg';
+
 }
 
