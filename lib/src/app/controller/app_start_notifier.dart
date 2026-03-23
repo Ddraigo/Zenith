@@ -1,7 +1,5 @@
 import 'package:app_demo/src/app/state/app_start_state.dart';
-import 'package:app_demo/src/features/authentication/application/auth_service.dart';
 import 'package:app_demo/src/features/authentication/application/token_service.dart';
-import 'package:app_demo/src/features/authentication/data/token_repository.dart';
 import 'package:app_demo/src/features/authentication/presentation/controller/auth_notifier.dart';
 import 'package:app_demo/src/features/authentication/presentation/state/auth_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

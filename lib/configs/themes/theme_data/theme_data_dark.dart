@@ -2,6 +2,7 @@ import 'package:app_demo/configs/themes/app_colors.dart';
 import 'package:app_demo/configs/themes/app_fonts.dart';
 import 'package:app_demo/configs/themes/text_style.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
 const ColorScheme darkColorScheme = ColorScheme(
@@ -53,8 +54,8 @@ const ColorScheme darkColorScheme = ColorScheme(
 );
 
 ThemeData getDarkTheme() {
-  const buttonSize = Size(120, 48);
-  final radius = BorderRadius.circular(12);
+  final buttonSize = Size(120.w, 48.h);
+  final radius = BorderRadius.circular(12.r);
 
   final defaultInputBorder = OutlineInputBorder(
     borderRadius: radius,
@@ -70,8 +71,8 @@ ThemeData getDarkTheme() {
     fontFamily: AppFonts.poppins,
     colorScheme: darkColorScheme,
 
-    scaffoldBackgroundColor: AppColors.grey0,
-    canvasColor: AppColors.grey0,
+    scaffoldBackgroundColor: darkColorScheme.onPrimary,
+    canvasColor: darkColorScheme.onPrimary,
     cardColor: darkColorScheme.surfaceContainerLow,
     dividerColor: darkColorScheme.surfaceContainerHigh,
 
@@ -88,7 +89,7 @@ ThemeData getDarkTheme() {
         disabledForegroundColor: darkColorScheme.onTertiary,
         shape: RoundedRectangleBorder(borderRadius: radius),
         textStyle: MyTextStyle.poppinsMedium700,
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 12.h),
         minimumSize: buttonSize,
         elevation: 0,
       ),
@@ -102,7 +103,7 @@ ThemeData getDarkTheme() {
         disabledForegroundColor: darkColorScheme.onTertiary,
         shape: RoundedRectangleBorder(borderRadius: radius),
         textStyle: MyTextStyle.poppinsMedium700,
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 12.h),
         minimumSize: buttonSize,
       ),
     ),
@@ -119,15 +120,15 @@ ThemeData getDarkTheme() {
         ),
         shape: RoundedRectangleBorder(borderRadius: radius),
         textStyle: MyTextStyle.poppinsMedium700,
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 12.h),
         minimumSize: buttonSize,
       ),
     ),
 
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: AppColors.elementBackground,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+      fillColor: AppDarkColors.elementBackground,
+      contentPadding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 12.h),
       hintStyle: MyTextStyle.poppinsMedium400.copyWith(
         color: darkColorScheme.tertiary,
       ),

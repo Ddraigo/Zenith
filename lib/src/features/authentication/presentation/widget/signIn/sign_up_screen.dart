@@ -151,6 +151,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           onPressed: notifier.handleSignUp,
           type: ButtonType.elevated,
           label: 'Sign Up',
+          minimumSize: Size(double.infinity, 58.h),
         ),
       ],
     );
@@ -172,13 +173,15 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           onPressed: () => context.go(AppRouter.loginPath),
           style: TextButton.styleFrom(
             padding: EdgeInsets.all(0),
-            foregroundColor: colorScheme.onPrimaryContainer,
+            foregroundColor: colorScheme.primary,
             overlayColor: Colors.transparent,
+            textStyle: MyTextStyle.poppinsMedium600,
+            
           ),
           child: Text(
             'Sign in',
-            style: MyTextStyle.poppinsMedium600,
           ),
+          
         ),
       ],
     );

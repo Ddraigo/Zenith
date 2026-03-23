@@ -2,7 +2,6 @@ import 'package:app_demo/src/features/authentication/presentation/controller/onb
 import 'package:app_demo/src/features/authentication/presentation/widget/onboarding/onboarding_dot_navigation.dart';
 import 'package:app_demo/src/features/authentication/presentation/widget/onboarding/onboarding_page.dart';
 import 'package:app_demo/src/features/authentication/presentation/widget/onboarding/onboarding_skip.dart';
-import 'package:app_demo/src/features/authentication/presentation/widget/login/login_screen.dart';
 import 'package:app_demo/src/routes/app_router.dart';
 import 'package:app_demo/src/shared/constants/images_constants.dart';
 import 'package:flutter/material.dart';
@@ -79,18 +78,21 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   child: OnboardingNext(
                     isLastPage: isLastPage,
                     onPressed: () {
-                      _pageController.nextPage(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeIn,
-                      );
+                      if (isLastPage) {
+                        context.go(AppRouter.startPage);
+                      } else {
+                        _pageController.nextPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeIn,
+                        );
+                      }
                     },
                   ),
                 ),
                 Flexible(
                   flex: 2,
                   child: OnBoardingSkip(
-                    onPressed: () => context.go(AppRouter.loginPath),
-                    
+                    onPressed: () => context.go(AppRouter.startPage),
                   ),
                 ),
               ],

@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:app_demo/configs/themes/app_colors.dart';
 import 'package:app_demo/configs/themes/app_fonts.dart';

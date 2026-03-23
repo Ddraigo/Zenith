@@ -8,10 +8,10 @@ class MyImages{
   static const String onBoardingImage4 = 'images/onboarding/burger.svg';
 
   // logo
-  static const String logoDefault = 'logo/logo_default.svg';
-  static const String logoIcon = 'logo/logo_icon.svg';
-  static const String logoMedium = 'logo/logo_medium.svg';
-  static const String logoSmall = 'logo/logo_small.svg';
+  static const String logoDefault = 'icons/logo/logo_default.svg';
+  static const String logoIcon = 'icons/logo/logo_icon.svg';
+  static const String logoMedium = 'icons/logo/logo_medium.svg';
+  static const String logoSmall = 'icons/logo/logo_small.svg';
 
 
 

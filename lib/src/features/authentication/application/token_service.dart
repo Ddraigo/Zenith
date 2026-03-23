@@ -29,7 +29,9 @@ class TokenService implements TokenRepository{
 
           try {
             await storage.delete(key: StoreKey.token.toString());
-          } on Exception catch (e) {}
+          } on Exception catch (e) {
+            throw FormatException(e.toString());
+          }
     }else{
       await prefs.remove(StoreKey.token.toString());
     }
@@ -49,7 +51,9 @@ class TokenService implements TokenRepository{
       const storage = FlutterSecureStorage();
       try {
         await storage.write(key: StoreKey.token.toString(), value: jsonEncode(_token.toString()));
-      } on Exception catch (e) {}
+      } on Exception catch (e) {
+        throw FormatException(e.toString());
+      }
     }else{
       await prefs.setString(StoreKey.token.toString(), jsonEncode(_token.toString()));
     }
@@ -74,7 +78,7 @@ class TokenService implements TokenRepository{
           _token = Token.fromJson(jsonDecode(tokenValue));
         }
       } on Exception catch (e) {
-        throw FormatException('');
+        throw FormatException(e.toString());
       }
     return _token;
   }

@@ -16,7 +16,9 @@ class RetryInterceptorChangedInterceptor extends Interceptor {
    if(_shouldRetry(err)){
     try {
       requestRetrier.scheduleRequestRetry(err.requestOptions);
-    } catch (e) {}
+    } catch (e) {
+      throw FormatException('');
+    }
    }
   }
 

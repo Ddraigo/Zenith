@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 enum ButtonType { elevated, outlined, text, filled }
@@ -100,13 +101,13 @@ class ButtonCustom extends StatelessWidget {
 
     if (hasIcon && hasLable) {
       return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
+        padding: EdgeInsets.symmetric(vertical: 6.h),
         child: Row(
           mainAxisSize: MainAxisSize.min,
         children: [
           SvgPicture.asset(
-            width: iconSize,
-            height: iconSize,
+            width: iconSize?.w,
+            height: iconSize?.w,
             icon!,
           ),
           Expanded(
@@ -115,8 +116,8 @@ class ButtonCustom extends StatelessWidget {
               textAlign: textAlign,
             ),
           ),
-          const SizedBox(
-            width: 24,
+          SizedBox(
+            width: 24.w,
           ),
         ],
         ),

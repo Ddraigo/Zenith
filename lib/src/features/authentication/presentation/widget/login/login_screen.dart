@@ -52,10 +52,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
-                        spacing: 10,
+                        spacing: 16,
                         children: [
                           SvgPicture.asset(
-                            MyImages.appIcon,
+                            MyImages.logoSmall,
                             width: 50.w,
                             height: 50.h,
                             colorFilter: ColorFilter.mode(
@@ -75,7 +75,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                       const SizedBox(height: 24),
                       _buildformLogin(),
-                      const SizedBox(height: 24),
                       Row(
                         mainAxisSize: MainAxisSize.max,
                         spacing: 8,
@@ -90,7 +89,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           Text(
                             'OR',
                             style: MyTextStyle.poppinsMedium700.copyWith(
-                              color: colorScheme.outline,
+                              color: colorScheme.tertiary,
                             ),
                           ),
                           Expanded(
@@ -145,6 +144,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           onPressed: () {},
           type: ButtonType.elevated,
           label: 'Sign In',
+          minimumSize: Size(double.infinity, 58.h),
         ),
       ],
     );
@@ -179,12 +179,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           style: TextButton.styleFrom(
             foregroundColor: colorScheme.primary,
             overlayColor: Colors.transparent,
+            textStyle: MyTextStyle.poppinsMedium700
           ),
           child: Text(
             'Forgot Password?',
-            style: MyTextStyle.poppinsMedium700.copyWith(
-              color: colorScheme.tertiaryContainer,
-            ),
           ),
         ),
       ],
@@ -206,12 +204,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           onPressed: () => context.go(AppRouter.signUpPath),
           style: TextButton.styleFrom(
             padding: EdgeInsets.all(0),
-            foregroundColor: colorScheme.onPrimaryContainer,
+            foregroundColor: colorScheme.primary,
             overlayColor: Colors.transparent,
+            textStyle: MyTextStyle.poppinsMedium600,
           ),
           child: Text(
             'Register',
-            style: MyTextStyle.poppinsMedium600,
           ),
         ),
       ],

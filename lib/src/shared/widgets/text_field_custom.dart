@@ -1,5 +1,6 @@
 import 'package:app_demo/configs/themes/text_style.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 class TextFieldCustom extends StatelessWidget {
@@ -64,7 +65,7 @@ class TextFieldCustom extends StatelessWidget {
             fillColor: hasError ? colorScheme.errorContainer : colorScheme.surfaceContainerLow,
             errorText: errorText,
             prefixIcon: Padding(
-              padding: const EdgeInsets.only(left: 16, right: 12),
+              padding: EdgeInsets.only(left: 16.w, right: 12.w),
               child: SvgPicture.asset(
                 icon,
                 width: 24,
@@ -72,9 +73,9 @@ class TextFieldCustom extends StatelessWidget {
                 colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
               ),
             ),
-            prefixIconConstraints: const BoxConstraints(
-              minHeight: 24,
-              minWidth: 52,
+            prefixIconConstraints: BoxConstraints(
+              minHeight: 24.h,
+              minWidth: 52.w,
             ),
           ),
         );

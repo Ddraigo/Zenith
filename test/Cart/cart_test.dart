@@ -15,7 +15,7 @@ void main(){
         .addItem(prodID: 'P001', quantity: 10)
         .addItem(prodID: 'P002', quantity: 1);
       
-      print(cart.items);
+      // print(cart.items);
 
       expect(cart.items, {
         'P001':10,
