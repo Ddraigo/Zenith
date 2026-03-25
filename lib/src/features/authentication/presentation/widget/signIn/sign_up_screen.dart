@@ -4,6 +4,7 @@ import 'package:app_demo/src/features/authentication/presentation/state/sign_up_
 import 'package:app_demo/src/routes/app_router.dart';
 import 'package:app_demo/src/shared/constants/images_constants.dart';
 import 'package:app_demo/src/shared/widgets/button_custom.dart';
+import 'package:app_demo/src/shared/widgets/date_picker_custom.dart';
 import 'package:app_demo/src/shared/widgets/text_field_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -53,6 +54,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   Widget build(BuildContext context) {
     final signUpState = ref.watch(signUpProvider);
     final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       body: SafeArea(
         child: LayoutBuilder(
@@ -60,9 +62,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             return SingleChildScrollView(
               padding: EdgeInsets.all(16.r),
               child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
-                ),
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
@@ -78,7 +78,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                             width: 50.w,
                             height: 50.h,
                             colorFilter: ColorFilter.mode(
-                                colorScheme.primary, BlendMode.srcIn),
+                              colorScheme.primary,
+                              BlendMode.srcIn,
+                            ),
                           ),
                           Text(
                             'Let’s Get Started',
@@ -114,49 +116,80 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       children: [
         TextFieldCustom(
           icon: MyImages.userIcon,
-          hintText: 'Full name',
+          hintText: 'Họ và tên',
           focusNode: _fullNameFocusNode,
           controller: _fullNameController,
           onChanged: notifier.onUserNameChange,
-          errorText: state.errorName,
+          errorText: state.nameError,
+        ),
+        TextFieldCustom(
+          icon: MyImages.userIcon,
+          hintText: 'Ngày sinh',
+          focusNode: _fullNameFocusNode,
+          controller: _fullNameController,
+          onChanged: notifier.onUserNameChange,
+          errorText: state.nameError,
+        ),
+        DatePickerCustom(
+          firstDate: DateTime(1900),
+          lastDate: DateTime(2100),
+          initialDate: DateTime.now(),
+          hintText: '',
+          onChanged: notifier.onDateChange,
+        ),
+        DropdownButtonFormField<Gender>(
+          value: state.gender == Gender.none ? null : state.gender,
+          decoration: InputDecoration(hintText: 'Giới tính'),
+          items: Gender.values
+              .where((g) => g != Gender.none)
+              .map(
+                (g) => DropdownMenuItem<Gender>(
+                  value: g,
+                  child: Text(g == Gender.male ? 'Name' : 'Nữ'),
+                ),
+              )
+              .toList(),
+          onChanged: (value) {
+            if (value != null) {
+              notifier.onGenderChange(value);
+            }
+          },
         ),
         TextFieldCustom(
           icon: MyImages.emailIcon,
-          hintText: 'Your Email',
+          hintText: 'Địa chỉ Email',
           focusNode: _emailFocusNode,
           controller: _emailController,
           onChanged: notifier.onEmailChange,
-           errorText: state.errorEmail,
-          
+          errorText: state.emailError,
         ),
         TextFieldCustom(
           icon: MyImages.lockIcon,
-          hintText: 'Password',
+          hintText: 'Mật khẩu',
           focusNode: _passwordFocusNode,
           obscureText: true,
           controller: _passwordController,
           onChanged: notifier.onPasswordChange,
-          errorText: state.errorPassword,
+          errorText: state.passwordError,
         ),
         TextFieldCustom(
           icon: MyImages.lockIcon,
-          hintText: 'Password Again',
+          hintText: 'Xác nhận lại mật khẩu',
           focusNode: _rePasswordFocusNode,
           obscureText: true,
           controller: _rePasswordController,
           onChanged: notifier.onRePasswordChange,
-          errorText: state.errorRePassword,
+          errorText: state.rePasswordError,
         ),
         ButtonCustom(
           onPressed: notifier.handleSignUp,
           type: ButtonType.elevated,
-          label: 'Sign Up',
+          label: 'Đăng ký',
           minimumSize: Size(double.infinity, 58.h),
         ),
       ],
     );
   }
-
 
   Widget _buildSignIn(ColorScheme colorScheme) {
     return Row(
@@ -164,7 +197,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       spacing: 3,
       children: [
         Text(
-          'Have a account?',
+          'Đã có tài khoản?',
           style: MyTextStyle.poppinsMedium400.copyWith(
             color: colorScheme.tertiary,
           ),
@@ -176,12 +209,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             foregroundColor: colorScheme.primary,
             overlayColor: Colors.transparent,
             textStyle: MyTextStyle.poppinsMedium600,
-            
           ),
-          child: Text(
-            'Sign in',
-          ),
-          
+          child: Text('Đăng ký'),
         ),
       ],
     );

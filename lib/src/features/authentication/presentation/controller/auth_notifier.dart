@@ -1,7 +1,7 @@
 
 import 'package:app_demo/src/features/authentication/application/auth_service.dart';
-import 'package:app_demo/src/features/authentication/application/token_service.dart';
 import 'package:app_demo/src/features/authentication/presentation/state/auth_state.dart';
+import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'auth_notifier.g.dart';
 
@@ -13,16 +13,32 @@ class AuthNotifier extends _$AuthNotifier{
     return const AuthState.initial();
   }
 
-  late final AuthService _loginService = ref.read(authServiceProvider);
+  late final AuthService _authService = ref.read(authServiceProvider);
 
   Future<void> login(String email, String password) async{
-    state = await _loginService.login(email, password);
+
+    state = const AuthState.loading();
+    try{
+      await _authService.login(email, password);
+      state = AuthState.loggedIn();
+    } on AppException catch (e){
+      state = AuthState.error(e);
+    } catch (_){
+      state = const AuthState.error(AppException.error());
+    }
+    
+
   }
 
-  late final TokenService _tokenService = ref.read(tokenServiceProvider);
-
   Future<void> logout() async{
-    await _tokenService.remove();
-    state = const AuthState.loggedOut();
+    state = const AuthState.loading();
+    try{
+      await _authService.signOut();
+      state = AuthState.loggedIn();
+    } on AppException catch (e){
+      state = AuthState.error(e);
+    } catch (_){
+      state = const AuthState.error(AppException.error());
+    }
   }
 }

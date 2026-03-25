@@ -34,6 +34,26 @@ class Validator {
     // }
 
     return true;
+  }
 
+  static bool isValidDayOfBirth(DateTime? value){
+    if(value == null || value.toIso8601String().isEmpty) return false;
+    final now = DateTime.now();
+    if(value.isAfter(now)) return false;
+    final age = now.year - value.year - 
+          ((now.month < value.month ||
+           ( now.month == value.month && now.day < value.day)) ? 1 : 0);
+    if(age <= 3) return false;
+    return true;
+  }
+
+  static bool isValidateValue(String value){
+    if(value.trim().isEmpty){
+      return false;
+    }
+    if(value == null){
+      return false;
+    }
+    return true;
   }
 }

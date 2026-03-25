@@ -1,24 +1,23 @@
 
-import 'dart:convert';
-
 import 'package:freezed_annotation/freezed_annotation.dart';
 part 'user_model.freezed.dart';
 part 'user_model.g.dart';
 
 
-User userFromJson(String str) =>
- User.fromJson(json.decode(str) as Map<String, dynamic>);
+// User userFromJson(String str) =>
+//  User.fromJson(json.decode(str) as Map<String, dynamic>);
 
-String userToJson(User data) => json.encode(data.toJson());
+// String userToJson(User data) => json.encode(data.toJson());
 
 @freezed
-abstract class User with _$User {
+abstract class UserModel with _$UserModel {
 
-  const factory User({
-    required String userName, 
-    required String email, 
-    required String password}) = _User;
+  const factory UserModel({
+    required String id,
+    required String email,
+    required DateTime createdAt,
+    }) = _UserModel;
 
-  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+  factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
   
 }

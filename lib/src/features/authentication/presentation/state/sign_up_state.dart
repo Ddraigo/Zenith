@@ -1,41 +1,27 @@
-class SignUpState {
-  final String email;
-  final String userName;
-  final String password;
-  final String rePassword;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  final String? errorName;
-  final String? errorEmail;
-  final String? errorPassword;
-  final String? errorRePassword;
+part 'sign_up_state.freezed.dart';
 
-  SignUpState(
-      {this.userName = '',
-      this.email = '',
-      this.password = '',
-      this.rePassword = '',
-      this.errorName,
-      this.errorEmail,
-      this.errorPassword,
-      this.errorRePassword});
+enum Gender {male, female, none}
 
-  SignUpState copyWith(
-      {String? userName,
-      String? email,
-      String? password,
-      String? rePassword,
-      String? errorName,
-      String? errorEmail,
-      String? errorPassword,
-      String? errorRePassword}) {
-    return SignUpState(
-        userName: userName ?? this.userName,
-        email: email ?? this.email,
-        password: password ?? this.password,
-        rePassword: rePassword ?? this.rePassword,
-        errorName: errorName,
-        errorEmail: errorEmail,
-        errorPassword: errorPassword,
-        errorRePassword: errorRePassword);
-  }
+@freezed
+abstract class SignUpState with _$SignUpState {
+  const factory SignUpState({
+    @Default('') String email,
+    @Default('') String userName,
+    @Default('') String password,
+    @Default('') String rePassword,
+    @Default(Gender.none) Gender gender,
+    DateTime? dayOfBirth,
+    String? nameError,
+    String? emailError,
+    String? passwordError,
+    String? rePasswordError,
+    String? genderError,
+    String? dayOfBirthError,
+    String? submitError,
+    @Default(false) bool isSubmitting,
+    @Default(false) bool submittingError,
+    
+  }) = _SignUpSate;
 }

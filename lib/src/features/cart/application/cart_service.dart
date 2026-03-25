@@ -15,22 +15,22 @@
 
 //   Future<Cart> _fetchCart(){
     
-//     final user = ref.read(authRepositoryProvider).currentUser;
+//     final user = _ref.read(authRepositoryProvider).currentUser;
 //     if(user != null){
-//       return ref.read(remoteCartRepositoryProvider).fetchCart(user.userID);
+//       return _ref.read(remoteCartRepositoryProvider).fetchCart(user.userID);
 //     }
 //     else{
-//       return ref.read(localCartRepositoryProvider).fetchCart();
+//       return _ref.read(localCartRepositoryProvider).fetchCart();
 //     }
 //   }
 
 //   Future<void> _setCart(Cart cart) async{
-//     final user = ref.read(authRepositoryProvider).currentUser;
+//     final user = _ref.read(authRepositoryProvider).currentUser;
 //     if(user != null){
-//       await ref.read(remoteCartRepositoryProvider).setCart(user.userID, cart);
+//       await _ref.read(remoteCartRepositoryProvider).setCart(user.userID, cart);
 //     }
 //     else{
-//       await ref.read(localCartRepositoryProvider).setCart(cart);
+//       await _ref.read(localCartRepositoryProvider).setCart(cart);
 //     }
 //   }
   
