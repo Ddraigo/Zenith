@@ -33,7 +33,7 @@ final class AppStartNotifierProvider
   AppStartNotifier create() => AppStartNotifier();
 }
 
-String _$appStartNotifierHash() => r'bc4b0f95d791a5d008742ccc00e4121e16a0f82b';
+String _$appStartNotifierHash() => r'98e5c6c19aaed5b5dc776b1ad4e33af1d82eb107';
 
 abstract class _$AppStartNotifier extends $AsyncNotifier<AppStartState> {
   FutureOr<AppStartState> build();

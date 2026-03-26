@@ -13,7 +13,7 @@ part of 'sign_up_notifier.dart';
 final signUpProvider = SignUpNotifierProvider._();
 
 final class SignUpNotifierProvider
-    extends $NotifierProvider<SignUpNotifier, SignUpState> {
+    extends $AsyncNotifierProvider<SignUpNotifier, void> {
   SignUpNotifierProvider._()
     : super(
         from: null,
@@ -31,29 +31,21 @@ final class SignUpNotifierProvider
   @$internal
   @override
   SignUpNotifier create() => SignUpNotifier();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(SignUpState value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<SignUpState>(value),
-    );
-  }
 }
 
-String _$signUpNotifierHash() => r'5afbfd9494b68d7f37ca764d08e219521694417b';
+String _$signUpNotifierHash() => r'1a0269e786848ae0ce1ab735be5e1c7151f7e54c';
 
-abstract class _$SignUpNotifier extends $Notifier<SignUpState> {
-  SignUpState build();
+abstract class _$SignUpNotifier extends $AsyncNotifier<void> {
+  FutureOr<void> build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<SignUpState, SignUpState>;
+    final ref = this.ref as $Ref<AsyncValue<void>, void>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<SignUpState, SignUpState>,
-              SignUpState,
+              AnyNotifier<AsyncValue<void>, void>,
+              AsyncValue<void>,
               Object?,
               Object?
             >;

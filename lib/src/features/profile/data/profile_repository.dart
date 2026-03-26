@@ -17,14 +17,14 @@ class ProfileRepository {
     required String userId,
     required String userName,
     required String? avatarUrl,
-    required String gender,
+    required String? gender,
     required DateTime dayOfBirth,
   }) {
     return _ref.createProfile(
       userId: userId, 
       userName: userName, 
       avatarUrl: avatarUrl!,
-      gender: gender, 
+      gender: gender!, 
       dayOfBirth: dayOfBirth);
   }
   

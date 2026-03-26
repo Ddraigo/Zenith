@@ -1,5 +1,3 @@
-import 'package:app_demo/src/features/authentication/domain/user_model.dart';
-import 'package:app_demo/src/features/authentication/presentation/state/sign_up_state.dart';
 import 'package:app_demo/src/features/profile/data/profile_repository.dart';
 import 'package:app_demo/src/features/profile/domain/profile_model.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
@@ -11,20 +9,20 @@ final profileServiceProvider = Provider<ProfileService>((ref) {
 });
 
 class ProfileService {
-  ProfileRepository _repo;
+  final ProfileRepository _repo;
   ProfileService(this._repo);
 
   Future<ProfileModel> createNewProfile(ProfileModel profile) async {
-
-    if(profile.dayOfBirth == null){
-      throw AppException.errorWithMessage('dayOfBirth is null');
+    
+    if(profile.userId == null){
+      throw AppException.errorWithMessage('$profile.userId is null');
     }
 
     await _repo.createProfile(
       userId: profile.userId,
-      userName: profile.userName!,
-      gender: profile.gender ?? Gender.none.toString(),
-      dayOfBirth: profile.dayOfBirth!,
+      userName: profile.userName,
+      gender: profile.gender,
+      dayOfBirth: profile.dayOfBirth,
       avatarUrl: profile.avatarUrl ?? '',
     );
 

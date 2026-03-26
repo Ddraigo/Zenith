@@ -1,5 +1,4 @@
 import 'package:app_demo/src/features/profile/data/profile_dto.dart';
-import 'package:app_demo/src/features/profile/domain/profile_model.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:app_demo/src/shared/http/supabase_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,8 +21,6 @@ class ProfileSource {
     required DateTime dayOfBirth,
     String? avatarUrl,
   }) async {
-    final DateTime createdAt;
-
     try {
       final data = await _client
           .from('profiles')
@@ -37,10 +34,8 @@ class ProfileSource {
           .select()
           .single();
       return ProfileDTO.fromJson(data);
-    } on PostgrestException catch (e) {
-      throw AppException.errorWithMessage(e.message);
-    } catch (_) {
-      throw AppException.errorWithMessage('Create profile is failed');
+    } catch (e) {
+      throw SupabaseErrorHandle.handle(e.toString());
     }
   }
 }

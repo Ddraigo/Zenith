@@ -1,7 +1,7 @@
-import 'package:app_demo/src/features/authentication/presentation/widget/onboarding/onboarding_page.dart';
-import 'package:app_demo/src/features/authentication/presentation/widget/onboarding/onboarding_screen.dart';
-import 'package:app_demo/src/features/authentication/presentation/widget/login/login_screen.dart';
-import 'package:app_demo/src/features/authentication/presentation/widget/signIn/sign_up_screen.dart';
+import 'package:app_demo/src/features/authentication/presentation/screen/onboarding/onboarding_page.dart';
+import 'package:app_demo/src/features/authentication/presentation/screen/onboarding/onboarding_screen.dart';
+import 'package:app_demo/src/features/authentication/presentation/screen/login/login_screen.dart';
+import 'package:app_demo/src/features/authentication/presentation/screen/signIn/sign_up_screen.dart';
 import 'package:app_demo/src/shared/constants/images_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

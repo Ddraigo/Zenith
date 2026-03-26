@@ -1,6 +1,6 @@
 
 
-import 'package:app_demo/src/features/cart/domain/cart_model.dart';
+import 'package:app_demo/src/features/flashcard/domain/flashcard_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main(){

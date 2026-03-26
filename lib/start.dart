@@ -20,7 +20,7 @@ Future<void> start() async {
 
   final platformType = detectPlatformType();
 
-  await dotenv.load(fileName: '.env.development');
+  await dotenv.load(fileName:_fileName);
 
   final supabaseUrl = dotenv.env['SUPABASE_URL']?.trim() ?? '';
   final supabaseKey = dotenv.env['SUPABASE_ANON_KEY']?.trim() ?? '';

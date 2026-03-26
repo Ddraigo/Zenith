@@ -65,8 +65,8 @@ class _DatePickerCustomState extends State<DatePickerCustom> {
 
   Future<void> _selectDate() async {
     final DateTime now = DateTime.now();
-    final DateTime firstDate = DateTime(1700);
-    final DateTime lastDate = DateTime(now.year + 100);
+    final DateTime firstDate = widget.firstDate ?? DateTime(1700);
+    final DateTime lastDate = widget.lastDate ?? DateTime(now.year + 100);
 
     final DateTime initial =
         _selectedDate ??
@@ -94,12 +94,15 @@ class _DatePickerCustomState extends State<DatePickerCustom> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: _selectDate,
-      child: TextFieldCustom(
-        icon: widget.icon,
-        hintText: widget.hintText,
-        controller: _controller,
-        focusNode: _focusNode,
-        errorText: widget.errorText,
+      behavior: HitTestBehavior.opaque,
+      child: AbsorbPointer(
+        child: TextFieldCustom(
+          icon: widget.icon,
+          hintText: widget.hintText,
+          controller: _controller,
+          focusNode: _focusNode,
+          errorText: widget.errorText,
+        ),
       ),
     );
   }

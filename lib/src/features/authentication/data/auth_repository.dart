@@ -1,9 +1,6 @@
-
-
 import 'package:app_demo/src/features/authentication/data/auth_source.dart';
 import 'package:app_demo/src/features/authentication/data/user_dto.dart';
 import 'package:app_demo/src/features/authentication/domain/user_model.dart';
-import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -13,42 +10,26 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 });
 
 class AuthRepository {
-  AuthRepository(this._ref);
-  final AuthSource _ref;
+  AuthRepository(this._source);
+  final AuthSource _source;
 
   Future<UserModel> login({
     required String email,
     required String password,
-  })async{
-    try{
-      final response = await _ref.login(email: email, password: password);
-      return UserDTO.fromAuthResponse(response).toDomain();
-    } on AuthException catch (e){
-      throw AppException.errorWithMessage(e.message);
-    }
+  }) async {
+    final response = await _source.login(email: email, password: password);
+    return response.toDomain();
   }
 
   Future<UserModel> signUp({
-      required String userName,
-      required String email,
-      required String password,
-    }
-  ) async{
-    try{
-      final response = await _ref.signUp(userName: userName, email: email, password: password);
-      final dto = UserDTO.fromAuthResponse(response);
-      return dto.toDomain();
-    }on AuthException catch (e){
-      throw AppException.errorWithMessage(e.message);
-    }
+    required String email,
+    required String password,
+  }) async {
+    final response = await _source.signUp(email: email, password: password);
+    return response.toDomain();
   }
 
-  Future<void> signOut(){
-    return _ref.signOut();
+  Future<void> signOut() {
+    return _source.signOut();
   }
 }
-
-
-
-
-

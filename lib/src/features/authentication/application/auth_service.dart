@@ -40,58 +40,57 @@ class AuthService {
 
       await _tokenService.saveToken(Token(token: session.accessToken));
     } on AuthException catch (e) {
-      throw AppException.errorWithMessage(e.toString());
+      throw SupabaseErrorHandle.handle(e);
     } catch (_) {
       rethrow;
     }
   }
 
-  Future<void> signUp(
-    String userName,
-    String email,
-    String password,
-    String gender,
-    DateTime dayOfBirth,
-  ) async {
+  Future<void> signUp({
+    required String userName,
+    required String email,
+    required String password,
+    required DateTime dayOfBirth,
+    required String gender,
+  }) async {
     if (!Validator.isValidEmail(email)) {
-      throw AppException.errorWithMessage(
-        'Service received invalid email: $email',
-      );
+      throw AppException.errorWithMessage('Invalid email');
     }
     if (!Validator.isValidPassword(password)) {
-      throw AppException.errorWithMessage(
-        'Service received invalid password: $password',
-      );
+      throw AppException.errorWithMessage('Invalid password');
+    }
+    if (!Validator.isValidDayOfBirth(dayOfBirth)) {
+      throw AppException.errorWithMessage("Invalid dayOfBirth");
+    }
+    if (!Validator.isValidateValue(gender)) {
+      throw AppException.errorWithMessage('Invalid gender');
     }
 
     try {
-      await _repo.signUp(userName: userName.trim(), email: email.trim(), password: password);
-      final session = _supabaseClient.auth.currentSession;
+      final user = await _ref
+          .read(authRepositoryProvider)
+          .signUp(email: email, password: password);
 
-      if (session != null) {
-        await _tokenService.saveToken(Token(token: session.accessToken));
+      final userId = _supabaseClient.auth.currentUser?.id;
+      if (userId == null) {
+        throw AppException.errorWithMessage('Không tìm thấy userId');
       }
 
-      final currentUser = _supabaseClient.auth.currentUser?.id;
-      if(currentUser == null){
-        throw AuthException('currentUser is not found');
-      }
-      final profile = ProfileModel.create(
-        userId: currentUser,
-        userName: userName.trim(),
-        avatarUrl: '',
-        gender: gender,
+      final profile = ProfileModel(
+        userId: userId,
+        userName: userName,
         dayOfBirth: dayOfBirth,
+        gender: gender,
       );
-      late final _profileService = _ref.read(profileServiceProvider);
-      await _profileService.createNewProfile(profile);
+      await _ref.read(profileServiceProvider).createNewProfile(profile);
     } on AuthException catch (e) {
-      throw AppException.errorWithMessage(e.toString());
-    } catch (_) {
+      throw SupabaseErrorHandle.handle(e);
+    } on AppException {
       rethrow;
+    } catch (e) {
+      throw AppException.errorWithMessage(e.toString());
     }
   }
 
-  @override
   Future<void> signOut() => _repo.signOut();
 }

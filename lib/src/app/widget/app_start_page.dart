@@ -1,7 +1,7 @@
 import 'package:app_demo/src/app/controller/app_start_notifier.dart';
 import 'package:app_demo/src/app/state/app_start_state.dart';
-import 'package:app_demo/src/features/authentication/presentation/widget/login/login_screen.dart';
-import 'package:app_demo/src/features/authentication/presentation/widget/onboarding/onboarding_screen.dart';
+import 'package:app_demo/src/features/authentication/presentation/screen/login/login_screen.dart';
+import 'package:app_demo/src/features/authentication/presentation/screen/onboarding/onboarding_screen.dart';
 import 'package:app_demo/src/features/home/presentation/home_screen.dart';
 import 'package:app_demo/src/shared/widgets/connection_unavailable_widget.dart';
 import 'package:app_demo/src/shared/widgets/loading_widget.dart';

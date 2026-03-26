@@ -11,7 +11,7 @@ _ProfileModel _$ProfileModelFromJson(Map<String, dynamic> json) =>
       userId: json['userId'] as String,
       userName: json['userName'] as String,
       avatarUrl: json['avatarUrl'] as String?,
-      gender: json['gender'] as String,
+      gender: json['gender'] as String?,
       dayOfBirth: DateTime.parse(json['dayOfBirth'] as String),
     );
 
