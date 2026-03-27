@@ -7,7 +7,7 @@ part 'profile_dto.g.dart';
 @freezed
 abstract class ProfileDTO with _$ProfileDTO{
   const factory ProfileDTO({
-    @JsonKey(name: 'user_id')
+    @JsonKey(name: 'id')
     required String userId,
 
     @JsonKey(name: 'user_name')
@@ -19,7 +19,7 @@ abstract class ProfileDTO with _$ProfileDTO{
     @JsonKey(name: 'gender')
     required String gender,
 
-    @JsonKey(name: 'day_of_birth')
+    @JsonKey(name: 'birthday')
     required DateTime dayOfBirth,
 
     @JsonKey(name: 'created_at')

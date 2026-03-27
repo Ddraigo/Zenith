@@ -21,12 +21,12 @@ class AuthService {
   Future<void> login(String email, String password) async {
     if (!Validator.isValidEmail(email)) {
       throw AppException.errorWithMessage(
-        'Service received invalid email: $email',
+        'Email không hợp lệ: $email',
       );
     }
     if (!Validator.isValidPassword(password)) {
       throw AppException.errorWithMessage(
-        'Service received invalid password: $password',
+        'Mật khẩu không hợp lệ: $password',
       );
     }
 
@@ -39,10 +39,10 @@ class AuthService {
       }
 
       await _tokenService.saveToken(Token(token: session.accessToken));
-    } on AuthException catch (e) {
-      throw SupabaseErrorHandle.handle(e);
-    } catch (_) {
+    } on AppException{
       rethrow;
+    }catch(_){
+      throw const AppException.unknown();
     }
   }
 
@@ -62,26 +62,26 @@ class AuthService {
     if (!Validator.isValidDayOfBirth(dayOfBirth)) {
       throw AppException.errorWithMessage("Invalid dayOfBirth");
     }
-    if (!Validator.isValidateValue(gender)) {
-      throw AppException.errorWithMessage('Invalid gender');
-    }
 
     try {
       final user = await _ref
           .read(authRepositoryProvider)
           .signUp(email: email, password: password);
 
-      final userId = _supabaseClient.auth.currentUser?.id;
-      if (userId == null) {
-        throw AppException.errorWithMessage('Không tìm thấy userId');
+      
+      if (user.id == null) {
+        throw AppException.errorWithMessage('Auth Source: userId is null');
       }
 
+      final genderCheck = gender.trim().isEmpty ? 'none' : gender;
+
       final profile = ProfileModel(
-        userId: userId,
+        userId: user.id,
         userName: userName,
         dayOfBirth: dayOfBirth,
-        gender: gender,
+        gender: genderCheck,
       );
+
       await _ref.read(profileServiceProvider).createNewProfile(profile);
     } on AuthException catch (e) {
       throw SupabaseErrorHandle.handle(e);

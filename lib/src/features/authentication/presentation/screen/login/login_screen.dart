@@ -1,6 +1,8 @@
 import 'package:app_demo/configs/themes/text_style.dart';
+import 'package:app_demo/src/features/authentication/presentation/controller/auth_notifier.dart';
 import 'package:app_demo/src/routes/app_router.dart';
 import 'package:app_demo/src/shared/constants/images_constants.dart';
+import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:app_demo/src/shared/widgets/button_custom.dart';
 import 'package:app_demo/src/shared/widgets/text_field_custom.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +23,41 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _passwordController = TextEditingController();
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
+  late bool isSubmitted;
 
+  @override
+  void initState(){
+    isSubmitted = false;
+    super.initState();
+    ref.listenManual<AsyncValue>(authProvider, (prev, next){
+      next.when(
+        data: (_){
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar( const SnackBar(content: Text('Đăng nhập thành công!')));
+          _clearForm();
+          Future.delayed(const Duration(milliseconds: 600),(){
+            if(mounted) context.go(AppRouter.homePath);
+          });
+        }, 
+        loading: (){},
+        error: (error, stack) {
+          final message = (error is AppException) 
+            ? error.when(
+                connectivity: () => 'Lỗi kết nối. Vui lòng kiểm tra internet.',
+                unauthorized: () => 'Không được phép truy cập.',
+                errorWithMessage: (msg) => msg,
+                unknown: () => 'Có lỗi xảy ra. Vui lòng thử lại.',
+                badRequest: (msg) => msg, 
+                server: (msg) => msg, 
+              )
+            : error.toString();
+          
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+        },
+      );
+    });
+  }
   @override
   void dispose() {
     _emailController.dispose();
@@ -31,8 +67,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.dispose();
   }
 
+  void _clearForm(){
+    _emailController.clear();
+    _passwordController.clear();
+    _emailFocusNode.unfocus();
+    _passwordFocusNode.unfocus();
+    isSubmitted = false;
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
+    final loginState = ref.watch(authProvider);
     final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       body: SafeArea(
@@ -74,7 +121,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ],
                       ),
                       const SizedBox(height: 24),
-                      _buildformLogin(),
+                      _buildformLogin(loginState),
                       Row(
                         mainAxisSize: MainAxisSize.max,
                         spacing: 8,
@@ -118,7 +165,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  Widget _buildformLogin() {
+  Widget _buildformLogin(AsyncValue<void> asyncState) {
+    final _loginNotifier = ref.read(authProvider.notifier);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       spacing: 16,
@@ -128,7 +177,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           hintText: 'Your Email',
           focusNode: _emailFocusNode,
           controller: _emailController,
-          onChanged: (value) {},
+          errorText: isSubmitted 
+          ? _loginNotifier.validateEmail(_emailController.text) 
+          : null, 
         ),
         TextFieldCustom(
           icon: MyImages.lockIcon,
@@ -136,17 +187,49 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           focusNode: _passwordFocusNode,
           obscureText: true,
           controller: _passwordController,
-          onChanged: (value) {
-            //ref.read(signInProvider.notifier).setPassword(value);
+          errorText: isSubmitted 
+          ? _loginNotifier.validatePassword(_passwordController.text) 
+          : null, 
+
+        ),
+        asyncState.when(
+          data: (_){
+            return ButtonCustom(
+              onPressed: _handleLogin,
+              type: ButtonType.elevated,
+              label: 'Đăng nhập',
+              minimumSize: Size(double.infinity, 58.h),
+            );
+          }, 
+          loading: (){
+            return ButtonCustom(
+              onPressed: null,
+              type: ButtonType.elevated,
+              label: 'Đăng xử lý...',
+              minimumSize: Size(double.infinity, 58.h),
+            );
           },
+          error: (error, stack){
+            return ButtonCustom(
+              onPressed: _handleLogin,
+              type: ButtonType.elevated,
+              label: 'Đăng ký',
+              minimumSize: Size(double.infinity, 58.h),
+            );
+          }
         ),
-        ButtonCustom(
-          onPressed: () {},
-          type: ButtonType.elevated,
-          label: 'Sign In',
-          minimumSize: Size(double.infinity, 58.h),
-        ),
+        
       ],
+    );
+  }
+
+  void _handleLogin(){
+    setState(() => isSubmitted = true,);
+
+    ref.read(authProvider.notifier)
+    .login(
+      _emailController.text.trim(),
+      _passwordController.text.trim()
     );
   }
 

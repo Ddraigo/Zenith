@@ -12,5 +12,9 @@ class AppException with _$AppException {
   const factory AppException.errorWithMessage(String message) =
       _AppExceptionErrorMessage;
 
-  const factory AppException.error() = _AppExceptionError;
+  const factory AppException.unknown() = _AppExceptionErrorUnknown;
+
+  const factory AppException.badRequest(String message) = _AppExceptionBadRequest;
+
+  const factory AppException.server(String message) = _AppExceptionServer; 
 }

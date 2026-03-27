@@ -1,5 +1,5 @@
 import 'package:app_demo/src/features/profile/data/profile_dto.dart';
-import 'package:app_demo/src/shared/http/app_exception.dart';
+import 'package:app_demo/src/shared/constants/format.dart';
 import 'package:app_demo/src/shared/http/supabase_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -25,17 +25,17 @@ class ProfileSource {
       final data = await _client
           .from('profiles')
           .insert({
-            'user_id': userId,
+            'id': userId,
             'user_name': userName,
             'gender': gender,
             'avatar_url': avatarUrl,
-            'day_of_birth': dayOfBirth.toIso8601String(),
+            'birthday': Format.formatYMD(dayOfBirth),
           })
           .select()
           .single();
       return ProfileDTO.fromJson(data);
     } catch (e) {
-      throw SupabaseErrorHandle.handle(e.toString());
+      throw SupabaseErrorHandle.handle(e);
     }
   }
 }

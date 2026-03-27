@@ -2,7 +2,6 @@ import 'package:app_demo/src/features/authentication/data/auth_source.dart';
 import 'package:app_demo/src/features/authentication/data/user_dto.dart';
 import 'package:app_demo/src/features/authentication/domain/user_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   final source = ref.watch(authSourceProvider);

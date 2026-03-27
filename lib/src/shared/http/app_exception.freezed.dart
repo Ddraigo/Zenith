@@ -55,14 +55,16 @@ extension AppExceptionPatterns on AppException {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AppExceptionConnectivity value)?  connectivity,TResult Function( AppExceptionUnauthorized value)?  unauthorized,TResult Function( _AppExceptionErrorMessage value)?  errorWithMessage,TResult Function( _AppExceptionError value)?  error,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AppExceptionConnectivity value)?  connectivity,TResult Function( AppExceptionUnauthorized value)?  unauthorized,TResult Function( _AppExceptionErrorMessage value)?  errorWithMessage,TResult Function( _AppExceptionErrorUnknown value)?  unknown,TResult Function( _AppExceptionBadRequest value)?  badRequest,TResult Function( _AppExceptionServer value)?  server,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case AppExceptionConnectivity() when connectivity != null:
 return connectivity(_that);case AppExceptionUnauthorized() when unauthorized != null:
 return unauthorized(_that);case _AppExceptionErrorMessage() when errorWithMessage != null:
-return errorWithMessage(_that);case _AppExceptionError() when error != null:
-return error(_that);case _:
+return errorWithMessage(_that);case _AppExceptionErrorUnknown() when unknown != null:
+return unknown(_that);case _AppExceptionBadRequest() when badRequest != null:
+return badRequest(_that);case _AppExceptionServer() when server != null:
+return server(_that);case _:
   return orElse();
 
 }
@@ -80,14 +82,16 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AppExceptionConnectivity value)  connectivity,required TResult Function( AppExceptionUnauthorized value)  unauthorized,required TResult Function( _AppExceptionErrorMessage value)  errorWithMessage,required TResult Function( _AppExceptionError value)  error,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AppExceptionConnectivity value)  connectivity,required TResult Function( AppExceptionUnauthorized value)  unauthorized,required TResult Function( _AppExceptionErrorMessage value)  errorWithMessage,required TResult Function( _AppExceptionErrorUnknown value)  unknown,required TResult Function( _AppExceptionBadRequest value)  badRequest,required TResult Function( _AppExceptionServer value)  server,}){
 final _that = this;
 switch (_that) {
 case AppExceptionConnectivity():
 return connectivity(_that);case AppExceptionUnauthorized():
 return unauthorized(_that);case _AppExceptionErrorMessage():
-return errorWithMessage(_that);case _AppExceptionError():
-return error(_that);case _:
+return errorWithMessage(_that);case _AppExceptionErrorUnknown():
+return unknown(_that);case _AppExceptionBadRequest():
+return badRequest(_that);case _AppExceptionServer():
+return server(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -104,14 +108,16 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AppExceptionConnectivity value)?  connectivity,TResult? Function( AppExceptionUnauthorized value)?  unauthorized,TResult? Function( _AppExceptionErrorMessage value)?  errorWithMessage,TResult? Function( _AppExceptionError value)?  error,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AppExceptionConnectivity value)?  connectivity,TResult? Function( AppExceptionUnauthorized value)?  unauthorized,TResult? Function( _AppExceptionErrorMessage value)?  errorWithMessage,TResult? Function( _AppExceptionErrorUnknown value)?  unknown,TResult? Function( _AppExceptionBadRequest value)?  badRequest,TResult? Function( _AppExceptionServer value)?  server,}){
 final _that = this;
 switch (_that) {
 case AppExceptionConnectivity() when connectivity != null:
 return connectivity(_that);case AppExceptionUnauthorized() when unauthorized != null:
 return unauthorized(_that);case _AppExceptionErrorMessage() when errorWithMessage != null:
-return errorWithMessage(_that);case _AppExceptionError() when error != null:
-return error(_that);case _:
+return errorWithMessage(_that);case _AppExceptionErrorUnknown() when unknown != null:
+return unknown(_that);case _AppExceptionBadRequest() when badRequest != null:
+return badRequest(_that);case _AppExceptionServer() when server != null:
+return server(_that);case _:
   return null;
 
 }
@@ -128,13 +134,15 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  connectivity,TResult Function()?  unauthorized,TResult Function( String message)?  errorWithMessage,TResult Function()?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  connectivity,TResult Function()?  unauthorized,TResult Function( String message)?  errorWithMessage,TResult Function()?  unknown,TResult Function( String message)?  badRequest,TResult Function( String message)?  server,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case AppExceptionConnectivity() when connectivity != null:
 return connectivity();case AppExceptionUnauthorized() when unauthorized != null:
 return unauthorized();case _AppExceptionErrorMessage() when errorWithMessage != null:
-return errorWithMessage(_that.message);case _AppExceptionError() when error != null:
-return error();case _:
+return errorWithMessage(_that.message);case _AppExceptionErrorUnknown() when unknown != null:
+return unknown();case _AppExceptionBadRequest() when badRequest != null:
+return badRequest(_that.message);case _AppExceptionServer() when server != null:
+return server(_that.message);case _:
   return orElse();
 
 }
@@ -152,13 +160,15 @@ return error();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  connectivity,required TResult Function()  unauthorized,required TResult Function( String message)  errorWithMessage,required TResult Function()  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  connectivity,required TResult Function()  unauthorized,required TResult Function( String message)  errorWithMessage,required TResult Function()  unknown,required TResult Function( String message)  badRequest,required TResult Function( String message)  server,}) {final _that = this;
 switch (_that) {
 case AppExceptionConnectivity():
 return connectivity();case AppExceptionUnauthorized():
 return unauthorized();case _AppExceptionErrorMessage():
-return errorWithMessage(_that.message);case _AppExceptionError():
-return error();case _:
+return errorWithMessage(_that.message);case _AppExceptionErrorUnknown():
+return unknown();case _AppExceptionBadRequest():
+return badRequest(_that.message);case _AppExceptionServer():
+return server(_that.message);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -175,13 +185,15 @@ return error();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  connectivity,TResult? Function()?  unauthorized,TResult? Function( String message)?  errorWithMessage,TResult? Function()?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  connectivity,TResult? Function()?  unauthorized,TResult? Function( String message)?  errorWithMessage,TResult? Function()?  unknown,TResult? Function( String message)?  badRequest,TResult? Function( String message)?  server,}) {final _that = this;
 switch (_that) {
 case AppExceptionConnectivity() when connectivity != null:
 return connectivity();case AppExceptionUnauthorized() when unauthorized != null:
 return unauthorized();case _AppExceptionErrorMessage() when errorWithMessage != null:
-return errorWithMessage(_that.message);case _AppExceptionError() when error != null:
-return error();case _:
+return errorWithMessage(_that.message);case _AppExceptionErrorUnknown() when unknown != null:
+return unknown();case _AppExceptionBadRequest() when badRequest != null:
+return badRequest(_that.message);case _AppExceptionServer() when server != null:
+return server(_that.message);case _:
   return null;
 
 }
@@ -322,8 +334,8 @@ as String,
 /// @nodoc
 
 
-class _AppExceptionError implements AppException {
-  const _AppExceptionError();
+class _AppExceptionErrorUnknown implements AppException {
+  const _AppExceptionErrorUnknown();
   
 
 
@@ -333,7 +345,7 @@ class _AppExceptionError implements AppException {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppExceptionError);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppExceptionErrorUnknown);
 }
 
 
@@ -342,7 +354,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'AppException.error()';
+  return 'AppException.unknown()';
 }
 
 
@@ -350,5 +362,137 @@ String toString() {
 
 
 
+
+/// @nodoc
+
+
+class _AppExceptionBadRequest implements AppException {
+  const _AppExceptionBadRequest(this.message);
+  
+
+ final  String message;
+
+/// Create a copy of AppException
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AppExceptionBadRequestCopyWith<_AppExceptionBadRequest> get copyWith => __$AppExceptionBadRequestCopyWithImpl<_AppExceptionBadRequest>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppExceptionBadRequest&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'AppException.badRequest(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AppExceptionBadRequestCopyWith<$Res> implements $AppExceptionCopyWith<$Res> {
+  factory _$AppExceptionBadRequestCopyWith(_AppExceptionBadRequest value, $Res Function(_AppExceptionBadRequest) _then) = __$AppExceptionBadRequestCopyWithImpl;
+@useResult
+$Res call({
+ String message
+});
+
+
+
+
+}
+/// @nodoc
+class __$AppExceptionBadRequestCopyWithImpl<$Res>
+    implements _$AppExceptionBadRequestCopyWith<$Res> {
+  __$AppExceptionBadRequestCopyWithImpl(this._self, this._then);
+
+  final _AppExceptionBadRequest _self;
+  final $Res Function(_AppExceptionBadRequest) _then;
+
+/// Create a copy of AppException
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(_AppExceptionBadRequest(
+null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _AppExceptionServer implements AppException {
+  const _AppExceptionServer(this.message);
+  
+
+ final  String message;
+
+/// Create a copy of AppException
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AppExceptionServerCopyWith<_AppExceptionServer> get copyWith => __$AppExceptionServerCopyWithImpl<_AppExceptionServer>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppExceptionServer&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'AppException.server(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AppExceptionServerCopyWith<$Res> implements $AppExceptionCopyWith<$Res> {
+  factory _$AppExceptionServerCopyWith(_AppExceptionServer value, $Res Function(_AppExceptionServer) _then) = __$AppExceptionServerCopyWithImpl;
+@useResult
+$Res call({
+ String message
+});
+
+
+
+
+}
+/// @nodoc
+class __$AppExceptionServerCopyWithImpl<$Res>
+    implements _$AppExceptionServerCopyWith<$Res> {
+  __$AppExceptionServerCopyWithImpl(this._self, this._then);
+
+  final _AppExceptionServer _self;
+  final $Res Function(_AppExceptionServer) _then;
+
+/// Create a copy of AppException
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(_AppExceptionServer(
+null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
 
 // dart format on

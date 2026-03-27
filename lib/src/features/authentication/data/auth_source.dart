@@ -26,21 +26,22 @@ class AuthSource {
       final user = response.user;
 
       if(user == null){
-        throw AppException.errorWithMessage('Không tồn người dùng');
+        throw AppException.errorWithMessage('Auth Source: user is null');
       }
       if(user.email == null){
-        throw AppException.errorWithMessage('email không tồn tại');
-      }
-      if(user.createdAt == null){
-        throw AppException.errorWithMessage('không tìm thấy ngày tạo');
+        throw AppException.errorWithMessage('Auth Source: email is null');
       }
       return  UserDTO(
         id: user.id ,
         email: user.email!,
         createdAt: DateTime.parse(user.createdAt),
       );
-    } catch (e) {
+    } on AuthException catch (e) {
       throw SupabaseErrorHandle.handle(e);
+    } on AppException{
+      rethrow;
+    }catch (e){
+      rethrow;
     }
   }
 
@@ -55,16 +56,16 @@ class AuthSource {
       );
       final user = response.user;
       if(user == null){
-        throw AppException.errorWithMessage('Chưa tạo người dùng');
+        throw AppException.errorWithMessage('Auth Source: user is null');
       }
       if(user.id == null){
-        throw AppException.errorWithMessage('Không tìm thấy id người dùng');
+        throw AppException.errorWithMessage('Auth Source: user id is null');
       }
       if(user.email == null){
-        throw AppException.errorWithMessage('email không tồn tại');
+        throw AppException.errorWithMessage('Auth Source: email is null');
       }
       if(user.createdAt == null){
-        throw AppException.errorWithMessage('không tìm thấy ngày tạo');
+        throw AppException.errorWithMessage('Auth Source: createdAt is null');
       }
       
       return UserDTO(
@@ -72,9 +73,14 @@ class AuthSource {
         email: user.email!,
         createdAt: DateTime.parse(user.createdAt),
       );
-    } catch (e) {
+    } on AuthException catch (e) {
       throw SupabaseErrorHandle.handle(e);
+    } on AppException{
+      rethrow;
+    }catch (e){
+      rethrow;
     }
+
   }
 
   Future<void> signOut() async => await _client.auth.signOut();

@@ -35,7 +35,6 @@ class SignUpFormState {
 class SignUpNotifier extends _$SignUpNotifier {
   @override
   FutureOr<void> build() {
-    // No initialization needed
   }
 
   /// Validate username/full name
@@ -139,14 +138,14 @@ class SignUpNotifier extends _$SignUpNotifier {
     state = await AsyncValue.guard(
       () async {
         final genderToSave =
-            gender == Gender.none ? '' : gender?.name;
+            (gender == null || gender == Gender.none) ? 'Khác' : gender.name;
 
         await ref.read(authServiceProvider).signUp(
           userName: userName.trim(),
           email: email.trim(),
           password: password,
           dayOfBirth: dayOfBirth!,
-          gender: genderToSave!,
+          gender: genderToSave,
         );
       },
     );

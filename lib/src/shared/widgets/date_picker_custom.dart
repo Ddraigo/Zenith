@@ -1,3 +1,4 @@
+import 'package:app_demo/src/shared/constants/format.dart';
 import 'package:app_demo/src/shared/constants/images_constants.dart';
 import 'package:app_demo/src/shared/widgets/text_field_custom.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,7 @@ class _DatePickerCustomState extends State<DatePickerCustom> {
     _focusNode = FocusNode();
     _controller = TextEditingController();
     _selectedDate = widget.initialDate;
-    _controller.text = _formatDate(_selectedDate);
+    _controller.text = Format.formatDMY(_selectedDate);
     super.initState();
   }
 
@@ -45,7 +46,7 @@ class _DatePickerCustomState extends State<DatePickerCustom> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.initialDate != widget.initialDate) {
       _selectedDate = widget.initialDate;
-      _controller.text = _formatDate(_selectedDate);
+      _controller.text = Format.formatDMY(_selectedDate);
     }
   }
 
@@ -56,16 +57,9 @@ class _DatePickerCustomState extends State<DatePickerCustom> {
     super.dispose();
   }
 
-  String _formatDate(DateTime? date) {
-    if (date == null) return '';
-    return '${date.day.toString().padLeft(2, '0')}/'
-        '${date.month.toString().padLeft(2, '0')}/'
-        '${date.year}';
-  }
-
   Future<void> _selectDate() async {
     final DateTime now = DateTime.now();
-    final DateTime firstDate = widget.firstDate ?? DateTime(1700);
+    final DateTime firstDate = widget.firstDate ?? DateTime(1900);
     final DateTime lastDate = widget.lastDate ?? DateTime(now.year + 100);
 
     final DateTime initial =
@@ -84,7 +78,7 @@ class _DatePickerCustomState extends State<DatePickerCustom> {
     if (picked == null) return;
     setState(() {
       _selectedDate = picked;
-      _controller.text = _formatDate(_selectedDate);
+      _controller.text = Format.formatDMY(_selectedDate);
     });
 
     widget.onChanged?.call(picked);

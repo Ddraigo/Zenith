@@ -2,6 +2,7 @@ import 'package:app_demo/configs/themes/text_style.dart';
 import 'package:app_demo/src/features/authentication/presentation/controller/sign_up_notifier.dart';
 import 'package:app_demo/src/routes/app_router.dart';
 import 'package:app_demo/src/shared/constants/images_constants.dart';
+import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:app_demo/src/shared/widgets/button_custom.dart';
 import 'package:app_demo/src/shared/widgets/date_picker_custom.dart';
 import 'package:app_demo/src/shared/widgets/text_field_custom.dart';
@@ -40,19 +41,28 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     ref.listenManual<AsyncValue<void>>(signUpProvider, (prev, next) {
       next.when(
         data: (_) {
-          _clearForm();
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(const SnackBar(content: Text('Đăng ký thành công!')));
+          _clearForm();
           Future.delayed(const Duration(milliseconds: 600), () {
             if (mounted) context.go(AppRouter.loginPath);
           });
         },
         loading: () {},
         error: (error, stack) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(error.toString())));
+          final message = (error is AppException) 
+            ? error.when(
+                connectivity: () => 'Lỗi kết nối. Vui lòng kiểm tra internet.',
+                unauthorized: () => 'Không được phép truy cập.',
+                errorWithMessage: (msg) => msg,
+                unknown: () => 'Có lỗi xảy ra. Vui lòng thử lại.',
+                badRequest: (msg) => msg, 
+                server: (msg) => msg, 
+              )
+            : error.toString();
+          
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
         },
       );
     });
@@ -173,7 +183,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               .map(
                 (g) => DropdownMenuItem<Gender?>(
                   value: g,
-                  child: Text(g == Gender.male ? 'Nam' : 'Nữ'),
+                  child: Text(
+                      g == Gender.male ? 'Nam' : 'Nữ'
+                    ),
                 ),
               )
               .toList(),
@@ -253,7 +265,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             overlayColor: Colors.transparent,
             textStyle: MyTextStyle.poppinsMedium600,
           ),
-          child: const Text('Đăng ký'),
+          child: const Text('Đăng nhập'),
         ),
       ],
     );

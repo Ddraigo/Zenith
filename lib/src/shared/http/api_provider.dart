@@ -106,14 +106,14 @@ class ApiProvider {
         if(response.statusCode! == 401){
           return APIResponse.error(AppException.unauthorized());
         }else if(response.statusCode! == 502 ){
-          return const APIResponse.error(AppException.error());
+          return const APIResponse.error(AppException.unknown());
         }else{
           if(response.data['message'] != null){
             return APIResponse.error(AppException.errorWithMessage(
               response.data['message'] as String ?? ''
             ));
           }else{
-            return const APIResponse.error(AppException.error());
+            return const APIResponse.error(AppException.unknown());
           }
         }
       }
@@ -185,7 +185,7 @@ class ApiProvider {
         options: Options(validateStatus: (status)=> true, headers:  headers),
       );
       if(response == null){
-        return const APIResponse.error(AppException.error());
+        return const APIResponse.error(AppException.unknown());
       }
       if(response.statusCode == null){
         return const APIResponse.error(AppException.connectivity());
@@ -199,14 +199,14 @@ class ApiProvider {
         }else if(response.statusCode! == 401){
           return const APIResponse.error(AppException.unauthorized());
         }else if(response.statusCode! == 502){
-          return const APIResponse.error(AppException.error());
+          return const APIResponse.error(AppException.unknown());
         }else{
           if(response.data['error'] != null){
             return APIResponse.error(AppException.errorWithMessage(
               response.data['error'] as String ?? ''
             ));
           }else{
-            return const APIResponse.error(AppException.error());
+            return const APIResponse.error(AppException.unknown());
           }
         }
       }
@@ -219,7 +219,7 @@ class ApiProvider {
       e.type == DioExceptionType.sendTimeout){
         return const APIResponse.error(AppException.connectivity());
       }
-      return const APIResponse.error(AppException.error());
+      return const APIResponse.error(AppException.unknown());
     }
 
   }
