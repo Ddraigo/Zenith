@@ -2,12 +2,14 @@ import 'package:app_demo/src/features/authentication/presentation/screen/onboard
 import 'package:app_demo/src/features/authentication/presentation/screen/onboarding/onboarding_screen.dart';
 import 'package:app_demo/src/features/authentication/presentation/screen/login/login_screen.dart';
 import 'package:app_demo/src/features/authentication/presentation/screen/signIn/sign_up_screen.dart';
+import 'package:app_demo/src/features/home/presentation/home_screen.dart';
+import 'package:app_demo/src/features/profile/presentation/screen/profile_screen.dart';
 import 'package:app_demo/src/shared/constants/images_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: AppRouter.loginPath,
+  initialLocation: AppRouter.homePath,
   
   routes: <RouteBase>[
     GoRoute(
@@ -25,18 +27,19 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRouter.startPage,
       builder:  (context, state) => const OnBoardingSkipedPage(title: 'Join to get the delicious quizines!', image: MyImages.onBoardingImage4),
-    )
-    // GoRoute(
-    //   path: AppRouter.homePath,
-    //   builder: (context, state){
-    //     final profileData = state.extra as String?;
-    //     return HomeScreen(profileData: profileData,);
-    //   }
-    // ),
+    ),
+    GoRoute(
+      path: AppRouter.homePath,
+      builder: (context, state)=> HomeScreen(),
+    ),
+    GoRoute(
+      path: AppRouter.profilePath,
+      builder: (context, state)=> ProfileScreen(),
+    ),
   ],
   errorBuilder: (context, state) {
     return const Scaffold(
-      body: Center(child: Text('The page not found!')),
+      body: Center(child: Text('Khôgn tìm thấy trang!')),
     );
   },
 );
@@ -47,5 +50,6 @@ class AppRouter {
   static const String signUpPath = '/signUp';
   static const String homePath = '/home';
   static const String startPage = '/start';
+  static const String profilePath = '/profile';
 
 }

@@ -19,7 +19,7 @@ class AppStartPage extends ConsumerWidget {
       data: (data){
         return data.maybeWhen(
           initial: () => const OnboardingScreen(),
-          authenticated: () => HomeScreen(profileData: '',),
+          authenticated: () => HomeScreen(),
           unauthenticated: LoginScreen.new,
           internetUnAvaiable: () => const ConnectionUnavailableWidget(),
           orElse: () => const OnboardingScreen(),

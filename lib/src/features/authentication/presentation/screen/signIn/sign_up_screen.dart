@@ -120,7 +120,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         spacing: 10,
                         children: [
                           SvgPicture.asset(
-                            MyImages.appIcon,
+                            MyIcons.appIcon,
                             width: 50.w,
                             height: 50.h,
                             colorFilter: ColorFilter.mode(
@@ -163,7 +163,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       spacing: 16,
       children: [
         TextFieldCustom(
-          icon: MyImages.userIcon,
+          icon: MyIcons.userIcon,
           hintText: 'Họ và tên',
           focusNode: _fullNameFocusNode,
           controller: _fullNameController,
@@ -194,14 +194,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           },
         ),
         TextFieldCustom(
-          icon: MyImages.emailIcon,
+          icon: MyIcons.emailIcon,
           hintText: 'Địa chỉ Email',
           focusNode: _emailFocusNode,
           controller: _emailController,
           errorText: isSubmit ? _notifier.validateEmail(_emailController.text) : null
         ),
         TextFieldCustom(
-          icon: MyImages.lockIcon,
+          icon: MyIcons.lockIcon,
           hintText: 'Mật khẩu',
           focusNode: _passwordFocusNode,
           obscureText: true,
@@ -209,7 +209,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           errorText: isSubmit ? _notifier.validatePassword(_passwordController.text) : null,
         ),
         TextFieldCustom(
-          icon: MyImages.lockIcon,
+          icon: MyIcons.lockIcon,
           hintText: 'Xác nhận lại mật khẩu',
           focusNode: _rePasswordFocusNode,
           obscureText: true,

@@ -34,8 +34,8 @@ class AuthNotifier extends _$AuthNotifier {
   }
 
   bool isValidForm(String email, String password){
-    return Validator.isValidateValue(email) &&
-          Validator.isValidateValue(password);
+    return Validator.isValidValue(email) &&
+          Validator.isValidValue(password);
   }
 
   /// Handle login - delegates to AuthService with proper error handling

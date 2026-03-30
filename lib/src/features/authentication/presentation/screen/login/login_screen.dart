@@ -173,7 +173,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       spacing: 16,
       children: [
         TextFieldCustom(
-          icon: MyImages.emailIcon,
+          icon: MyIcons.emailIcon,
           hintText: 'Your Email',
           focusNode: _emailFocusNode,
           controller: _emailController,
@@ -182,7 +182,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           : null, 
         ),
         TextFieldCustom(
-          icon: MyImages.lockIcon,
+          icon: MyIcons.lockIcon,
           hintText: 'Password',
           focusNode: _passwordFocusNode,
           obscureText: true,
@@ -241,13 +241,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           type: ButtonType.outlined,
           onPressed: () {},
           label: 'Login with Google',
-          icon: MyImages.googleIcon,
+          icon: MyIcons.googleIcon,
         ),
         ButtonCustom(
           type: ButtonType.outlined,
           onPressed: () {},
           label: 'Login with Facebook',
-          icon: MyImages.facebookIcon,
+          icon: MyIcons.facebookIcon,
         ),
       ],
     );

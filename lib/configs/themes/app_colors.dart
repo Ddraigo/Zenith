@@ -12,8 +12,8 @@ class AppColors {
   static const primary300 = Color(0xFFB7EC8C);
   static const primary400 = Color(0xFF8BDE47);
   static const primary500 = Color(0xFF67BD1F);
-  static const primary600 = Color(0xFF54A312);
-  static const primary700 = Color(0xFF408308);
+  static const primary600 = Color(0xFF8C2C8C);
+  static const primary700 = Color(0xFF613766); 
 
 
   // Typography
@@ -46,7 +46,10 @@ class AppColors {
   static const blue = Color(0xFF24B5D4);
   static const green = Color(0xFF45B733);
   static const orange = Color(0xFFE8712E);
-
+  static const purplePastel = Color(0xFFF2DDF8);
+  static const greenPastel = Color(0xFFE2F2E2);
+  static const orangePastel = Color(0xFFFFEDE1);
+  static const bluePastel = Color(0xFFE8F3FB);
   // Transparent
   static const grey500_6 = Color(0x0F60635E);
   static const white_92 = Color(0xEBFFFFFF);

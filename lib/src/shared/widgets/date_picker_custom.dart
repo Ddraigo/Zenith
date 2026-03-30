@@ -7,7 +7,7 @@ class DatePickerCustom extends StatefulWidget {
   const DatePickerCustom({
     super.key,
     required this.hintText,
-    this.icon = MyImages.userIcon,
+    this.icon = MyIcons.userIcon,
     this.initialDate,
     this.firstDate,
     this.lastDate,

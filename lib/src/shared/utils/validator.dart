@@ -47,7 +47,7 @@ class Validator {
     return true;
   }
 
-  static bool isValidateValue(String value){
+  static bool isValidValue(String value){
     if(value.trim().isEmpty){
       return false;
     }
