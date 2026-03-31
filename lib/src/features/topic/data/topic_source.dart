@@ -22,6 +22,11 @@ class TopicSource {
             .from('topics')
             .select('*')
             .order('id', ascending: true);
+        
+        if((data as List).isEmpty){
+          return [];
+        }
+
         final topics = (data as List<dynamic>)
             .map((e) => TopicDTO.fromJson(e as Map<String, dynamic>))
             .toList();
@@ -39,6 +44,7 @@ class TopicSource {
             .select('*')
             .eq('id', id)
             .single();
+
         return TopicDTO.fromJson(data);
       },
     );

@@ -33,7 +33,7 @@ final class TopicNotifierProvider
   TopicNotifier create() => TopicNotifier();
 }
 
-String _$topicNotifierHash() => r'6b7de0f6d9cfd69ecdab19df13a38b50e14621ff';
+String _$topicNotifierHash() => r'3360d6b642ec2b9eb95ac381dd46c67c3782ba51';
 
 abstract class _$TopicNotifier extends $AsyncNotifier<List<TopicModel>> {
   FutureOr<List<TopicModel>> build();

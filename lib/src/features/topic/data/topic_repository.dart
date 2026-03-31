@@ -17,14 +17,18 @@ class TopicRepository {
   Future<Either<AppException, List<TopicModel>>> getListTopic() async {
     final result = await _source.fetchTopics();
 
-    return result.map((data) => data.map((e) => e.toDomain()).toList());
+    return result.map((topicDTO) {
+      return topicDTO
+          .map((dto) => dto.toDomain())
+          .toList();
+    });
   }
 
   Future<Either<AppException, TopicModel>> getTopicById({
     required int id,
   }) async {
     final result = await _source.fetchTopicById(id: id);
-
+    
     return result.map((data) => data.toDomain());
   }
 }

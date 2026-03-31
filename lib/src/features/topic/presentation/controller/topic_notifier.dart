@@ -1,25 +1,28 @@
 
-import 'package:app_demo/src/features/topic/data/topic_repository.dart';
+import 'package:app_demo/src/features/topic/application/topic_service.dart';
 import 'package:app_demo/src/features/topic/domain/topic_model.dart';
-import 'package:dart_either/dart_either.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
 part 'topic_notifier.g.dart';
 
+/// Presentation Layer - State Management (Notifier)
+/// Nhiệm vụ:
+/// - Gọi Service (business logic)
+/// - Convert Future/Either → AsyncValue (tự động)
+/// - Handle refresh/mutations
 @riverpod
-class TopicNotifier extends _$TopicNotifier{
-
-  FutureOr<List<TopicModel>> build() async{
-    return _fetchTopics();
-  } 
-
-  Future<List<TopicModel>> _fetchTopics() async{
-    final topicList = await ref.read(topicRepositoryProvider).getListTopic();
-    return topicList.getOrThrow();
-  } 
-
-  Future<void> refresh() async{
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() => _fetchTopics());
+class TopicNotifier extends _$TopicNotifier {
+  @override
+  FutureOr<List<TopicModel>> build() async {
+    // AsyncValue.guard() tự động catch exception
+    return ref.read(topicServiceProvider).getTopicList();
   }
 
+  /// Refresh danh sách topics
+  Future<void> refresh() async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(
+      () => ref.read(topicServiceProvider).getTopicList(),
+    );
+  }
 }
