@@ -1,6 +1,6 @@
+import 'package:app_demo/configs/routes/app_router.dart';
 import 'package:app_demo/configs/themes/text_style.dart';
 import 'package:app_demo/src/features/authentication/presentation/controller/auth_notifier.dart';
-import 'package:app_demo/src/routes/app_router.dart';
 import 'package:app_demo/src/shared/constants/images_constants.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:app_demo/src/shared/widgets/button_custom.dart';

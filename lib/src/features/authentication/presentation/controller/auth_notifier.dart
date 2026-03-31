@@ -1,5 +1,5 @@
 import 'package:app_demo/src/features/authentication/application/auth_service.dart';
-import 'package:app_demo/src/features/authentication/data/auth_repository.dart';
+import 'package:app_demo/src/features/authentication/data/repository/auth_repository.dart';
 import 'package:app_demo/src/shared/utils/validator.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

@@ -1,5 +1,5 @@
 import 'package:app_demo/src/features/authentication/application/token_service.dart';
-import 'package:app_demo/src/features/authentication/data/auth_repository.dart';
+import 'package:app_demo/src/features/authentication/data/repository/auth_repository.dart';
 import 'package:app_demo/src/features/authentication/domain/token_model.dart';
 import 'package:app_demo/src/features/profile/application/profile_service.dart';
 import 'package:app_demo/src/features/profile/domain/profile_model.dart';
@@ -53,25 +53,10 @@ class AuthService {
     required DateTime dayOfBirth,
     required String gender,
   }) async {
-    if (!Validator.isValidEmail(email)) {
-      throw AppException.errorWithMessage('Invalid email');
-    }
-    if (!Validator.isValidPassword(password)) {
-      throw AppException.errorWithMessage('Invalid password');
-    }
-    if (!Validator.isValidDayOfBirth(dayOfBirth)) {
-      throw AppException.errorWithMessage("Invalid dayOfBirth");
-    }
-
     try {
       final user = await _ref
           .read(authRepositoryProvider)
           .signUp(email: email, password: password);
-
-      
-      if (user.id == null) {
-        throw AppException.errorWithMessage('Auth Source: userId is null');
-      }
 
       final genderCheck = gender.trim().isEmpty ? 'none' : gender;
 
@@ -83,10 +68,6 @@ class AuthService {
       );
 
       await _ref.read(profileServiceProvider).createNewProfile(profile);
-    } on AuthException catch (e) {
-      throw SupabaseErrorHandle.handle(e);
-    } on AppException {
-      rethrow;
     } catch (e) {
       throw AppException.errorWithMessage(e.toString());
     }

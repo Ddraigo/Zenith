@@ -117,7 +117,7 @@ ThemeData getDarkTheme() {
 
   return ThemeData(
     useMaterial3: true,
-    brightness: Brightness.light,
+    brightness: Brightness.dark,
     fontFamily: AppFonts.poppins,
     colorScheme: darkColorScheme,
 

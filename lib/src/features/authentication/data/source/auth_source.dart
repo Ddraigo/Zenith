@@ -1,4 +1,4 @@
-import 'package:app_demo/src/features/authentication/data/user_dto.dart';
+import 'package:app_demo/src/features/authentication/data/dto/user_dto.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:app_demo/src/shared/http/supabase_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,7 +31,8 @@ class AuthSource {
       if(user.email == null){
         throw AppException.errorWithMessage('Auth Source: email is null');
       }
-      return  UserDTO(
+      // User.fromJson(response.data)    
+      return UserDTO(
         id: user.id ,
         email: user.email!,
         createdAt: DateTime.parse(user.createdAt),

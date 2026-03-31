@@ -1,6 +1,6 @@
+import 'package:app_demo/configs/routes/app_router.dart';
 import 'package:app_demo/configs/themes/theme_data/theme_data_dark.dart';
 import 'package:app_demo/configs/themes/theme_data/theme_data_light.dart';
-import 'package:app_demo/src/routes/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

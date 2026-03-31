@@ -4,20 +4,15 @@ part 'flashcard_model.freezed.dart';
 abstract class FlashcardModel with _$FlashcardModel{
   
   const factory FlashcardModel({
-    String? id,
-    required String deckId,
-    required int position,
+    @Default('') String? id,
+    required int topicId,
     required String word,
-    String? partOfSpeech,
-    String? phonetic,
-    String? imageUrl,
+    @Default('') String? partOfSpeech,
     required String meaning,
-    String? example,
-    List<String>? synonyms,
-    List<String>? antonyms,
-    String? audioUrl,
+    @Default('') String? example,
+
     DateTime? createdAt,
-    DateTime? updatedAt,
+
   }) = _FlashcardModel;
   
 }

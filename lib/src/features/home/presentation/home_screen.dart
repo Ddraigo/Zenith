@@ -1,62 +1,32 @@
-import 'package:app_demo/src/routes/app_router.dart';
-import 'package:app_demo/src/shared/constants/images_constants.dart';
+import 'package:app_demo/src/shared/widgets/bottomNavigationBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
+import '../../flashcard/presentation/screen/flashcard_screen.dart';
+import '../../topic/presentation/screen/topic_srceen.dart';
+import '../../profile/presentation/screen/profile_screen.dart';
+import '../../quiz/presentation/screen/quiz_screen.dart';
+
+final homeTapProvider = StateProvider<int>((ref) => 0);
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final index = ref.watch(homeTapProvider);
     return Scaffold(
-      body: Container(
-        padding: EdgeInsets.all(16.r),
-        child: Column(
-          spacing: 24,
-          children: [
-            _logo(),
-            _progress(),
-            _category(),
-            _topic(),
-      
-      
-          ],
-        ),
+      bottomNavigationBar: const MyBottomNavigationBar(),
+      body: IndexedStack(
+        index: index,
+        children: const [
+            FlashcardScreen(),
+            TopicSrceen(),
+            QuizScreen(),
+            ProfileScreen(),
+          ]
       ),
-    );
-  }
-  
-  Widget _progress() {
-    return Card.outlined(
-
-    );
-  }
-  
-  Widget _logo() {
-    return Container(
-      child: Row(
-        children: [
-
-        ],
-      ),
-    );
-  }
-  
-  Widget _category() {
-    return Container(
-
-    );
-  }
-  
-  Widget _topic() {
-    return Container(
-
     );
   }
 }
-

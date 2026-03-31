@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:app_demo/src/features/authentication/data/token_repository.dart';
+import 'package:app_demo/src/features/authentication/data/repository/token_repository.dart';
 import 'package:app_demo/src/features/authentication/domain/token_model.dart';
 import 'package:app_demo/src/shared/constants/store_key.dart';
 import 'package:app_demo/src/shared/utils/platform_type.dart';

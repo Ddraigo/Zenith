@@ -1,5 +1,5 @@
-import 'package:app_demo/src/features/authentication/data/auth_source.dart';
-import 'package:app_demo/src/features/authentication/data/user_dto.dart';
+import 'package:app_demo/src/features/authentication/data/source/auth_source.dart';
+import 'package:app_demo/src/features/authentication/data/dto/user_dto.dart';
 import 'package:app_demo/src/features/authentication/domain/user_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

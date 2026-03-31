@@ -1,8 +1,8 @@
+import 'package:app_demo/configs/routes/app_router.dart';
 import 'package:app_demo/src/features/authentication/presentation/controller/onboarding_controller.dart';
 import 'package:app_demo/src/features/authentication/presentation/screen/onboarding/onboarding_dot_navigation.dart';
 import 'package:app_demo/src/features/authentication/presentation/screen/onboarding/onboarding_page.dart';
 import 'package:app_demo/src/features/authentication/presentation/screen/onboarding/onboarding_skip.dart';
-import 'package:app_demo/src/routes/app_router.dart';
 import 'package:app_demo/src/shared/constants/images_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

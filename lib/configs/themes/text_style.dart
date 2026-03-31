@@ -107,6 +107,7 @@ class MyTextStyle {
     fontWeight: FontWeight.w500,
     letterSpacing: 0,
     height: 1.7,
+    color: AppColors.black, 
   );
 
   static final TextStyle poppinsSmall600 = _basePoppins.copyWith(
