@@ -41,7 +41,7 @@ class MyIcons{
   static const String doneRingFill =  'icons/done_round_fill.svg';
   static const String edit =  'icons/edit.svg'; 
   static const String favorite =  'icons/favorite.svg'; 
-  static const String fireFill =  'fire_fill.svg'; 
+  static const String fireFill =  'icons/fire_fill.svg'; 
   static const String happy =  'icons/happy.svg'; 
   static const String home =  'icons/home.svg'; 
   static const String like =  'icons/like.svg'; 
@@ -60,5 +60,7 @@ class MyIcons{
   static const String trashFull =  'icons/trash_full.svg';
   static const String filterOff =  'icons/filter_off.svg';
   static const String filter =  'icons/filter.svg';
+  static const String tap =  'icons/tap.svg';
+  static const String learn =  'icons/learn.svg';
 }
 

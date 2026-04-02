@@ -56,6 +56,7 @@ dependencies:
   flutter_dotenv: ^6.0.0
   dart_either: ^2.1.0
   fpdart: ^1.2.0
+  flutter_card_swiper: ^7.2.0
 
 dev_dependencies:
   flutter_test:

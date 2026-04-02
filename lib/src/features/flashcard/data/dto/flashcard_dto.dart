@@ -10,16 +10,19 @@ abstract class FlashcardDTO with _$FlashcardDTO{
   const factory FlashcardDTO({
     required String id,
 
-    @JsonKey(name:'topic_id') required int topicId,
+    @JsonKey(name:'topic_id') 
+    required int topicId,
 
     required String word,
 
-    @JsonKey(name:'part_of_speech') String? partOfSpeech,
+    @JsonKey(name:'part_of_speech') 
+    String? partOfSpeech,
 
     required String meaning,
     String? example,
 
-    @JsonKey(name:'created_at') required DateTime createdAt,
+    @JsonKey(name:'created_at') 
+    required DateTime createdAt,
 
   }) = _FlashcardDTO;
 

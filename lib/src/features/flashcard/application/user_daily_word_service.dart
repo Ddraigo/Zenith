@@ -1,0 +1,43 @@
+import 'dart:developer' as developer;
+
+import 'package:app_demo/src/features/flashcard/data/repository/user_daily_word_repository.dart';
+import 'package:app_demo/src/features/flashcard/domain/user_daily_word_model.dart';
+import 'package:app_demo/src/shared/constants/format.dart';
+import 'package:app_demo/src/shared/http/supabase_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+final userDailyWordServiceProvider = Provider(UserDailyWordService.new);
+
+class UserDailyWordService {
+  final Ref _ref;
+  UserDailyWordService(this._ref);
+  late final _client = _ref.read(supabaseClientProvider);
+  late final _repo = _ref.read(userDailyWordRepoProvider);
+
+  String get _currentUserId => _client.auth.currentUser!.id;
+
+  Future<List<UserDailyWordModel>> getDailyWords({
+    int? topicId,
+    DateTime? assignedDate,
+  }) async {
+    final result = await _repo.fetchDailyWords(
+      userId: _currentUserId,
+      topicId: topicId ?? 0,
+      assignedDate: Format.normalizeDate(assignedDate),
+    );
+
+    return result.fold(
+      ifLeft: (error) {
+        developer.log(
+          'UserDailyWordService: Error fetching data',
+          error: error,
+          stackTrace: StackTrace.current,
+        );
+        throw error;
+      },
+      ifRight: (topics) => topics,
+    );
+  }
+
+
+}

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'topic_notifier.dart';
+part of 'flashcard_topic_list_notifier.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,33 +9,36 @@ part of 'topic_notifier.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(TopicNotifier)
-final topicProvider = TopicNotifierProvider._();
+@ProviderFor(FlashcardTopicListNotifier)
+final flashcardTopicListProvider = FlashcardTopicListNotifierProvider._();
 
-final class TopicNotifierProvider
-    extends $AsyncNotifierProvider<TopicNotifier, List<TopicModel>> {
-  TopicNotifierProvider._()
+final class FlashcardTopicListNotifierProvider
+    extends
+        $AsyncNotifierProvider<FlashcardTopicListNotifier, List<TopicModel>> {
+  FlashcardTopicListNotifierProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'topicProvider',
+        name: r'flashcardTopicListProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$topicNotifierHash();
+  String debugGetCreateSourceHash() => _$flashcardTopicListNotifierHash();
 
   @$internal
   @override
-  TopicNotifier create() => TopicNotifier();
+  FlashcardTopicListNotifier create() => FlashcardTopicListNotifier();
 }
 
-String _$topicNotifierHash() => r'3360d6b642ec2b9eb95ac381dd46c67c3782ba51';
+String _$flashcardTopicListNotifierHash() =>
+    r'57fedbaafeb3326fa4e69568f9553bd9454163d1';
 
-abstract class _$TopicNotifier extends $AsyncNotifier<List<TopicModel>> {
+abstract class _$FlashcardTopicListNotifier
+    extends $AsyncNotifier<List<TopicModel>> {
   FutureOr<List<TopicModel>> build();
   @$mustCallSuper
   @override

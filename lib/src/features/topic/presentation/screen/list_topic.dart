@@ -1,75 +1,66 @@
-import 'package:app_demo/src/features/topic/presentation/controller/topic_notifier.dart';
+import 'package:app_demo/configs/themes/text_style.dart';
+import 'package:app_demo/src/features/topic/domain/topic_model.dart';
+import 'package:app_demo/src/features/topic/presentation/controller/list_topic_notifier.dart';
+import 'package:app_demo/src/shared/constants/images_constants.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 
 class ListTopic extends ConsumerWidget {
-  const ListTopic({super.key});
-
-  /// Build error message dựa vào exception type
-  String _getErrorMessage(AppException exception) {
-    return exception.when(
-      connectivity: () => 'Lỗi kết nối mạng. Vui lòng kiểm tra internet.',
-      unauthorized: () => 'Không có quyền truy cập. Vui lòng đăng nhập lại.',
-      errorWithMessage: (msg) => 'Lỗi: $msg',
-      unknown: () => 'Đã xảy ra lỗi không xác định.',
-      badRequest: (msg) => 'Yêu cầu không hợp lệ: $msg',
-      server: (msg) => 'Lỗi từ server: $msg',
-    );
-  }
+  const ListTopic({super.key, this.onTopicSelected, required this.topics});
+  final Function(int topicId)? onTopicSelected;
+  final List<TopicModel> topics;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final topicAsync = ref.watch(topicProvider);
-    
-    return topicAsync.when(
-      /// UI Layer - Hiển thị dữ liệu
-      data: (topics) {
-        if (topics.isEmpty) {
-          return const Center(
-            child: Text('Không tìm thấy danh sách nào'),
-          );
-        }
-        return ListView.builder(
-          itemCount: topics.length,
-          itemBuilder: (context, index) {
-            final topic = topics[index];
-            return Card(
-              child: ListTile(
-                title: Text(topic.name),
-              ),
-            );
-          },
-        );
-      },
-      /// UI Layer - Hiển thị lỗi chi tiết
-      error: (error, stackTrace) {
-        final errorMsg = error is AppException
-            ? _getErrorMessage(error)
-            : 'Lỗi: ${error.toString()}';
-        
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error_outline, color: Colors.red, size: 48),
-              const SizedBox(height: 16),
-              Text(errorMsg, textAlign: TextAlign.center),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  ref.refresh(topicProvider);
-                },
-                child: const Text('Thử lại'),
-              ),
-            ],
+    final colorScheme = Theme.of(context).colorScheme;
+    if (topics.isEmpty) {
+      return const Center(child: Text('Không tìm thấy danh sách nào'));
+    }
+    return GridView.builder(
+      padding: EdgeInsets.all(16.w),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 16.w,
+        mainAxisSpacing: 16.h,
+        childAspectRatio: 1,
+      ),
+      itemCount: topics.length,
+      itemBuilder: (context, index) {
+        final topic = topics[index];
+
+        return GestureDetector(
+          onTap: () => onTopicSelected?.call(topic.id),
+          child: Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadiusGeometry.circular(16.r),
+            ),
+
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  MyIcons.learn,
+                  colorFilter: ColorFilter.mode(
+                    colorScheme.primary,
+                    BlendMode.srcIn,
+                  ),
+                ),
+                SizedBox(height: 12.h),
+                Text(
+                  topic.name,
+                  textAlign: TextAlign.center,
+                  style: MyTextStyle.poppinsMedium600,
+                ),
+                Text('120 Từ', style: MyTextStyle.poppinsMedium400),
+              ],
+            ),
           ),
         );
       },
-      /// UI Layer - Loading
-      loading: () => const Center(
-        child: CircularProgressIndicator(),
-      ),
     );
   }
 }

@@ -5,7 +5,6 @@ import 'package:app_demo/src/features/profile/application/profile_service.dart';
 import 'package:app_demo/src/features/profile/domain/profile_model.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:app_demo/src/shared/http/supabase_provider.dart';
-import 'package:app_demo/src/shared/utils/validator.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -16,23 +15,12 @@ class AuthService {
   final Ref _ref;
   late final AuthRepository _repo = _ref.read(authRepositoryProvider);
   late final TokenService _tokenService = _ref.read(tokenServiceProvider);
-  late final SupabaseClient _supabaseClient = _ref.read(supabaseClientProvider);
+  late final SupabaseClient _client = _ref.read(supabaseClientProvider);
 
   Future<void> login(String email, String password) async {
-    if (!Validator.isValidEmail(email)) {
-      throw AppException.errorWithMessage(
-        'Email không hợp lệ: $email',
-      );
-    }
-    if (!Validator.isValidPassword(password)) {
-      throw AppException.errorWithMessage(
-        'Mật khẩu không hợp lệ: $password',
-      );
-    }
-
     try {
       await _repo.login(email: email, password: password);
-      final session = _supabaseClient.auth.currentSession;
+      final session = _client.auth.currentSession;
 
       if (session == null) {
         throw const AppException.errorWithMessage('Session is null');
@@ -68,10 +56,18 @@ class AuthService {
       );
 
       await _ref.read(profileServiceProvider).createNewProfile(profile);
+      final token = _client.auth.currentSession?.accessToken;
+
+      if(token != null){
+        await _tokenService.saveToken(Token(token: token));
+      }
     } catch (e) {
       throw AppException.errorWithMessage(e.toString());
     }
   }
 
-  Future<void> signOut() => _repo.signOut();
+  Future<void> signOut() async {
+    await _repo.signOut();
+    await _tokenService.remove();
+  } 
 }

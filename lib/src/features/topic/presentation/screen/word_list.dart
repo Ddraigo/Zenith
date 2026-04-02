@@ -1,16 +1,16 @@
 
-import 'package:app_demo/src/features/flashcard/presentation/controller/flashcard_notifier.dart';
+import 'package:app_demo/src/features/topic/presentation/controller/word_list_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 
-class FlashcardTab extends ConsumerWidget {
-  const FlashcardTab({super.key, required this.topicId});
+class WordList extends ConsumerWidget {
+  const WordList({super.key, required this.topicId});
   final int topicId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final flashcardAsync = ref.watch(flashcardProvider(topicId));
+    final flashcardAsync = ref.watch(wordListProvider(topicId));
 
     return flashcardAsync.when(
       data: (flashcards){

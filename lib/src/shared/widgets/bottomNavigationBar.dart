@@ -14,6 +14,7 @@ class MyBottomNavigationBar extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final position = ref.watch(homeTapProvider);
     return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
       currentIndex: position,
       elevation: 2,
       selectedItemColor: colorScheme.primary,
