@@ -1,5 +1,4 @@
 
-
 import 'package:app_demo/src/features/topic/application/topic_service.dart';
 import 'package:app_demo/src/features/topic/domain/topic_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

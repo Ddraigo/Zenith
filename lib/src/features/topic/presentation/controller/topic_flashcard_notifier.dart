@@ -1,13 +1,14 @@
 import 'package:app_demo/src/features/flashcard/application/flashcard_service.dart';
 import 'package:app_demo/src/features/flashcard/domain/flashcard_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'word_list_notifier.g.dart';
+part 'topic_flashcard_notifier.g.dart';
 
 /// Presentation Layer - State Management (Notifier)
 /// Quản lý flashcards theo topicId
 @riverpod
-class WordListNotifier extends _$WordListNotifier {
+class TopicFLashcardNotifier extends _$TopicFLashcardNotifier {
   @override
   Future<List<FlashcardModel>> build(int topicId) async {
     // Gọi Service (không gọi Repo trực tiếp)
@@ -25,4 +26,10 @@ class WordListNotifier extends _$WordListNotifier {
       ),
     );
   }
+}
+
+@riverpod
+Future<int> getFlashcardCountByTopic(Ref ref, int topicId)async {
+  final flashcards = await ref.watch(topicFLashcardProvider(topicId).future);
+  return flashcards.length;
 }

@@ -48,5 +48,11 @@ class FlashcardRepository {
     });
   }
 
+  Future<Either<AppException, int>> fetchAnyFlashcardInTopic(){
+    return _source.fetchAnyFlashcardInTopic();
+  }
+
+
+
 
 }

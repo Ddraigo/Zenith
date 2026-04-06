@@ -54,6 +54,26 @@ class FlashcardService {
     );
   }
 
+  Future<int> resolveInitialTopicId({
+    required int selectedTopicId,
+    DateTime? assignedDate,
+  })async{
+    if(selectedTopicId > 0) return selectedTopicId;
+    
+    final daily = await getDailyFlashcards(
+      topicId: selectedTopicId,
+      assignedDate: Format.normalizeDate(assignedDate) ,
+    );
+
+    if(daily.isNotEmpty) return daily.first.topicId;
+
+    final anyTopicId = await _repo.fetchAnyFlashcardInTopic();
+    return anyTopicId.fold(
+      ifLeft: (error) => throw error, 
+      ifRight: (id) => id,
+    );
+  }
+
 
 
 }

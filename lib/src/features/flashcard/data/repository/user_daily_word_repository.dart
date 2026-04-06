@@ -1,14 +1,15 @@
-
-
+import 'package:app_demo/src/features/flashcard/data/dto/daily_word_summary_dto.dart';
 import 'package:app_demo/src/features/flashcard/data/dto/user_daily_word_dto.dart';
 import 'package:app_demo/src/features/flashcard/data/source/user_daily_word_source.dart';
+import 'package:app_demo/src/features/flashcard/domain/daily_word_summary.dart';
 import 'package:app_demo/src/features/flashcard/domain/user_daily_word_model.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:dart_either/dart_either.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final userDailyWordRepoProvider = 
-  Provider<UserDailyWordRepository>((ref) => UserDailyWordRepository(ref.read(userDailyWordSourceProvider)));
+final userDailyWordRepoProvider = Provider<UserDailyWordRepository>(
+  (ref) => UserDailyWordRepository(ref.read(userDailyWordSourceProvider)),
+);
 
 class UserDailyWordRepository {
   final UserDailyWordSource _source;
@@ -18,15 +19,29 @@ class UserDailyWordRepository {
     required String userId,
     required int topicId,
     DateTime? assignedDate,
-  })async{
+  }) async {
     final result = await _source.fetchDailyWords(
       userId: userId,
       topicId: topicId,
       assignedDate: assignedDate,
     );
-    return result.map((dailyword){
+    return result.map((dailyword) {
       return dailyword.map((dto) => dto.toDomain()).toList();
     });
   }
-  
+
+  Future<Either<AppException, List<DailyWordSummaryModel>>>
+  fetchDailyTopicSummary({
+    required String userId,
+    required DateTime startDate,
+    required DateTime endDate,
+  }) async {
+    final result = await _source.fetchDailyTopicSummary(
+      userId: userId, 
+      startDate: startDate, 
+      endDate: endDate);
+    return result.map((dailyword) {
+      return dailyword.map((dto) => dto.toDomain()).toList();
+    });
+  }
 }

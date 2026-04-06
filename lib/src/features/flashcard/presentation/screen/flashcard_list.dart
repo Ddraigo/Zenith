@@ -2,10 +2,8 @@ import 'package:app_demo/src/features/flashcard/domain/flashcard_model.dart';
 import 'package:app_demo/src/features/flashcard/presentation/screen/flashcard_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'dart:math' as math;
 
-final flashcardIndexProvider = StateProvider<int>((ref) => 0);
 
 class FlashcardList extends StatelessWidget {
   const FlashcardList({super.key, required this.flashcards, this.onSwiped});

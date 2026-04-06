@@ -2,7 +2,6 @@
 import 'dart:developer';
 
 import 'package:app_demo/src/features/flashcard/data/dto/flashcard_dto.dart';
-import 'package:app_demo/src/shared/constants/format.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:app_demo/src/shared/http/supabase_provider.dart';
 import 'package:dart_either/dart_either.dart';
@@ -79,7 +78,7 @@ class FlashcardSource {
                     .from('user_daily_word')
                     .select('flashcards(*)')
                     .eq('user_id', userId)
-                    .eq('assigned_date', Format.formatDate(assignedDate));
+                    .eq('assigned_date', assignedDate);
       
       if(topicId != 0){
         query = query.eq('topic_id', topicId);
@@ -95,4 +94,21 @@ class FlashcardSource {
       return Either.left(SupabaseErrorHandle.handle(e));
     }
   }
+
+  Future<Either<AppException, int>> fetchAnyFlashcardInTopic()async{
+    try {
+      final data = await _client  
+                        .from('flashcards')
+                        .select('topic_id')
+                        .limit(1) as List<dynamic>;
+
+      if(data.isEmpty) return Either.right(0);
+      return Either.right((data.first as Map<String, dynamic>)['topic_id'] as int);
+                
+    } catch (e) {
+      return Either.left(SupabaseErrorHandle.handle(e));
+    }
+  }
+
+
 }

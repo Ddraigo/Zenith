@@ -14,7 +14,7 @@ class ProfileService {
 
   Future<ProfileModel> createNewProfile(ProfileModel profile) async {
     
-    if(profile.userId == null){
+    if(profile.userId.isEmpty){
       throw AppException.errorWithMessage('$profile.userId is null');
     }
 

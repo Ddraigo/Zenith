@@ -65,7 +65,7 @@ const ColorScheme lightColorScheme = ColorScheme(
   onPrimaryFixed: Color(0xFF310937),
   onPrimaryFixedVariant: Color(0xFF613766),
   secondary: Color(0xFF6B586B),
-  onSecondary: Color(0xFFFFFFFF),
+  onSecondary: Color(0xFFFAF9FC),
   secondaryContainer: Color(0xFFF4DBF1),
   onSecondaryContainer: Color(0xFF251626),
   secondaryFixed: Color(0xFFF4DBF1),
@@ -122,12 +122,12 @@ ThemeData getLightTheme() {
     fontFamily: AppFonts.poppins,
     colorScheme: lightColorScheme,
 
-    scaffoldBackgroundColor: lightColorScheme.onPrimary,
+    scaffoldBackgroundColor: lightColorScheme.onSecondary,
     canvasColor: lightColorScheme.onPrimary,
     cardColor: lightColorScheme.surfaceContainerLow,
     dividerColor: lightColorScheme.surfaceContainerHigh,
 
-    textTheme: ThemeData.dark().textTheme.apply(
+    textTheme: ThemeData.light().textTheme.apply(
       bodyColor: lightColorScheme.onPrimaryContainer,
       displayColor: lightColorScheme.onSurface,
     ),

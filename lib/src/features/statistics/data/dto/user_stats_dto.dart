@@ -1,4 +1,3 @@
-import 'package:app_demo/src/features/flashcard/domain/user_daily_word_model.dart';
 import 'package:app_demo/src/features/statistics/domain/user_stats_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 part 'user_stats_dto.freezed.dart';

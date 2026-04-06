@@ -1,17 +1,13 @@
-import 'package:app_demo/configs/themes/app_colors.dart';
 import 'package:app_demo/configs/themes/text_style.dart';
-import 'package:app_demo/src/features/flashcard/presentation/controller/flashcard_notifier.dart';
+import 'package:app_demo/src/core/controller/shared_flashcard_notifier.dart';
+import 'package:app_demo/src/features/flashcard/presentation/screen/daily_word_bottom_sheet.dart';
 import 'package:app_demo/src/features/flashcard/presentation/screen/flashcard_list.dart';
+import 'package:app_demo/src/features/topic/presentation/controller/list_topic_notifier.dart';
 import 'package:app_demo/src/shared/constants/images_constants.dart';
-import 'package:app_demo/src/shared/widgets/button_custom.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
-final selectedTopicProvider = StateProvider<int?>((ref) => 0);
 
 class FlashcardScreen extends ConsumerWidget {
   const FlashcardScreen({super.key});
@@ -20,74 +16,66 @@ class FlashcardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    final flashcardAsync = ref.watch(flashcardProvider);
     final currentIndex = ref.watch(flashcardIndexProvider);
+    final topicAsync = ref.watch(listTopicProvider);
 
-    // final todayAsync = ref.watch(dailyWordProvider(DateTime.now()));
-    // final yesterdayAsync = ref.watch(dailyWordProvider(DateTime.now().subtract(const Duration(days: 1))));
-    // final selectedTopicId = ref.watch(selectedTopicProvider);
+    final selectedTopicId = ref.watch(selectedTopicProvider) ?? 0;
+    final flashcardAsync = ref.watch(getFlashcardsProvider(selectedTopicId));
+
+    final getTopicName = topicAsync.maybeWhen(
+      data: (topics) {
+        if (flashcardAsync.hasValue) {
+          final flashcards = flashcardAsync.value ?? [];
+          if (flashcards.isNotEmpty) {
+            final topicId = flashcards.first.topicId;
+            for (final topic in topics) {
+              if (topic.id == topicId) {
+                return topic.name;
+              }
+            }
+          }
+        }
+        return 'N/A';
+      },
+      orElse: () => 'Lỗi: N/A',
+    );
 
     return flashcardAsync.when(
       data: (defaultFlashcards) {
-        if (defaultFlashcards.isEmpty) {
-          return Center(child: Text('Không có dữ liệu'));
-        }
-        // final getIndex = currentIndex.clamp(0, defaultFlashcards.length-1);
+        // if (defaultFlashcards.isEmpty) {
+        //   return Center(child: Text('Không có dữ liệu flashcard'));
+        // }
+
+        final getIndex = currentIndex.clamp(
+          0,
+          defaultFlashcards.isEmpty ? 0 : defaultFlashcards.length - 1,
+        );
+
         return Padding(
           padding: EdgeInsets.all(32.h),
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              _header(colorScheme),
-              SizedBox(height: 16),
-              // Flexible(
-              //   child: todayAsync.when(
-              //     data: (data){
-              //       final todayWords = groupByTopic(data);
-              //       return DailyWordList(
-              //         listWordDay: todayWords,
-              //         title: "Hôm nay",
-              //         onItemSelected: (topicId){
-              //           ref.read(selectedTopicProvider.notifier).state = topicId;
-              //         },
-              //       );
-              //     },
-              //     error: (e, _) => Center(child: Text('Lỗi: $e')),
-              //     loading: () => const Center(child: CircularProgressIndicator()),
-              //   ),
-              // ),
-              // Flexible(
-              //   child: yesterdayAsync.when(
-              //     data: (data){
-              //       final yesterdayWords = groupByTopic(data);
-              //       return DailyWordList(
-              //         listWordDay: yesterdayWords,
-              //         title: "Hôm qua",
-              //         onItemSelected: (topicId){
-              //           ref.read(selectedTopicProvider.notifier).state = topicId;
-              //         },
-              //       );
-              //     },
-              //     error: (e, _) => Center(child: Text('Lỗi: $e')),
-              //     loading: () => const Center(child: CircularProgressIndicator()),
-              //   ),
-              // ),
+              _header(colorScheme, context, ref),
               SizedBox(height: 16),
               _todayProgress(
                 colorScheme,
-                'Travel',
-                currentIndex + 1,
-                defaultFlashcards.length,
+                getTopicName.isEmpty ? 'N/A' : getTopicName,
+                defaultFlashcards.isEmpty ? 0 : getIndex + 1,
+                defaultFlashcards.isEmpty ? 0 : defaultFlashcards.length,
               ),
               SizedBox(height: 16),
-              Expanded(
-                child: FlashcardList(
-                  flashcards: defaultFlashcards,
-                  onSwiped: (index) {
-                    ref.read(flashcardIndexProvider.notifier).state = index;
-                  },
+              if (defaultFlashcards.isEmpty)
+                _flashcardEmpty(colorScheme)
+              else
+                Expanded(
+                  child: FlashcardList(
+                    flashcards: defaultFlashcards,
+                    onSwiped: (index) {
+                      ref.read(flashcardIndexProvider.notifier).state = index;
+                    },
+                  ),
                 ),
-              ),
             ],
           ),
         );
@@ -97,20 +85,48 @@ class FlashcardScreen extends ConsumerWidget {
     );
   }
 
-  // Map<int, List<UserDailyWordModel>> groupByTopic(
-  //   List<UserDailyWordModel> items,
-  // ){
-  //   final result = <int, List<UserDailyWordModel>>{};
+  Widget _flashcardEmpty(ColorScheme colorScheme) {
+    return Expanded(
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(36.r),
+        ),
+        elevation: 0,
+        color: colorScheme.surface,
+        child: Padding(
+          padding: EdgeInsets.all(30.r),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: 70.h),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  'Không có từ vựng nào',
+                  textAlign: TextAlign.center,
+                  style: MyTextStyle.poppinsHeading2.copyWith(
+                    fontSize: 40.sp,
+                    color: colorScheme.primary,
+                  ),
+                ),
+              ),
+              SizedBox(height: 52.h),
+              Text(
+                'Quay lại sau',
+                style: MyTextStyle.poppinsMedium400.copyWith(
+                  color: colorScheme.outline,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
-  //   for(final item in items){
-  //     final topicId = item.topicId ?? 0;
-  //     result.putIfAbsent(topicId, () => []);
-  //     result[topicId]!.add(item);
-  //   }
-  //   return result;
-  // }
-
-  Widget _header(ColorScheme color) {
+  Widget _header(ColorScheme color, BuildContext context, WidgetRef ref) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       mainAxisSize: MainAxisSize.max,
@@ -132,27 +148,36 @@ class FlashcardScreen extends ConsumerWidget {
           ),
         ),
 
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: color.onInverseSurface,
-          ),
+        GestureDetector(
+          onTap: () {
+            showModalBottomSheet(
+              isScrollControlled: true,
+              context: context,
+              builder: (_) => const DailyWordBottomSheet(),
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: color.onInverseSurface,
+            ),
 
-          child: Row(
-            spacing: 2,
-            children: [
-              SvgPicture.asset(
-                MyIcons.fireFill,
-                colorFilter: ColorFilter.mode(color.error, BlendMode.srcIn),
-              ),
-              Text(
-                '5 Ngày',
-                style: MyTextStyle.poppinsMedium400.copyWith(
-                  color: color.primary,
+            child: Row(
+              spacing: 2,
+              children: [
+                SvgPicture.asset(
+                  MyIcons.fireFill,
+                  colorFilter: ColorFilter.mode(color.error, BlendMode.srcIn),
                 ),
-              ),
-            ],
+                Text(
+                  '5 Ngày',
+                  style: MyTextStyle.poppinsMedium400.copyWith(
+                    color: color.primary,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],
@@ -166,7 +191,6 @@ class FlashcardScreen extends ConsumerWidget {
     int total,
   ) {
     return Container(
-      
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
         color: color.surface,
@@ -197,13 +221,15 @@ class FlashcardScreen extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.max,
             children: [
-              Text(topicName, style: MyTextStyle.poppinsLarge600,),
+              Text(topicName, style: MyTextStyle.poppinsLarge600),
               Row(
                 spacing: 4,
                 children: [
                   Text(
                     '$currentIndex/$total',
-                    style: MyTextStyle.poppinsLarge600.copyWith(color: color.primary),
+                    style: MyTextStyle.poppinsLarge600.copyWith(
+                      color: color.primary,
+                    ),
                   ),
                   Text('từ', style: MyTextStyle.poppinsLarge600),
                 ],

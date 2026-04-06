@@ -51,6 +51,14 @@ final GoRouter appRouter = GoRouter(
       path: AppRouter.flashcardPath,
       builder: (context, state)=> FlashcardScreen(),
     ),
+    // GoRoute(
+    //   path: '${AppRouter.flashcardPath}/:topicId',
+    //   builder: (context, state){
+    //     final topicId = int.tryParse(state.pathParameters['topicId'] ?? '') ?? 0;
+    //     final topicName = state.extra is String ? state.extra as String : 'Unknown';
+    //     return FlashcardScreen(topicId: topicId, topicName: topicName);
+    //   }
+    // ),
   ],
   errorBuilder: (context, state) {
     return const Scaffold(
