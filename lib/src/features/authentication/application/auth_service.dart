@@ -1,3 +1,5 @@
+
+import 'package:app_demo/src/core/service/device_service.dart';
 import 'package:app_demo/src/features/authentication/application/token_service.dart';
 import 'package:app_demo/src/features/authentication/data/repository/auth_repository.dart';
 import 'package:app_demo/src/features/authentication/domain/token_model.dart';
@@ -5,6 +7,7 @@ import 'package:app_demo/src/features/profile/application/profile_service.dart';
 import 'package:app_demo/src/features/profile/domain/profile_model.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:app_demo/src/shared/http/supabase_provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -16,7 +19,7 @@ class AuthService {
   late final AuthRepository _repo = _ref.read(authRepositoryProvider);
   late final TokenService _tokenService = _ref.read(tokenServiceProvider);
   late final SupabaseClient _client = _ref.read(supabaseClientProvider);
-
+  late final UserDeviceService _userDevice = _ref.read(userDeviceService);
   Future<void> login(String email, String password) async {
     try {
       await _repo.login(email: email, password: password);
@@ -27,9 +30,21 @@ class AuthService {
       }
 
       await _tokenService.saveToken(Token(token: session.accessToken));
-    } on AppException{
+      
+      final userId = _client.auth.currentUser?.id;
+      if(userId == null){
+        throw const AppException.errorWithMessage('User id null');
+      }
+
+      final vapidKey = dotenv.env['FCM_VAPID_KEY'];
+      await _userDevice.setupFcmToken(
+        userId: userId,
+        vapidKey: vapidKey,
+        subscribeToRefresh: true,
+      );
+    } on AppException {
       rethrow;
-    }catch(_){
+    } catch (_) {
       throw const AppException.unknown();
     }
   }
@@ -58,9 +73,16 @@ class AuthService {
       await _ref.read(profileServiceProvider).createNewProfile(profile);
       final token = _client.auth.currentSession?.accessToken;
 
-      if(token != null){
+      if (token != null) {
         await _tokenService.saveToken(Token(token: token));
       }
+      
+      final vapidKey = dotenv.env['FCM_VAPID_KEY'];
+      await _userDevice.setupFcmToken(
+        userId: user.id,
+        vapidKey: vapidKey,
+        subscribeToRefresh: false,  // đăng ký refresh sau lần đầu
+      );
     } catch (e) {
       throw AppException.errorWithMessage(e.toString());
     }
@@ -69,5 +91,5 @@ class AuthService {
   Future<void> signOut() async {
     await _repo.signOut();
     await _tokenService.remove();
-  } 
+  }
 }

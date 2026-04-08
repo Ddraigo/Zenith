@@ -30,9 +30,7 @@ class TopicSrceen extends ConsumerWidget {
           return const Center(child: Text('Không có danh sách'));
         }
 
-        return Scaffold(
-          appBar: AppBar(title: const Center(child: Text('Topic'))),
-          body: ListTopic(
+        return ListTopic(
             onTopicSelected: (topicId) {
               // Set daily mode = false - xem tất cả flashcards của topic
               ref.read(isDailyModeProvider.notifier).state = false;
@@ -54,7 +52,7 @@ class TopicSrceen extends ConsumerWidget {
               // );
             },
             topics: topics,
-          ),
+          
         );
       },
       error: (error, _) {

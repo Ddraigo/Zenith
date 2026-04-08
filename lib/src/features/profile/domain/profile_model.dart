@@ -37,4 +37,6 @@ abstract class ProfileModel with _$ProfileModel {
       avatarUrl: avatarUrl,
     );
   }
+
+
 }

@@ -40,7 +40,7 @@ class FlashcardService {
     final result = await _repo.fetchDailyFlashcards(
       userId: _currentUserId,
       topicId: topicId ?? 0,
-      assignedDate: Format.normalizeDate(assignedDate),
+      assignedDate: Format.normalizeDate(assignedDate?.toLocal()),
     );
 
     return result.fold(
@@ -57,23 +57,29 @@ class FlashcardService {
   Future<int> resolveInitialTopicId({
     required int selectedTopicId,
     DateTime? assignedDate,
-  })async{
-    if(selectedTopicId > 0) return selectedTopicId;
+  }) async {
+    if (selectedTopicId > 0) return selectedTopicId;
     
     final daily = await getDailyFlashcards(
       topicId: selectedTopicId,
-      assignedDate: Format.normalizeDate(assignedDate) ,
+      assignedDate: Format.normalizeDate(assignedDate?.toLocal()),
     );
 
-    if(daily.isNotEmpty) return daily.first.topicId;
+    if (daily.isNotEmpty) return daily.first.topicId;
 
-    final anyTopicId = await _repo.fetchAnyFlashcardInTopic();
-    return anyTopicId.fold(
-      ifLeft: (error) => throw error, 
-      ifRight: (id) => id,
+    final anyTopicIdResult = await _repo.fetchAnyFlashcardInTopic();
+    return anyTopicIdResult.fold(
+      ifLeft: (error) {
+        developer.log(
+          'FlashcardService: Error resolving initial topic id',
+          error: error,
+          stackTrace: StackTrace.current,
+        );
+        throw error;
+      },
+      ifRight: (topicId) => topicId,
     );
+    
   }
-
-
 
 }

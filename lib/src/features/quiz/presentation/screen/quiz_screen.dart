@@ -6,10 +6,15 @@ class QuizScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Quiz'),
-      ),
+    return Container(
+      child: Column(
+        children: [
+          Center(child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text('Quiz'),
+          )),
+        ],
+      )
     );
   }
 }

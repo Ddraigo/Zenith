@@ -13,6 +13,7 @@ abstract class UserDTO with _$UserDTO{
     required String email,
     @JsonKey(name: 'created_at')
     required DateTime createdAt,
+
   }) = _UserDTO ;
 
   factory UserDTO.fromJson(Map<String, dynamic> json) => _$UserDTOFromJson(json);

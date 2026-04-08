@@ -31,7 +31,7 @@ class UserDailyWordSource {
       }
 
       if (assignedDate != null) {
-        query = query.eq('assigned_date', Format.formatDate(assignedDate));
+        query = query.eq('assigned_date', Format.formatDate(assignedDate.toUtc()));
       }
 
       final data =
@@ -47,32 +47,53 @@ class UserDailyWordSource {
     }
   }
 
-  Future<Either<AppException, List<DailyWordSummaryDTO>>> fetchDailyTopicSummary({
+  Future<Either<AppException, List<DailyWordSummaryDTO>>>
+  fetchDailyTopicSummary({
     required String userId,
     required DateTime startDate,
     required DateTime endDate,
-  })async{
+  }) async {
     try {
-
-      final data = await _client
+      final data =
+          await _client
                   .from('daily_topic_summary')
                   .select()
                   .eq('user_id', userId)
-                  .gte('assigned_date', startDate)
-                  .lte('assigned_date', endDate)
+                  .gte('assigned_date', startDate.toUtc())
+                  .lte('assigned_date', endDate.toUtc())
                   .order('assigned_date', ascending: false)
-                  .order('topic_id', ascending: true) as List<dynamic>;
+                  .order('topic_id', ascending: true)
+              as List<dynamic>;
 
-    return Either.right(
-      data
-        .map((e) => DailyWordSummaryDTO.fromJson(e as Map<String, dynamic>))
-        .toList(),
-    );
-      
+      return Either.right(
+        data
+            .map((e) => DailyWordSummaryDTO.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
     } catch (e) {
       return Either.left(SupabaseErrorHandle.handle(e));
     }
-    
   }
 
+  Future<Either<AppException, bool>> updateIsCompleted({
+    required String userId,
+    required List<String> flashcardIds,
+    required DateTime assignedDate,
+  }) async {
+    try {
+      if(flashcardIds.isEmpty){
+        return Either.right(false);
+      }
+      await _client
+          .from('user_daily_word')
+          .update({'is_completed': true})
+          .eq('user_id', userId)
+          .eq('assigned_date', Format.formatDate(assignedDate.toUtc()))
+          .inFilter('flashcard_id', flashcardIds);
+
+      return const Either.right(true);
+    } catch (e) {
+      return Either.left(SupabaseErrorHandle.handle(e));
+    }
+  }
 }

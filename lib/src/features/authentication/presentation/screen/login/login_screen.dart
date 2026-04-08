@@ -5,6 +5,7 @@ import 'package:app_demo/src/shared/constants/images_constants.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:app_demo/src/shared/widgets/button_custom.dart';
 import 'package:app_demo/src/shared/widgets/text_field_custom.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -58,6 +59,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       );
     });
   }
+
   @override
   void dispose() {
     _emailController.dispose();

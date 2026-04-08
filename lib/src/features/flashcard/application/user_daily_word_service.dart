@@ -5,7 +5,10 @@ import 'package:app_demo/src/features/flashcard/domain/daily_word_summary.dart';
 import 'package:app_demo/src/features/flashcard/domain/user_daily_word_model.dart';
 import 'package:app_demo/src/shared/constants/format.dart';
 import 'package:app_demo/src/shared/http/supabase_provider.dart';
+import 'package:dart_either/dart_either.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../shared/http/app_exception.dart';
 
 final userDailyWordServiceProvider = Provider(UserDailyWordService.new);
 
@@ -24,7 +27,7 @@ class UserDailyWordService {
     final result = await _repo.fetchDailyWords(
       userId: _currentUserId,
       topicId: topicId ?? 0,
-      assignedDate: Format.normalizeDate(assignedDate),
+      assignedDate: Format.normalizeDate(assignedDate?.toLocal()),
     );
 
     return result.fold(
@@ -51,8 +54,8 @@ class UserDailyWordService {
 
     final result = await _repo.fetchDailyTopicSummary(
       userId: _currentUserId, 
-      startDate: start,
-      endDate: end,
+      startDate: start.toUtc(),
+      endDate: end.toUtc(),
     );
 
     return result.fold(
@@ -68,10 +71,29 @@ class UserDailyWordService {
 
           groupedData.putIfAbsent(date, () => []);
           groupedData[date]!.add(data);
-
         }
         return groupedData;
       },
     );
+  }
+
+  Future<bool> updateIsCompleted({
+    required List<String> flashcardIds,
+    required DateTime assignedDate,
+  }) async {
+    if(flashcardIds.isEmpty){
+      return false;
+    }
+    final result =await  _repo.updateIsCompleted(
+        userId: _currentUserId, 
+        flashcardIds: flashcardIds, 
+        assignedDate: Format.normalizeDate(assignedDate.toUtc())
+      );
+    return result.fold(
+      ifLeft: (error){
+        developer.log('UserDailyWordService: error updateIsCompleted', error: error);
+        throw error;
+      },  
+      ifRight: (e) => true);
   }
 }

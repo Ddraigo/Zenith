@@ -1,12 +1,15 @@
 import 'dart:developer';
 
 import 'package:app_demo/src/app/app.dart';
+import 'package:app_demo/src/core/service/firebase_messaging_service.dart';
 import 'package:app_demo/src/shared/utils/logger.dart';
 import 'package:app_demo/src/shared/utils/platform_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 String _fileName = 'lib/configs/env/.env.development';
 
@@ -29,6 +32,14 @@ Future<void> start() async {
     throw StateError('SUPABASE_URL or SUPABASE_KEY is null');
   }
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  
+  final vapidKey = dotenv.env['FCM_VAPID_KEY'];
+  final fcmService = FirebaseMessagingService();
+  await fcmService.initialize(vapidKey: vapidKey);
 
   runApp(
     ProviderScope(

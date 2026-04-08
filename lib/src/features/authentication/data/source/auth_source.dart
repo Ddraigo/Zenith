@@ -35,7 +35,8 @@ class AuthSource {
       return UserDTO(
         id: user.id ,
         email: user.email!,
-        createdAt: DateTime.parse(user.createdAt),
+        createdAt: DateTime.parse(user.createdAt), 
+        
       );
     } on AuthException catch (e) {
       throw SupabaseErrorHandle.handle(e);
@@ -59,20 +60,12 @@ class AuthSource {
       if(user == null){
         throw AppException.errorWithMessage('Auth Source: user is null');
       }
-      if(user.id == null){
-        throw AppException.errorWithMessage('Auth Source: user id is null');
-      }
-      if(user.email == null){
-        throw AppException.errorWithMessage('Auth Source: email is null');
-      }
-      if(user.createdAt == null){
-        throw AppException.errorWithMessage('Auth Source: createdAt is null');
-      }
       
       return UserDTO(
         id: user.id,
         email: user.email!,
-        createdAt: DateTime.parse(user.createdAt),
+        createdAt: DateTime.parse(user.createdAt), 
+
       );
     } on AuthException catch (e) {
       throw SupabaseErrorHandle.handle(e);

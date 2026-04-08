@@ -1,5 +1,7 @@
 
 import 'package:app_demo/src/features/profile/data/profile_source.dart';
+import 'package:app_demo/src/shared/http/app_exception.dart';
+import 'package:dart_either/dart_either.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
@@ -27,6 +29,5 @@ class ProfileRepository {
       gender: gender!, 
       dayOfBirth: dayOfBirth);
   }
-  
 
 }

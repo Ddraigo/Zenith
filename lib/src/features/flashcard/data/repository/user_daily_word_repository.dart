@@ -7,6 +7,8 @@ import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:dart_either/dart_either.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../shared/constants/format.dart';
+
 final userDailyWordRepoProvider = Provider<UserDailyWordRepository>(
   (ref) => UserDailyWordRepository(ref.read(userDailyWordSourceProvider)),
 );
@@ -38,10 +40,26 @@ class UserDailyWordRepository {
   }) async {
     final result = await _source.fetchDailyTopicSummary(
       userId: userId, 
-      startDate: startDate, 
-      endDate: endDate);
+      startDate: startDate.toUtc(), 
+      endDate: endDate.toUtc()
+    );
     return result.map((dailyword) {
       return dailyword.map((dto) => dto.toDomain()).toList();
     });
+  }
+
+
+  Future<Either<AppException, bool>> updateIsCompleted({
+    required String userId,
+    required List<String> flashcardIds,
+    required DateTime assignedDate,
+  }) async {
+     _source.updateIsCompleted(
+      userId: userId, 
+      flashcardIds: flashcardIds, 
+      assignedDate: Format.normalizeDate(assignedDate.toUtc()),
+    );
+
+    return Either.right(true);
   }
 }

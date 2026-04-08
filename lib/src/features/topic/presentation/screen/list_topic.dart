@@ -36,6 +36,11 @@ class ListTopic extends ConsumerWidget {
       itemBuilder: (context, index) {
         final topic = topics[index];
         final numWord = ref.watch(getFlashcardCountByTopicProvider(topic.id));
+        final wordCountText = numWord.when(
+          data: (count) => '$count từ',
+          loading: () => '... từ',
+          error: (_, __) => '0 từ',
+        );
         
         return GestureDetector(
           onTap: () => onTopicSelected?.call(topic.id),
@@ -70,7 +75,7 @@ class ListTopic extends ConsumerWidget {
                   textAlign: TextAlign.center,
                   style: MyTextStyle.poppinsLarge600,
                 ),
-            Text('$numWord Từ', style: MyTextStyle.poppinsMedium400),
+                Text(wordCountText, style: MyTextStyle.poppinsMedium400),
               ],
             ),
           ),

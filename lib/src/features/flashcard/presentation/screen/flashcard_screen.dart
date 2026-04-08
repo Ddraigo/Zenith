@@ -52,7 +52,7 @@ class FlashcardScreen extends ConsumerWidget {
         );
 
         return Padding(
-          padding: EdgeInsets.all(32.h),
+          padding: EdgeInsets.only(bottom: 32.h, right: 32.h, left: 32.h),
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [

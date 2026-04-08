@@ -29,7 +29,7 @@ abstract class FlashcardDTO with _$FlashcardDTO{
   factory FlashcardDTO.fromJson(Map<String, dynamic> json) => _$FlashcardDTOFromJson(json);
 }
 
-extension FlashcardDtoMapper on FlashcardDTO {
+extension FlashcardDTOMapper on FlashcardDTO {
   FlashcardModel toDomain() {
     return FlashcardModel(
       id: id,
