@@ -1,5 +1,4 @@
 import 'package:app_demo/src/features/authentication/application/auth_service.dart';
-import 'package:app_demo/src/features/authentication/data/repository/auth_repository.dart';
 import 'package:app_demo/src/shared/utils/validator.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -53,7 +52,7 @@ class AuthNotifier extends _$AuthNotifier {
   Future<void> logout() async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(
-      () => ref.read(authRepositoryProvider).signOut(),
+      () => ref.read(authServiceProvider).signOut(),
     );
   }
 }

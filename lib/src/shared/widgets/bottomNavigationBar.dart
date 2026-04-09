@@ -56,12 +56,12 @@ class MyBottomNavigationBar extends ConsumerWidget {
           label: 'Topic',
         ),
         BottomNavigationBarItem(
-          icon: SvgPicture.asset(MyIcons.arhive),
+          icon: SvgPicture.asset(MyIcons.quiz),
           activeIcon: SvgPicture.asset(
-            MyIcons.arhive,
+            MyIcons.quiz,
             colorFilter: ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
           ),
-          label: 'Test',
+          label: 'Quiz',
         ),
         BottomNavigationBarItem(
           icon: SvgPicture.asset(MyIcons.userIcon),

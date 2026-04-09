@@ -24,12 +24,12 @@ class HomeScreen extends ConsumerWidget {
         elevation: 1,
         actions: [
           Padding(
-            padding: EdgeInsets.all(10.r),
-            child: Badge(
-              child: IconButton(
-                padding: EdgeInsets.all(5.r),
-                onPressed: () {},
-                icon: SvgPicture.asset(
+            padding: EdgeInsetsGeometry.only(right: 16.w, top: 12.h),
+            child: IconButton(
+              onPressed: () {},
+              icon: Badge(
+                padding: EdgeInsetsDirectional.only(bottom: 10.h),
+                child: SvgPicture.asset(
                   MyIcons.bell,
                   colorFilter: ColorFilter.mode(color.primary, BlendMode.srcIn),
                 ),

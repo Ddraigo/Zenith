@@ -25,6 +25,13 @@ class UserDeviceRepo {
 
   }
 
+  Future<Either<AppException, bool>> deleteFcmToken({
+    required String userId,
+    required String fcmToken,
+  }) async {
+    return _source.deleteFcmToken(userId: userId, fcmToken: fcmToken);
+  }
+
 
   
 

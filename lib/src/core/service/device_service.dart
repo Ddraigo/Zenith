@@ -32,7 +32,7 @@ class UserDeviceService {
         error: e,
         stackTrace: StackTrace.current,
       );
-      rethrow;
+      return null;
     }
   }
 
@@ -81,6 +81,25 @@ class UserDeviceService {
     );
   }
 
+  Future<bool> deleteFcmToken({
+    required String fcmToken,
+    required String userId,
+  }) async {
+    final result = await _repo.deleteFcmToken(userId: userId, fcmToken: fcmToken);
+
+    return result.fold(
+      ifLeft: (error) {
+        developer.log(
+          'UserDeviceService: Error deleteFcmToken',
+          error: error,
+          stackTrace: StackTrace.current,
+        );
+        throw error;
+      },
+      ifRight: (_) => true,
+    );
+  }
+
   Future<String?> syncFcmToken({String? vapidKey}) async {
     try {
       final currentUser = _client.auth.currentUser;
@@ -112,9 +131,15 @@ class UserDeviceService {
     bool subscribeToRefresh = true,
   }) async {
     try {
-      final fcmToken = await getCurrentFcmToken(vapidKey: vapidKey);
-      if (fcmToken != null) {
-        await saveFcmToken(fcmToken: fcmToken, userId: userId);
+      final newToken = await getCurrentFcmToken(vapidKey: vapidKey);
+
+      if (newToken == null || newToken.isEmpty) return;
+
+      final device = await getUserFcmToken();
+      final existsToken = device.any((e) => e.fcmToken == newToken);
+
+      if (!existsToken) {
+        await saveFcmToken(fcmToken: newToken, userId: userId);
         developer.log(
           'UserDeviceService: FCM token saved',
           name: 'setupFcmToken',
@@ -123,9 +148,21 @@ class UserDeviceService {
 
       if (subscribeToRefresh) {
         _tokenRefreshSubscription?.cancel();
+        var currentToken = newToken;
         _tokenRefreshSubscription = _fcmService.onTokenRefresh.listen((newToken) async {
           try {
+            if (newToken.isEmpty || newToken == currentToken) {
+              return;
+            }
+
+            final oldToken = currentToken;
             await saveFcmToken(fcmToken: newToken, userId: userId);
+
+            if (oldToken.isNotEmpty) {
+              await deleteFcmToken(fcmToken: oldToken, userId: userId);
+            }
+
+            currentToken = newToken;
             developer.log(
               'UserDeviceService: FCM token refreshed',
               name: 'setupFcmToken',
@@ -145,11 +182,33 @@ class UserDeviceService {
         error: e,
         stackTrace: StackTrace.current,
       );
-      rethrow;
+      return;
     }
   }
 
-  void dispose(){
+  Future<void> cleanupDeviceTokenOnSignOut({required String userId}) async {
+    try {
+      final currentToken = await getCurrentFcmToken();
+
+      if (currentToken != null && currentToken.isNotEmpty) {
+        await deleteFcmToken(fcmToken: currentToken, userId: userId);
+      }
+
+      await _fcmService.deleteToken();
+    } catch (e) {
+      developer.log(
+        'UserDeviceService: Error cleanupDeviceTokenOnSignOut',
+        error: e,
+        stackTrace: StackTrace.current,
+      );
+    } finally {
+      _tokenRefreshSubscription?.cancel();
+      _tokenRefreshSubscription = null;
+    }
+  }
+
+  void dispose() {
     _tokenRefreshSubscription?.cancel();
+    _tokenRefreshSubscription = null;
   }
 }

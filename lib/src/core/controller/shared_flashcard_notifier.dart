@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../features/flashcard/domain/daily_word_summary.dart';
+import '../../features/topic/application/topic_service.dart';
+import '../../features/topic/domain/topic_model.dart';
 import '../../shared/constants/format.dart';
 
 part 'shared_flashcard_notifier.g.dart';
@@ -27,6 +29,11 @@ Future<int> resolvedTopicId( Ref ref, int selectedTopicId)async{
   return ref.watch(flashcardServiceProvider).resolveInitialTopicId(
     selectedTopicId: selectedTopicId,
   );
+}
+
+@riverpod
+Future<List<TopicModel>> getTopicList(Ref ref)async{
+  return ref.read(topicServiceProvider).getTopicList();
 }
 
 /// Lấy flashcards đã xử lý logic hôm nay/tất cả
@@ -62,6 +69,14 @@ Future<Map<DateTime, List<DailyWordSummaryModel>>> getDailyTopicsGrouped (
     return ref.watch(userDailyWordServiceProvider)
     .getDailyTopicsGrouped(dayRange: dayRange);
 }
+
+@riverpod
+Future<Map<DateTime, List<DailyWordSummaryModel>>> getDailyAllTopicsGrouped (Ref ref) async{
+    return ref.watch(userDailyWordServiceProvider)
+    .getDailyTopicsGrouped(startDate: DateTime(1999,1,1));
+}
+
+
 
 @riverpod
 String  formatDailyDate(Ref ref, DateTime date) {

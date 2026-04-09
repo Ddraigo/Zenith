@@ -67,4 +67,20 @@ class UserDeviceSource {
       return Either.left(SupabaseErrorHandle.handle(e));
     }
   }
+
+  Future<Either<AppException, bool>> deleteFcmToken({
+    required String userId,
+    required String fcmToken,
+  }) async {
+    try {
+      await _client
+          .from('user_devices')
+          .delete()
+          .eq('user_id', userId)
+          .eq('fcm_token', fcmToken);
+      return const Either.right(true);
+    } catch (e) {
+      return Either.left(SupabaseErrorHandle.handle(e));
+    }
+  }
 }

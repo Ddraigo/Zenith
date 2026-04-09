@@ -26,7 +26,7 @@ class FlashcardList extends StatelessWidget {
       child: CardSwiper(
         cardsCount: flashcards.length,
         numberOfCardsDisplayed: math.min(3, flashcards.length),
-        backCardOffset: const Offset(0, 15),
+        backCardOffset: const Offset(0, 20),
       
         cardBuilder: (context, index, horizontalThresholdPercentage, verticalThresholdPercentage){
           final flashcard = flashcards[index];

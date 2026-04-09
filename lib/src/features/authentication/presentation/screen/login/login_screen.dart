@@ -5,9 +5,9 @@ import 'package:app_demo/src/shared/constants/images_constants.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:app_demo/src/shared/widgets/button_custom.dart';
 import 'package:app_demo/src/shared/widgets/text_field_custom.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod/riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -24,21 +24,30 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _passwordController = TextEditingController();
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
+  late final ProviderSubscription<AsyncValue<void>> _authSubscription;
   late bool isSubmitted;
 
   @override
   void initState(){
     isSubmitted = false;
     super.initState();
-    ref.listenManual<AsyncValue>(authProvider, (prev, next){
+    _authSubscription = ref.listenManual<AsyncValue<void>>(authProvider, (prev, next){
       next.when(
         data: (_){
           ScaffoldMessenger.of(
             context,
           ).showSnackBar( const SnackBar(content: Text('Đăng nhập thành công!')));
-          _clearForm();
-          Future.delayed(const Duration(milliseconds: 600),(){
-            if(mounted) context.go(AppRouter.homePath);
+          _emailFocusNode.unfocus();
+          _passwordFocusNode.unfocus();
+          _emailController.clear();
+          _passwordController.clear();
+          isSubmitted = false;
+
+          // Navigate on next frame after keyboard/focus updates settle.
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              context.go(AppRouter.homePath);
+            }
           });
         }, 
         loading: (){},
@@ -62,6 +71,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   void dispose() {
+    _authSubscription.close();
     _emailController.dispose();
     _passwordController.dispose();
     _emailFocusNode.dispose();
@@ -88,7 +98,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
+              physics: NeverScrollableScrollPhysics(),
               padding: EdgeInsets.all(16.r),
+              
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   minHeight: constraints.maxHeight,
@@ -115,15 +128,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             style: MyTextStyle.poppinsHeading1,
                           ),
                           Text(
-                            'Sign in to continue',
+                            'Đăng nhập để tiếp tục',
                             style: MyTextStyle.poppinsHeading2.copyWith(
                               color: colorScheme.onSecondary,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 24),
+                      SizedBox(height: 24.h),
                       _buildformLogin(loginState),
+                      SizedBox(height: 24.h),
                       Row(
                         mainAxisSize: MainAxisSize.max,
                         spacing: 8,
@@ -136,7 +150,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ),
                           ),
                           Text(
-                            'OR',
+                            'HOẶC',
                             style: MyTextStyle.poppinsMedium700.copyWith(
                               color: colorScheme.tertiary,
                             ),
@@ -150,11 +164,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 24),
+                      SizedBox(height: 24.h),
                       _buildThirdPartyLogin(),
-                      const SizedBox(height: 24),
+                      SizedBox(height: 24.h),
                       _buildForgotPassword(colorScheme),
-                      const SizedBox(height: 8),
                       _buildRegister(colorScheme),
                     ],
                   ),
@@ -176,7 +189,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       children: [
         TextFieldCustom(
           icon: MyIcons.emailIcon,
-          hintText: 'Your Email',
+          hintText: 'Địa chỉ Email',
           focusNode: _emailFocusNode,
           controller: _emailController,
           errorText: isSubmitted 
@@ -185,7 +198,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ),
         TextFieldCustom(
           icon: MyIcons.lockIcon,
-          hintText: 'Password',
+          hintText: 'Mật khẩu',
           focusNode: _passwordFocusNode,
           obscureText: true,
           controller: _passwordController,
@@ -207,7 +220,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             return ButtonCustom(
               onPressed: null,
               type: ButtonType.elevated,
-              label: 'Đăng xử lý...',
+              label: 'Đang xử lý...',
               minimumSize: Size(double.infinity, 58.h),
             );
           },
@@ -242,13 +255,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ButtonCustom(
           type: ButtonType.outlined,
           onPressed: () {},
-          label: 'Login with Google',
+          label: 'Đăng nhập bằng Google',
           icon: MyIcons.googleIcon,
         ),
         ButtonCustom(
           type: ButtonType.outlined,
           onPressed: () {},
-          label: 'Login with Facebook',
+          label: 'Đăng nhập bằng Facebook',
           icon: MyIcons.facebookIcon,
         ),
       ],
@@ -267,7 +280,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             textStyle: MyTextStyle.poppinsMedium700
           ),
           child: Text(
-            'Forgot Password?',
+            'Quên mật khẩu?',
           ),
         ),
       ],
@@ -280,7 +293,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       spacing: 3,
       children: [
         Text(
-          'Don’t have a account?',
+          'Chưa có tài khoản?',
           style: MyTextStyle.poppinsMedium400.copyWith(
             color: colorScheme.tertiary,
           ),
@@ -294,7 +307,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             textStyle: MyTextStyle.poppinsMedium600,
           ),
           child: Text(
-            'Register',
+            'Đăng ký ngay',
           ),
         ),
       ],

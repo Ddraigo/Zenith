@@ -5,10 +5,8 @@ import 'package:app_demo/src/features/flashcard/domain/daily_word_summary.dart';
 import 'package:app_demo/src/features/flashcard/domain/user_daily_word_model.dart';
 import 'package:app_demo/src/shared/constants/format.dart';
 import 'package:app_demo/src/shared/http/supabase_provider.dart';
-import 'package:dart_either/dart_either.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../shared/http/app_exception.dart';
 
 final userDailyWordServiceProvider = Provider(UserDailyWordService.new);
 
@@ -48,7 +46,7 @@ class UserDailyWordService {
     DateTime? endDate,
     int? dayRange
   })async{
-    final now = DateTime.now();
+    final now = DateTime.now().toUtc();
     final end = endDate ?? now;
     final start = startDate ?? now.subtract((Duration(days: dayRange ?? 7)));
 

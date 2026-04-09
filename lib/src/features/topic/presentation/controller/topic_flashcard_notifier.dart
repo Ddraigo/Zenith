@@ -1,6 +1,5 @@
 import 'package:app_demo/src/features/flashcard/application/flashcard_service.dart';
 import 'package:app_demo/src/features/flashcard/domain/flashcard_model.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'topic_flashcard_notifier.g.dart';

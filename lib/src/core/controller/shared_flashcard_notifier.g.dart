@@ -96,6 +96,45 @@ final class ResolvedTopicIdFamily extends $Family
   String toString() => r'resolvedTopicIdProvider';
 }
 
+@ProviderFor(getTopicList)
+final getTopicListProvider = GetTopicListProvider._();
+
+final class GetTopicListProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<TopicModel>>,
+          List<TopicModel>,
+          FutureOr<List<TopicModel>>
+        >
+    with $FutureModifier<List<TopicModel>>, $FutureProvider<List<TopicModel>> {
+  GetTopicListProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'getTopicListProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$getTopicListHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<List<TopicModel>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<List<TopicModel>> create(Ref ref) {
+    return getTopicList(ref);
+  }
+}
+
+String _$getTopicListHash() => r'ee3bef9516f1bca86524996eba2823dc93233861';
+
 /// Lấy flashcards đã xử lý logic hôm nay/tất cả
 /// - Nếu isDailyMode=true + selectedDate!=null → lấy daily flashcards của date + topic
 /// - Nếu isDailyMode=false → lấy tất cả flashcards của topic
@@ -272,6 +311,47 @@ final class GetDailyTopicsGroupedFamily extends $Family
   @override
   String toString() => r'getDailyTopicsGroupedProvider';
 }
+
+@ProviderFor(getDailyAllTopicsGrouped)
+final getDailyAllTopicsGroupedProvider = GetDailyAllTopicsGroupedProvider._();
+
+final class GetDailyAllTopicsGroupedProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<Map<DateTime, List<DailyWordSummaryModel>>>,
+          Map<DateTime, List<DailyWordSummaryModel>>,
+          FutureOr<Map<DateTime, List<DailyWordSummaryModel>>>
+        >
+    with
+        $FutureModifier<Map<DateTime, List<DailyWordSummaryModel>>>,
+        $FutureProvider<Map<DateTime, List<DailyWordSummaryModel>>> {
+  GetDailyAllTopicsGroupedProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'getDailyAllTopicsGroupedProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$getDailyAllTopicsGroupedHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<Map<DateTime, List<DailyWordSummaryModel>>>
+  $createElement($ProviderPointer pointer) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<Map<DateTime, List<DailyWordSummaryModel>>> create(Ref ref) {
+    return getDailyAllTopicsGrouped(ref);
+  }
+}
+
+String _$getDailyAllTopicsGroupedHash() =>
+    r'ca37817c61a544749298b6dcdcf9b5df60324732';
 
 @ProviderFor(formatDailyDate)
 final formatDailyDateProvider = FormatDailyDateFamily._();

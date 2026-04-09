@@ -1,4 +1,6 @@
 
+import 'dart:developer' as developer;
+
 import 'package:app_demo/src/core/service/device_service.dart';
 import 'package:app_demo/src/features/authentication/application/token_service.dart';
 import 'package:app_demo/src/features/authentication/data/repository/auth_repository.dart';
@@ -37,11 +39,19 @@ class AuthService {
       }
 
       final vapidKey = dotenv.env['FCM_VAPID_KEY'];
-      await _userDevice.setupFcmToken(
-        userId: userId,
-        vapidKey: vapidKey,
-        subscribeToRefresh: true,
-      );
+      try {
+        await _userDevice.setupFcmToken(
+          userId: userId,
+          vapidKey: vapidKey,
+          subscribeToRefresh: true,
+        );
+      } catch (e) {
+        developer.log(
+          'AuthService: setupFcmToken failed after login',
+          error: e,
+          stackTrace: StackTrace.current,
+        );
+      }
     } on AppException {
       rethrow;
     } catch (_) {
@@ -78,17 +88,33 @@ class AuthService {
       }
       
       final vapidKey = dotenv.env['FCM_VAPID_KEY'];
-      await _userDevice.setupFcmToken(
-        userId: user.id,
-        vapidKey: vapidKey,
-        subscribeToRefresh: false,  // đăng ký refresh sau lần đầu
-      );
+      try {
+        await _userDevice.setupFcmToken(
+          userId: user.id,
+          vapidKey: vapidKey,
+          subscribeToRefresh: false, 
+        );
+      } catch (e) {
+        developer.log(
+          'AuthService: setupFcmToken failed after signup',
+          error: e,
+          stackTrace: StackTrace.current,
+        );
+      }
     } catch (e) {
       throw AppException.errorWithMessage(e.toString());
     }
   }
 
   Future<void> signOut() async {
+    final userId = _client.auth.currentUser?.id;
+
+    if (userId != null) {
+      await _userDevice.cleanupDeviceTokenOnSignOut(userId: userId);
+    } else {
+      _userDevice.dispose();
+    }
+
     await _repo.signOut();
     await _tokenService.remove();
   }

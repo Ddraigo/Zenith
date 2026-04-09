@@ -162,7 +162,7 @@ ThemeData getLightTheme() {
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
         backgroundColor: Colors.transparent,
-        foregroundColor: lightColorScheme.onSecondaryContainer,
+        foregroundColor: lightColorScheme.primary,
         disabledBackgroundColor: lightColorScheme.outlineVariant,
         disabledForegroundColor: lightColorScheme.secondary,
         side: const BorderSide(
@@ -181,17 +181,17 @@ ThemeData getLightTheme() {
       fillColor: AppColors.elementBackground,
       contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 16.h),
       hintStyle: MyTextStyle.poppinsMedium400.copyWith(
-        color: lightColorScheme.onPrimaryFixedVariant,
+        color: lightColorScheme.outlineVariant,
       ),
       helperStyle: MyTextStyle.poppinsMedium400.copyWith(
         color: lightColorScheme.onPrimaryFixedVariant,
       ),
       errorStyle: MyTextStyle.poppinsMedium400.copyWith(
-        color: lightColorScheme.error,
+        color: lightColorScheme.error.withOpacity(0.5),
         fontWeight: FontWeight.w600
       ),
-      prefixIconColor: lightColorScheme.onPrimaryFixedVariant,
-      suffixIconColor: lightColorScheme.onPrimaryFixedVariant,
+      prefixIconColor: lightColorScheme.outlineVariant,
+      suffixIconColor: lightColorScheme.outlineVariant,
 
       border: defaultInputBorder,
       enabledBorder: defaultInputBorder,
@@ -206,7 +206,7 @@ ThemeData getLightTheme() {
       errorBorder: OutlineInputBorder(
         borderRadius: radius,
         borderSide:  BorderSide(
-          color: lightColorScheme.error,
+          color: lightColorScheme.error.withOpacity(0.5),
           width: 1,
         ),
       ),

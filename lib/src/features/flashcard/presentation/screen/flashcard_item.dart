@@ -162,6 +162,7 @@ class _FlashcardItemState extends State<FlashcardItem> with SingleTickerProvider
               textAlign: TextAlign.center,
               style: MyTextStyle.poppinsLarge600.copyWith(
                 color: colorScheme.outline,
+                
               ),
             ),
             SizedBox(height: 12.h),

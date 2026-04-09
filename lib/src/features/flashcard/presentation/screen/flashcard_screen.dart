@@ -42,10 +42,6 @@ class FlashcardScreen extends ConsumerWidget {
 
     return flashcardAsync.when(
       data: (defaultFlashcards) {
-        // if (defaultFlashcards.isEmpty) {
-        //   return Center(child: Text('Không có dữ liệu flashcard'));
-        // }
-
         final getIndex = currentIndex.clamp(
           0,
           defaultFlashcards.isEmpty ? 0 : defaultFlashcards.length - 1,
@@ -239,7 +235,7 @@ class FlashcardScreen extends ConsumerWidget {
           LinearProgressIndicator(
             minHeight: 16.h,
             borderRadius: BorderRadius.circular(10.r),
-            backgroundColor: color.primary,
+            backgroundColor: color.outline.withOpacity(0.4),
             value: total > 0 ? currentIndex / total : 0,
             valueColor: AlwaysStoppedAnimation<Color>(color.primary),
           ),

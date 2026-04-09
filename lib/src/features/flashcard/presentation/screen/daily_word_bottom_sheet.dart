@@ -1,6 +1,5 @@
 import 'package:app_demo/configs/themes/text_style.dart';
 import 'package:app_demo/src/features/flashcard/domain/daily_word_summary.dart';
-import 'package:app_demo/src/features/topic/presentation/controller/list_topic_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -55,7 +54,10 @@ class DailyWordBottomSheet extends ConsumerWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Text('Từ vựng hằng ngày', style: MyTextStyle.poppinsLarge600),
+                    child: Text(
+                      'Từ vựng hằng ngày',
+                      style: MyTextStyle.poppinsLarge600,
+                    ),
                   ),
                   Expanded(
                     child: ListView.builder(
@@ -64,7 +66,7 @@ class DailyWordBottomSheet extends ConsumerWidget {
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
                       itemBuilder: (_, index) {
                         final item = flattened[index];
-                        
+
                         // Track ngày hiện tại từ item header
                         DateTime? currentDate;
                         if (item.date != null) {
@@ -98,10 +100,16 @@ class DailyWordBottomSheet extends ConsumerWidget {
                               dailyTopic: item.topic!,
                               onTap: () {
                                 // Lưu ngày + topic được chọn
-                                ref.read(selectedDateProvider.notifier).state = currentDate;
-                                ref.read(isDailyModeProvider.notifier).state = true;
-                                ref.read(selectedTopicProvider.notifier).state = item.topic!.topicId;
-                                ref.read(flashcardIndexProvider.notifier).state = 0;
+                                ref.read(selectedDateProvider.notifier).state =
+                                    currentDate;
+                                ref.read(isDailyModeProvider.notifier).state =
+                                    true;
+                                ref.read(selectedTopicProvider.notifier).state =
+                                    item.topic!.topicId;
+                                ref
+                                        .read(flashcardIndexProvider.notifier)
+                                        .state =
+                                    0;
                                 onItemSelected?.call(item.topic!.topicId);
                                 Navigator.pop(context);
                               },
