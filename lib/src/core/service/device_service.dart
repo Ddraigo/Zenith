@@ -1,4 +1,5 @@
 import 'dart:developer' as developer;
+import 'dart:async';
 
 import 'package:app_demo/src/core/data/repository/user_device_repo.dart';
 import 'package:app_demo/src/core/domain/user_device_model.dart';
@@ -7,7 +8,6 @@ import 'package:app_demo/src/shared/http/supabase_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../data/source/user_device_source.dart';
 
 final userDeviceService = Provider(UserDeviceService.new);
 
@@ -20,7 +20,7 @@ class UserDeviceService {
     firebaseMessagingService,
   );
 
-  dynamic _tokenRefreshSubscription;
+  StreamSubscription<String>? _tokenRefreshSubscription;
 
   Future<String?> getCurrentFcmToken({String? vapidKey}) async {
     try {
@@ -60,18 +60,22 @@ class UserDeviceService {
     }
   }
 
-  Future<bool> saveFcmToken({
+  Future<bool> _saveFcmTokenIfNeeded({
     required String fcmToken,
     required String userId,
   }) async {
-    final result = await _ref
-        .read(userDeviceSourceProvider)
-        .updateFcmToken(userId: userId, fcmToken: fcmToken);
+    final currentTokens = await getUserFcmToken();
+    final existsToken = currentTokens.any((e) => e.fcmToken == fcmToken);
+    if (existsToken) {
+      return false;
+    }
+
+    final result = await _repo.saveFcmToken(userId: userId, fcmToken: fcmToken);
 
     return result.fold(
       ifLeft: (error) {
         developer.log(
-          'UserDeviceService: Error updateFcmToken',
+          'UserDeviceService: Error saveFcmToken',
           error: error,
           stackTrace: StackTrace.current,
         );
@@ -110,7 +114,7 @@ class UserDeviceService {
       final fcmToken = await getCurrentFcmToken(vapidKey: vapidKey);
 
       if (fcmToken != null) {
-        await saveFcmToken(fcmToken: fcmToken, userId: currentUser.id);
+        await _saveFcmTokenIfNeeded(fcmToken: fcmToken, userId: currentUser.id);
       }
       return fcmToken;
     } catch (e) {
@@ -139,7 +143,7 @@ class UserDeviceService {
       final existsToken = device.any((e) => e.fcmToken == newToken);
 
       if (!existsToken) {
-        await saveFcmToken(fcmToken: newToken, userId: userId);
+        await _saveFcmTokenIfNeeded(fcmToken: newToken, userId: userId);
         developer.log(
           'UserDeviceService: FCM token saved',
           name: 'setupFcmToken',
@@ -156,7 +160,7 @@ class UserDeviceService {
             }
 
             final oldToken = currentToken;
-            await saveFcmToken(fcmToken: newToken, userId: userId);
+            await _saveFcmTokenIfNeeded(fcmToken: newToken, userId: userId);
 
             if (oldToken.isNotEmpty) {
               await deleteFcmToken(fcmToken: oldToken, userId: userId);

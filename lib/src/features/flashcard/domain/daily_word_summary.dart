@@ -21,4 +21,10 @@ abstract class DailyWordSummaryModel with _$DailyWordSummaryModel{
     }
     return '$completedWords/$totalWords';
   }
+
+  double get progressPrecent{
+    if(totalWords == 0) return 0;
+    final complete = completedWords ?? 0;
+    return complete/totalWords;
+  }
 }

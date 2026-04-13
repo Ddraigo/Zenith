@@ -3,7 +3,7 @@ import 'dart:developer' as developer;
 import 'package:app_demo/src/features/flashcard/data/repository/user_daily_word_repository.dart';
 import 'package:app_demo/src/features/flashcard/domain/daily_word_summary.dart';
 import 'package:app_demo/src/features/flashcard/domain/user_daily_word_model.dart';
-import 'package:app_demo/src/shared/constants/format.dart';
+import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:app_demo/src/shared/http/supabase_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -16,16 +16,23 @@ class UserDailyWordService {
   late final _client = _ref.read(supabaseClientProvider);
   late final _repo = _ref.read(userDailyWordRepoProvider);
 
-  String get _currentUserId => _client.auth.currentUser!.id;
+  String get _currentUserId{
+    final user = _client.auth.currentUser;
+    if(user == null){
+      throw AppException.unauthorized();
+    }
+    return user.id;
+  }
 
   Future<List<UserDailyWordModel>> getDailyWords({
     int? topicId,
     DateTime? assignedDate,
   }) async {
+
     final result = await _repo.fetchDailyWords(
       userId: _currentUserId,
       topicId: topicId ?? 0,
-      assignedDate: Format.normalizeDate(assignedDate?.toLocal()),
+      assignedDate: assignedDate,
     );
 
     return result.fold(
@@ -45,15 +52,16 @@ class UserDailyWordService {
     DateTime? startDate,
     DateTime? endDate,
     int? dayRange
-  })async{
-    final now = DateTime.now().toUtc();
+  }) async {
+
+    final now = DateTime.now();
     final end = endDate ?? now;
-    final start = startDate ?? now.subtract((Duration(days: dayRange ?? 7)));
+    final start = startDate ?? now.subtract(Duration(days: dayRange ?? 7));
 
     final result = await _repo.fetchDailyTopicSummary(
       userId: _currentUserId, 
-      startDate: start.toUtc(),
-      endDate: end.toUtc(),
+      startDate: start,
+      endDate: end,
     );
 
     return result.fold(
@@ -61,11 +69,15 @@ class UserDailyWordService {
         developer.log('UserDailyWordService: error getDailyTopicsGrouped', error: error);
         throw error;
       }, 
-      ifRight: (datas){
-        final groupedData = <DateTime,List<DailyWordSummaryModel>>{};
+      ifRight: (datas) {
+        final groupedData = <DateTime, List<DailyWordSummaryModel>>{};
 
-        for(final data in datas){
-          final date = data.assignedDate;
+        for (final data in datas) {
+          final date = DateTime(
+            data.assignedDate.year,
+            data.assignedDate.month,
+            data.assignedDate.day,
+          );
 
           groupedData.putIfAbsent(date, () => []);
           groupedData[date]!.add(data);
@@ -79,19 +91,20 @@ class UserDailyWordService {
     required List<String> flashcardIds,
     required DateTime assignedDate,
   }) async {
-    if(flashcardIds.isEmpty){
+    if (flashcardIds.isEmpty) {
       return false;
     }
-    final result =await  _repo.updateIsCompleted(
-        userId: _currentUserId, 
-        flashcardIds: flashcardIds, 
-        assignedDate: Format.normalizeDate(assignedDate.toUtc())
-      );
+    final result = await _repo.updateIsCompleted(
+      userId: _currentUserId,
+      flashcardIds: flashcardIds,
+      assignedDate: assignedDate,
+    );
     return result.fold(
-      ifLeft: (error){
+      ifLeft: (error) {
         developer.log('UserDailyWordService: error updateIsCompleted', error: error);
         throw error;
       },  
-      ifRight: (e) => true);
+      ifRight: (_) => true,
+    );
   }
 }

@@ -1,18 +1,21 @@
 
 class Format {
+  static const Duration _vietnamOffset = Duration(hours: 7);
+
   static String formatDMY(DateTime? date) {
     if (date == null) return '';
-    return '${date.day.toString().padLeft(2, '0')}/'
-        '${date.month.toString().padLeft(2, '0')}/'
-        '${date.year}';
+    final localDate = normalizeDate(date);
+    return '${localDate.day.toString().padLeft(2, '0')}/'
+        '${localDate.month.toString().padLeft(2, '0')}/'
+        '${localDate.year}';
   }
 
   static String formatDate(DateTime date) {
-    return date.toIso8601String().split('T')[0];
+    return normalizeDate(date).toIso8601String().split('T')[0];
   }
 
   static DateTime normalizeDate(DateTime? value) {
-    final date = value ?? DateTime.now();
+    final date = (value ?? DateTime.now()).toUtc().add(_vietnamOffset);
     return DateTime(date.year, date.month, date.day);
   }
 

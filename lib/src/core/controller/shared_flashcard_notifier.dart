@@ -21,12 +21,14 @@ final isDailyModeProvider = StateProvider<bool>((ref) => true);
 // Track ngày được chọn từ daily
 final selectedDateProvider = StateProvider<DateTime?>((ref) => null);
 
+
+
 /// Resolve topicId thực tế từ selectedTopicId
 /// - Nếu selectedTopicId > 0 → trả về nó
 /// - Nếu selectedTopicId = 0 → lấy từ daily hoặc topic random
 @riverpod
 Future<int> resolvedTopicId( Ref ref, int selectedTopicId)async{
-  return ref.watch(flashcardServiceProvider).resolveInitialTopicId(
+  return ref.read(flashcardServiceProvider).resolveInitialTopicId(
     selectedTopicId: selectedTopicId,
   );
 }
@@ -36,9 +38,15 @@ Future<List<TopicModel>> getTopicList(Ref ref)async{
   return ref.read(topicServiceProvider).getTopicList();
 }
 
-/// Lấy flashcards đã xử lý logic hôm nay/tất cả
-/// - Nếu isDailyMode=true + selectedDate!=null → lấy daily flashcards của date + topic
-/// - Nếu isDailyMode=false → lấy tất cả flashcards của topic
+
+// @riverpod
+// Future<List<FlashcardModel>> getTopicFlashcard(Ref ref, {required int topicId})async{
+//   return ref.read(flashcardServiceProvider).fetchFlashcardById(
+//       topicId: topicId,
+//   );
+// }
+
+
 @riverpod
 Future<List<FlashcardModel>> getFlashcards( Ref ref, int selectedTopicId)async{
   final isDaily = ref.watch(isDailyModeProvider);
@@ -66,13 +74,13 @@ Future<List<FlashcardModel>> getFlashcards( Ref ref, int selectedTopicId)async{
 Future<Map<DateTime, List<DailyWordSummaryModel>>> getDailyTopicsGrouped (
   Ref ref,
   {required int dayRange}) async{
-    return ref.watch(userDailyWordServiceProvider)
+    return ref.read(userDailyWordServiceProvider)
     .getDailyTopicsGrouped(dayRange: dayRange);
 }
 
 @riverpod
 Future<Map<DateTime, List<DailyWordSummaryModel>>> getDailyAllTopicsGrouped (Ref ref) async{
-    return ref.watch(userDailyWordServiceProvider)
+  return ref.read(userDailyWordServiceProvider)
     .getDailyTopicsGrouped(startDate: DateTime(1999,1,1));
 }
 
@@ -80,15 +88,15 @@ Future<Map<DateTime, List<DailyWordSummaryModel>>> getDailyAllTopicsGrouped (Ref
 
 @riverpod
 String  formatDailyDate(Ref ref, DateTime date) {
-  final today = DateTime.now();
-  final todayOnly = Format.normalizeDate(today);
+  final todayOnly = Format.normalizeDate(DateTime.now());
+  final dateOnly = Format.normalizeDate(date);
 
-  if(date == todayOnly){
+  if(dateOnly == todayOnly){
     return 'Hôm nay';
-  }else if(date.add(Duration(days: 1)) == todayOnly){
+  }else if(dateOnly.add(const Duration(days: 1)) == todayOnly){
     return 'Hôm qua';
   }else{
-    return Format.formatDMY(date);
+    return Format.formatDMY(dateOnly);
   }
   
 }

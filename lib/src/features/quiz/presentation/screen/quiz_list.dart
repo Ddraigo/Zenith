@@ -1,4 +1,5 @@
-
+import 'package:app_demo/configs/routes/app_router.dart';
+import 'package:app_demo/src/features/quiz/domain/quiz_attempt_args.dart';
 import 'package:app_demo/src/features/topic/domain/topic_model.dart';
 import 'package:app_demo/src/shared/constants/format.dart';
 import 'package:app_demo/src/shared/constants/images_constants.dart';
@@ -6,16 +7,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../../configs/themes/text_style.dart';
 import '../../../flashcard/domain/daily_word_summary.dart';
 import '../../../topic/presentation/controller/topic_flashcard_notifier.dart';
 
+
 class QuizList extends StatelessWidget {
   const QuizList({
     super.key,
     required this.userDailyWordList,
-    required this.topicList, required this.ref,
+    required this.topicList,
+    required this.ref,
   });
   final List<DailyWordSummaryModel> userDailyWordList;
   final List<TopicModel> topicList;
@@ -30,26 +34,36 @@ class QuizList extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
           children: [
-            Text('Từ vựng hằng ngày', style: MyTextStyle.poppinsMedium700,),
+            Text('Từ vựng hằng ngày', style: MyTextStyle.poppinsMedium700),
             TextButton(
-              onPressed: (){}, 
-              child: Text('Tất cả', style: MyTextStyle.poppinsMedium600,),),
+              onPressed: () {
+                
+              },
+              child: Text('Tất cả', style: MyTextStyle.poppinsMedium600),
+            ),
           ],
         ),
         SizedBox(
-          height: 200.h,
-          child: _dailyWordQuizList(context,userDailyWordList, color)
+          height: 150.h,
+          child: _dailyWordQuizList(context, userDailyWordList, color),
         ),
 
         SizedBox(height: 16.h),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.max,
+        Column(
+          spacing: 8.h,
           children: [
-            Text('Từ vựng chủ đề', style: MyTextStyle.poppinsMedium700,),
-            TextButton(
-              onPressed: (){}, 
-              child: Text('Tất cả', style: MyTextStyle.poppinsMedium600,),),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Text('Từ vựng chủ đề', style: MyTextStyle.poppinsMedium700),
+                TextButton(
+                  onPressed: () {},
+                  child: Text('Tất cả', style: MyTextStyle.poppinsMedium600),
+                ),
+              ],
+            ),
+            _topicQuizList(context, topicList, color),
           ],
         ),
       ],
@@ -66,36 +80,68 @@ class QuizList extends StatelessWidget {
       itemCount: items.length,
       itemBuilder: (context, index) {
         final item = items[index];
-        return Container(
-          margin: EdgeInsets.symmetric(vertical: 16.h),
-          // padding: EdgeInsets.all(8.r),
-          width: 125.h,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16.r),
-          ),
-          color: color.onPrimary,
-          child: Column(
-            spacing: 8.h,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                Format.formatDMY(item.assignedDate.toLocal()).isEmpty ? 'N/A'
-                : Format.formatDMY(item.assignedDate.toLocal()),
-                style: MyTextStyle.poppinsMedium600.copyWith(
-                  color: color.primary,
+
+        return GestureDetector(
+          onTap: () {
+            final args = QuizAttemptArgs(
+              type: QuizAttemptType.daily,
+              topicId: item.topicId,
+              title: item.topicName,
+              assignedDate: item.assignedDate,
+            );
+            
+            context.go(AppRouter.quizAttempPath, extra: args);
+          },
+          child: Container(
+            margin: EdgeInsets.symmetric(vertical: 16.h, horizontal: 8.w),
+            padding: EdgeInsets.all(10.r),
+            width: 140.w,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16.r),
+              color: color.outline.withOpacity(0.08),
+              border: Border.all(color: color.outlineVariant.withOpacity(0.5)),
+            ),
+
+            child: Column(
+              spacing: 5.h,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  Format.formatDMY(item.assignedDate).isEmpty
+                      ? 'N/A'
+                      : Format.formatDMY(item.assignedDate),
+                  style: MyTextStyle.poppinsMedium600.copyWith(
+                    color: color.primary,
+                  ),
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(item.topicName.isEmpty ? 'N/A' : item.topicName,
-                  style: MyTextStyle.poppinsLarge600,),
-                  Text(item.progress.isEmpty ? 'N/A': item.progress,
-                  style: MyTextStyle.poppinsMedium600,),
-                ],
-              ),
-              Text("Start", style: MyTextStyle.poppinsMedium700),
-            ],
+                Text(
+                  item.topicName.isEmpty ? 'N/A' : item.topicName,
+                  style: MyTextStyle.poppinsLarge600.copyWith(
+                    fontSize: 20.sp,
+                    color: color.outline,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+                Row(
+                  spacing: 2.w,
+                  children: [
+                    Icon(
+                      Icons.play_circle_outline_rounded,
+                      color: color.outline,
+                    ),
+                    Text(
+                      "Start",
+                      style: MyTextStyle.poppinsMedium700.copyWith(
+                        color: color.outline,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -106,10 +152,10 @@ class QuizList extends StatelessWidget {
     BuildContext context,
     List<TopicModel> items,
     ColorScheme color,
-    
   ) {
     return ListView.builder(
-
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: items.length,
       itemBuilder: (context, index) {
         final item = items[index];
@@ -117,49 +163,84 @@ class QuizList extends StatelessWidget {
         final wordCountText = numWord.when(
           data: (count) => '$count câu hỏi',
           loading: () => '... câu hỏi',
-          error: (_, __) => 'N/A',
+          error: (_, _) => 'N/A',
         );
         return Container(
           margin: EdgeInsets.symmetric(vertical: 16.h),
-          // padding: EdgeInsets.all(8.r),
+          padding: EdgeInsets.all(16.r),
           width: double.infinity,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(32.r),
+            color: color.outline.withOpacity(0.08),
           ),
-          color: color.onPrimary,
+
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(8.r),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: color.onPrimary,
-                    ),
-                    child: SvgPicture.asset(MyIcons.learn, colorFilter: ColorFilter.mode(color.primary, BlendMode.srcIn),)
-                  ),
-                  Column(
-                    spacing: 8.h,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.name.isEmpty ? 'N/A' : item.name,
-                        style: MyTextStyle.poppinsLarge600.copyWith(
-                          color: color.primary,
+              Expanded(
+                child: Row(
+                  spacing: 10.h,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(10.r),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: color.secondaryContainer.withOpacity(0.8),
+                      ),
+
+                      child: SvgPicture.asset(
+                        MyIcons.learn,
+                        colorFilter: ColorFilter.mode(
+                          color.primary,
+                          BlendMode.srcIn,
                         ),
                       ),
-                      Text(wordCountText,
-                      style: MyTextStyle.poppinsMedium400.copyWith(color: color.outlineVariant),),
-                     
-                    ],
-                  ),
-                ],
+                    ),
+                    Expanded(
+                      child: Column(
+                        spacing: 3.h,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.name.isEmpty ? 'N/A' : item.name,
+                            style: MyTextStyle.poppinsLarge600.copyWith(
+                              color: color.primary,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            wordCountText,
+                            style: MyTextStyle.poppinsMedium400.copyWith(
+                              color: color.outline.withOpacity(0.8),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
               OutlinedButton(
-                onPressed: (){}, 
+                onPressed: () {
+                  final args = QuizAttemptArgs(
+                    type: QuizAttemptType.topic,
+                    topicId: item.id,
+                    title: item.name,
+                  );
+                  context.go(AppRouter.quizAttempPath, extra: args);
+                },
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
+                  minimumSize: Size(100.w, 50.h),
+                  side: BorderSide(color: color.outline.withOpacity(0.2)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadiusGeometry.circular(32.r),
+                  ),
+                ),
                 child: Text('START'),
-              )
+              ),
             ],
           ),
         );

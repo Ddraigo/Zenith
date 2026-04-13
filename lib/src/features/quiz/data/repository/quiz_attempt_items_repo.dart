@@ -16,8 +16,7 @@ class QuizAttemptItemsRepo {
     required List<QuizAttemptItemsModel> items,
   }) async {
     final mapItems = items.map((e) => e.toJson()).toList();
-    await _source.insertQuizAttempItems(items: mapItems);
-    return Either.right(true);
+    return _source.insertQuizAttempItems(items: mapItems);
   }
 
 }

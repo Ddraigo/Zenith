@@ -1,6 +1,5 @@
 import 'package:app_demo/src/features/flashcard/data/dto/daily_word_summary_dto.dart';
 import 'package:app_demo/src/features/flashcard/data/dto/user_daily_word_dto.dart';
-import 'package:app_demo/src/shared/constants/format.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:app_demo/src/shared/http/supabase_provider.dart';
 import 'package:dart_either/dart_either.dart';
@@ -18,7 +17,7 @@ class UserDailyWordSource {
   Future<Either<AppException, List<UserDailyWordDTO>>> fetchDailyWords({
     required String userId,
     required int topicId,
-    DateTime? assignedDate,
+    String? assignedDate,
   }) async {
     try {
       var query = _client
@@ -31,7 +30,7 @@ class UserDailyWordSource {
       }
 
       if (assignedDate != null) {
-        query = query.eq('assigned_date', Format.formatDate(assignedDate.toUtc()));
+        query = query.eq('assigned_date', assignedDate);
       }
 
       final data =
@@ -50,8 +49,8 @@ class UserDailyWordSource {
   Future<Either<AppException, List<DailyWordSummaryDTO>>>
   fetchDailyTopicSummary({
     required String userId,
-    required DateTime startDate,
-    required DateTime endDate,
+    required String startDate,
+    required String endDate,
   }) async {
     try {
       final data =
@@ -59,8 +58,8 @@ class UserDailyWordSource {
                   .from('daily_topic_summary')
                   .select()
                   .eq('user_id', userId)
-                  .gte('assigned_date', startDate.toUtc())
-                  .lte('assigned_date', endDate.toUtc())
+                    .gte('assigned_date', startDate)
+                    .lte('assigned_date', endDate)
                   .order('assigned_date', ascending: false)
                   .order('topic_id', ascending: true)
               as List<dynamic>;
@@ -78,7 +77,7 @@ class UserDailyWordSource {
   Future<Either<AppException, bool>> updateIsCompleted({
     required String userId,
     required List<String> flashcardIds,
-    required DateTime assignedDate,
+    required String assignedDate,
   }) async {
     try {
       if(flashcardIds.isEmpty){
@@ -88,7 +87,7 @@ class UserDailyWordSource {
           .from('user_daily_word')
           .update({'is_completed': true})
           .eq('user_id', userId)
-          .eq('assigned_date', Format.formatDate(assignedDate.toUtc()))
+          .eq('assigned_date', assignedDate)
           .inFilter('flashcard_id', flashcardIds);
 
       return const Either.right(true);

@@ -3,11 +3,10 @@ import 'package:app_demo/src/features/flashcard/data/dto/user_daily_word_dto.dar
 import 'package:app_demo/src/features/flashcard/data/source/user_daily_word_source.dart';
 import 'package:app_demo/src/features/flashcard/domain/daily_word_summary.dart';
 import 'package:app_demo/src/features/flashcard/domain/user_daily_word_model.dart';
+import 'package:app_demo/src/shared/constants/format.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:dart_either/dart_either.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../../shared/constants/format.dart';
 
 final userDailyWordRepoProvider = Provider<UserDailyWordRepository>(
   (ref) => UserDailyWordRepository(ref.read(userDailyWordSourceProvider)),
@@ -22,10 +21,13 @@ class UserDailyWordRepository {
     required int topicId,
     DateTime? assignedDate,
   }) async {
+    final assignedDateString = assignedDate == null
+        ? null
+        : Format.formatDate(assignedDate);
     final result = await _source.fetchDailyWords(
       userId: userId,
       topicId: topicId,
-      assignedDate: assignedDate,
+      assignedDate: assignedDateString,
     );
     return result.map((dailyword) {
       return dailyword.map((dto) => dto.toDomain()).toList();
@@ -38,10 +40,12 @@ class UserDailyWordRepository {
     required DateTime startDate,
     required DateTime endDate,
   }) async {
+    final startDateString = Format.formatDate(startDate);
+    final endDateString = Format.formatDate(endDate);
     final result = await _source.fetchDailyTopicSummary(
       userId: userId, 
-      startDate: startDate.toUtc(), 
-      endDate: endDate.toUtc()
+      startDate: startDateString, 
+      endDate: endDateString,
     );
     return result.map((dailyword) {
       return dailyword.map((dto) => dto.toDomain()).toList();
@@ -54,12 +58,13 @@ class UserDailyWordRepository {
     required List<String> flashcardIds,
     required DateTime assignedDate,
   }) async {
-     _source.updateIsCompleted(
+    final assignedDateString = Format.formatDate(assignedDate);
+    final result = await _source.updateIsCompleted(
       userId: userId, 
       flashcardIds: flashcardIds, 
-      assignedDate: Format.normalizeDate(assignedDate.toUtc()),
+      assignedDate: assignedDateString,
     );
 
-    return Either.right(true);
+    return result;
   }
 }

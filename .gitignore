@@ -54,3 +54,4 @@ app.*.map.json
 !.env.example
 lib/firebase_options.dart
 google-services.json
+web/firebase-messaging-sw.js

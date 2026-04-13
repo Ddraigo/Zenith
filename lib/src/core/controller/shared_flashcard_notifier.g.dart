@@ -68,7 +68,7 @@ final class ResolvedTopicIdProvider
   }
 }
 
-String _$resolvedTopicIdHash() => r'6e66f26880413a4c152e457a2dad35f833904821';
+String _$resolvedTopicIdHash() => r'682788c2b084f7eaf89d4fd5be6a61a1eca592b4';
 
 /// Resolve topicId thực tế từ selectedTopicId
 /// - Nếu selectedTopicId > 0 → trả về nó
@@ -135,16 +135,8 @@ final class GetTopicListProvider
 
 String _$getTopicListHash() => r'ee3bef9516f1bca86524996eba2823dc93233861';
 
-/// Lấy flashcards đã xử lý logic hôm nay/tất cả
-/// - Nếu isDailyMode=true + selectedDate!=null → lấy daily flashcards của date + topic
-/// - Nếu isDailyMode=false → lấy tất cả flashcards của topic
-
 @ProviderFor(getFlashcards)
 final getFlashcardsProvider = GetFlashcardsFamily._();
-
-/// Lấy flashcards đã xử lý logic hôm nay/tất cả
-/// - Nếu isDailyMode=true + selectedDate!=null → lấy daily flashcards của date + topic
-/// - Nếu isDailyMode=false → lấy tất cả flashcards của topic
 
 final class GetFlashcardsProvider
     extends
@@ -156,9 +148,6 @@ final class GetFlashcardsProvider
     with
         $FutureModifier<List<FlashcardModel>>,
         $FutureProvider<List<FlashcardModel>> {
-  /// Lấy flashcards đã xử lý logic hôm nay/tất cả
-  /// - Nếu isDailyMode=true + selectedDate!=null → lấy daily flashcards của date + topic
-  /// - Nếu isDailyMode=false → lấy tất cả flashcards của topic
   GetFlashcardsProvider._({
     required GetFlashcardsFamily super.from,
     required int super.argument,
@@ -205,10 +194,6 @@ final class GetFlashcardsProvider
 
 String _$getFlashcardsHash() => r'de80bf1d34468653e4390d935cbbbb51fba8430e';
 
-/// Lấy flashcards đã xử lý logic hôm nay/tất cả
-/// - Nếu isDailyMode=true + selectedDate!=null → lấy daily flashcards của date + topic
-/// - Nếu isDailyMode=false → lấy tất cả flashcards của topic
-
 final class GetFlashcardsFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<List<FlashcardModel>>, int> {
   GetFlashcardsFamily._()
@@ -219,10 +204,6 @@ final class GetFlashcardsFamily extends $Family
         $allTransitiveDependencies: null,
         isAutoDispose: true,
       );
-
-  /// Lấy flashcards đã xử lý logic hôm nay/tất cả
-  /// - Nếu isDailyMode=true + selectedDate!=null → lấy daily flashcards của date + topic
-  /// - Nếu isDailyMode=false → lấy tất cả flashcards của topic
 
   GetFlashcardsProvider call(int selectedTopicId) =>
       GetFlashcardsProvider._(argument: selectedTopicId, from: this);
@@ -288,7 +269,7 @@ final class GetDailyTopicsGroupedProvider
 }
 
 String _$getDailyTopicsGroupedHash() =>
-    r'9ee98ca8fb3a86ab60fd13bc1a5d03c50f409eee';
+    r'52de2132ce8c960bb66c3f1b1cf9ad31bc46767d';
 
 final class GetDailyTopicsGroupedFamily extends $Family
     with
@@ -351,7 +332,7 @@ final class GetDailyAllTopicsGroupedProvider
 }
 
 String _$getDailyAllTopicsGroupedHash() =>
-    r'ca37817c61a544749298b6dcdcf9b5df60324732';
+    r'2789b6afc8f5375803e71458f7070ae1a6baf2a8';
 
 @ProviderFor(formatDailyDate)
 final formatDailyDateProvider = FormatDailyDateFamily._();
@@ -410,7 +391,7 @@ final class FormatDailyDateProvider
   }
 }
 
-String _$formatDailyDateHash() => r'76717ab175d65e27827836ec6f1aa945b3cec956';
+String _$formatDailyDateHash() => r'78db5831906faa0a47fee0a388839915a7fc0dfa';
 
 final class FormatDailyDateFamily extends $Family
     with $FunctionalFamilyOverride<String, DateTime> {

@@ -1,6 +1,7 @@
 import 'package:app_demo/src/features/flashcard/data/dto/flashcard_dto.dart';
 import 'package:app_demo/src/features/flashcard/data/source/flashcard_source.dart';
 import 'package:app_demo/src/features/flashcard/domain/flashcard_model.dart';
+import 'package:app_demo/src/shared/constants/format.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:dart_either/dart_either.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,10 +39,11 @@ class FlashcardRepository {
     required int topicId,
     required DateTime assignedDate,
   })async{
+    final assignedDateString = Format.formatDate(assignedDate);
     final result = await _source.fetchFlashcardDailyWord(
       userId: userId,
       topicId: topicId,
-      assignedDate: assignedDate,
+      assignedDate: assignedDateString,
     );
     return result.map((dailyword){
       return dailyword.map((dto) => dto.toDomain()).toList();

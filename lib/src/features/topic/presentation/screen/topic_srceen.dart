@@ -35,10 +35,10 @@ class TopicSrceen extends ConsumerWidget {
               // Set daily mode = false - xem tất cả flashcards của topic
               ref.read(isDailyModeProvider.notifier).state = false;
               ref.read(selectedTopicProvider.notifier).state = topicId;
-              final topic = topics.firstWhere(
-                (t) => t.id == topicId,
-                orElse: () => topics.first,
-              );
+              // final topic = topics.firstWhere(
+              //   (t) => t.id == topicId,
+              //   orElse: () => topics.first,
+              // );
               ref.read(selectedTopicDaily.notifier).state = topicId;
               ref.read(flashcardIndexProvider.notifier).state = 0;
               ref.read(homeTapProvider.notifier).state = 0;

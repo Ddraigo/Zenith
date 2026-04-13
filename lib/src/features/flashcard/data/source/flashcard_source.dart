@@ -71,7 +71,7 @@ class FlashcardSource {
   Future<Either<AppException, List<FlashcardDTO>>> fetchFlashcardDailyWord({
     required String userId,
     required int topicId,
-    required DateTime assignedDate,
+    required String assignedDate,
   }) async{
     try {
       var query = _client

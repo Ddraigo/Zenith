@@ -39,7 +39,7 @@ class ListTopic extends ConsumerWidget {
         final wordCountText = numWord.when(
           data: (count) => '$count từ',
           loading: () => '... từ',
-          error: (_, __) => '0 từ',
+          error: (_, _) => '0 từ',
         );
         
         return GestureDetector(

@@ -1,77 +1,304 @@
+import 'dart:math' as math;
+
+import 'package:app_demo/configs/routes/app_router.dart';
 import 'package:app_demo/configs/themes/text_style.dart';
+import 'package:app_demo/src/features/quiz/domain/question_model.dart';
+import 'package:app_demo/src/features/quiz/domain/quiz_attempt_args.dart';
+import 'package:app_demo/src/features/quiz/presentation/controller/quiz_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
-class QuizAttempScreen extends ConsumerWidget {
-  const QuizAttempScreen({
-    super.key, 
-    required this.questions
-  });
-  final List<String> questions;
+class QuizAttempScreen extends ConsumerStatefulWidget {
+  const QuizAttempScreen({super.key, required this.arg});
+  final QuizAttemptArgs arg;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<QuizAttempScreen> createState() => _QuizAttempScreenState();
+}
+
+class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
+  late final TextEditingController userAnswer;
+  late final FocusNode _answerFocusNode;
+  late final CardSwiperController _swiperController;
+  bool _isError = false;
+  bool _isSubmitting = false;
+  int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    userAnswer = TextEditingController();
+    _answerFocusNode = FocusNode();
+    _swiperController = CardSwiperController();
+    _answerFocusNode.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _swiperController.dispose();
+    _answerFocusNode.dispose();
+    userAnswer.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
+    final quizAsync = ref.watch(
+      quizSessionProvider(
+        widget.arg.type,
+        widget.arg.topicId,
+        widget.arg.assignedDate,
+      ),
+    );
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(widget.arg.title ?? ''),
+        leading: IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+        ),
+      ),
+      body: SafeArea(
+        child: Container(
+          padding: EdgeInsets.all(32.r),
+          child: quizAsync.when(
+            data: (quizes) {
+              if (quizes.questions.isEmpty) {
+                return const Center(child: Text('Không có câu hỏi để làm bài'));
+              }
 
-    final userAnswer = TextEditingController();
-    late bool _isError = false;
+              final isLastQuestion =
+                  _currentIndex >= quizes.questions.length - 1;
 
-    return Container(
-      padding: EdgeInsets.all(32.r),
-      child: Column(
-        children: [
-          for (final item in questions)
-          _questionCard(item,color),
-          TextFormField(
-            controller: userAnswer,
-            cursorColor: color.primary,
-            validator: (value) {
-              _isError = value == null || value.isEmpty;
-              return null;
+              final answeredCount = quizes.questions
+                  .where(
+                    (q) =>
+                        (quizes.userAnswers[q.flashcardId] ?? '').trim().isNotEmpty,
+                  )
+                  .length;
+              final progressValue =
+                  (answeredCount / quizes.questions.length).clamp(0.0, 1.0);
+              return Column(
+                spacing: 40.h,
+
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Tiến độ',
+                        style: MyTextStyle.poppinsMedium600,
+                      ),
+                      Text(
+                        '$answeredCount/${quizes.questions.length}',
+                        style: MyTextStyle.poppinsMedium600.copyWith(
+                          color: color.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  LinearProgressIndicator(
+                    minHeight: 16.h,
+                    borderRadius: BorderRadius.circular(10.r),
+                    backgroundColor: color.outline.withOpacity(0.4),
+                    value: progressValue,
+                    valueColor: AlwaysStoppedAnimation<Color>(color.primary),
+                    // semanticsValue:
+                    //     '${(progessValue * 100).toStringAsFixed(0)}%',
+                  ),
+                  Flexible(
+                    child: CardSwiper(
+                      allowedSwipeDirection: const AllowedSwipeDirection.none(),
+                      controller: _swiperController,
+                      cardsCount: quizes.questions.length,
+                      numberOfCardsDisplayed: math.min(
+                        3,
+                        quizes.questions.length,
+                      ),
+                      backCardOffset: const Offset(0, 20),
+
+                      cardBuilder:
+                          (
+                            context,
+                            index,
+                            horizontalThresholdPercentage,
+                            verticalThresholdPercentage,
+                          ) {
+                            final question = quizes.questions[index];
+                            return _questionCard(question, color);
+                          },
+                      onSwipe: (previousIndex, currentIndex, direction) {
+                        setState(() {
+                          if (currentIndex != null) {
+                            _currentIndex = currentIndex;
+                          }
+                          _isError = false;
+                        });
+
+                        userAnswer.clear();
+                        _isError = false;
+                        return true;
+                      },
+                    ),
+                  ),
+                  Flexible(child: _userInput(color)),
+                  ElevatedButton(
+                    onPressed: _isSubmitting
+                        ? null
+                        : () => _handleNextOrSubmit(quizes),
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadiusGeometry.circular(32.r),
+                      ),
+                    ),
+                    child: Row(
+                      spacing: 8.w,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          isLastQuestion ? 'Nộp bài' : 'Câu tiếp theo',
+                          style: MyTextStyle.poppinsMedium600.copyWith(
+                            color: color.onPrimary,
+                          ),
+                        ),
+                        Icon(
+                          isLastQuestion
+                              ? Icons.check_rounded
+                              : Icons.arrow_forward_rounded,
+                          color: color.onPrimary,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
             },
-            decoration: InputDecoration(
-              
-              prefixIconColor: color.outlineVariant,
-              prefixIcon: Icon(Icons.edit),
-              hintText: 'Nhập câu trả lời',
-              hintStyle: MyTextStyle.poppinsMedium600.copyWith(color: color.outline),
-              errorText: _isError ? 'Không được bỏ trống đáp án' : null,
-            ),
+            error: (e, _) => Center(child: Text('Lỗi $e')),
+            loading: () => Center(child: CircularProgressIndicator()),
           ),
-          Container(
-            padding: EdgeInsets.all(16.r),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20.r),
-              color: color.primary,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Kiểm tra đáp án"),
-                Icon(
-                  Icons.check_circle_outline_rounded, 
-                color: color.onPrimary,),
-            ],),
-          )
-        ],
+        ),
       ),
     );
   }
 
-  Widget _questionCard(String question, ColorScheme color){
+  Future<void> _handleNextOrSubmit(QuestionModel quizes) async {
+    final text = userAnswer.text.trim();
+    if (text.isEmpty) {
+      setState(() => _isError = true);
+      return;
+    }
+
+    final isLastQuestion = _currentIndex >= quizes.questions.length - 1;
+    final currentQuestion = quizes.questions[_currentIndex];
+
+    final notifier = ref.read(
+      quizSessionProvider(
+        widget.arg.type,
+        widget.arg.topicId,
+        widget.arg.assignedDate,
+      ).notifier,
+    );
+
+    notifier.saveAndNext(
+      flashcardId: currentQuestion.flashcardId,
+      answer: text,
+    );
+
+    if (!isLastQuestion) {
+      setState(() {
+        _isError = false;
+      });
+      _swiperController.swipe(CardSwiperDirection.left);
+      return;
+    }
+
+    setState(() {
+      _isError = false;
+      _isSubmitting = true;
+    });
+
+    final result = await notifier.submitQuiz();
+    if (!mounted) return;
+
+    setState(() {
+      _isSubmitting = false;
+    });
+
+    result.fold(
+      ifLeft: (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Nộp bài thất bại: $e')),
+        );
+      },
+          ifRight: (attempt) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Nộp bài thành công')),
+        );
+            context.push(AppRouter.quizResultPath, extra: attempt.id);
+      },
+    );
+  }
+
+
+  TextFormField _userInput(ColorScheme color) {
+    return TextFormField(
+      controller: userAnswer,
+      focusNode: _answerFocusNode,
+      cursorColor: color.primary,
+      validator: (value) {
+        _isError = value == null || value.isEmpty;
+        return null;
+      },
+      decoration: InputDecoration(
+        suffixIconColor: _answerFocusNode.hasFocus
+            ? color.primary
+            : color.outlineVariant,
+
+        suffixIcon: Icon(Icons.edit),
+        hintText: 'Nhập câu trả lời',
+        hintStyle: MyTextStyle.poppinsMedium600.copyWith(color: color.outline),
+        errorText: _isError ? 'Không được bỏ trống đáp án' : null,
+      ),
+    );
+  }
+
+  Widget _questionCard(QuestionItem question, ColorScheme color) {
     return Card(
-      child: Column(
-        children: [
-          Text(
-            'Câu hỏi',
-            style: MyTextStyle.poppinsMedium400.copyWith(color: color.primary),
-          ),
-          Text(
-            '$question trong tiếng Anh gì?',
-            style: MyTextStyle.poppinsLarge600
-          ),
-        ],
+      child: Padding(
+        padding: EdgeInsets.all(20.r),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Câu hỏi',
+              style: MyTextStyle.poppinsLarge600.copyWith(
+                color: color.primary,
+                fontSize: 20.sp,
+              ),
+              textAlign: TextAlign.start,
+            ),
+            Expanded(
+              child: Center(
+                child: Text(
+                  question.question,
+                  style: MyTextStyle.poppinsLarge700.copyWith(
+                    wordSpacing: 2.w,
+                    fontSize: 25.sp,
+                  ),
+                  maxLines: 5,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,9 +1,9 @@
 import 'dart:developer' as developer;
+import 'package:app_demo/src/core/controller/current_user_id_notifire.dart';
 import 'package:app_demo/src/features/flashcard/data/repository/flashcard_repository.dart';
 import 'package:app_demo/src/features/flashcard/domain/flashcard_model.dart';
-import 'package:app_demo/src/shared/constants/format.dart';
-import 'package:app_demo/src/shared/http/supabase_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 
 
 final flashcardServiceProvider = Provider(FlashcardService.new);
@@ -11,10 +11,10 @@ final flashcardServiceProvider = Provider(FlashcardService.new);
 class FlashcardService {
   final Ref _ref;
   FlashcardService(this._ref);
-  late final _client = _ref.read(supabaseClientProvider);
+  // late final _client = _ref.read(supabaseClientProvider);
   late final _repo = _ref.read(flashcardRepoProvider);
 
-  String get _currentUserId => _client.auth.currentUser!.id;
+  late final _currentUserId = _ref.read(currentUserIdProvider);
 
   Future<List<FlashcardModel>> fetchFlashcardById({
     required int topicId,
@@ -40,7 +40,7 @@ class FlashcardService {
     final result = await _repo.fetchDailyFlashcards(
       userId: _currentUserId,
       topicId: topicId ?? 0,
-      assignedDate: Format.normalizeDate(assignedDate?.toLocal()),
+      assignedDate: assignedDate ?? DateTime.now(),
     );
 
     return result.fold(
@@ -62,7 +62,7 @@ class FlashcardService {
     
     final daily = await getDailyFlashcards(
       topicId: selectedTopicId,
-      assignedDate: Format.normalizeDate(assignedDate?.toLocal()),
+      assignedDate: assignedDate,
     );
 
     if (daily.isNotEmpty) return daily.first.topicId;

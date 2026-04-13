@@ -7,7 +7,6 @@ import 'package:app_demo/src/shared/widgets/button_custom.dart';
 import 'package:app_demo/src/shared/widgets/text_field_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -37,13 +36,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar( const SnackBar(content: Text('Đăng nhập thành công!')));
-          _emailFocusNode.unfocus();
-          _passwordFocusNode.unfocus();
-          _emailController.clear();
-          _passwordController.clear();
-          isSubmitted = false;
+          _clearForm();
 
-          // Navigate on next frame after keyboard/focus updates settle.
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted) {
               context.go(AppRouter.homePath);

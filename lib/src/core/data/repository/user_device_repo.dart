@@ -1,4 +1,3 @@
-
 import 'package:app_demo/src/core/data/dto/user_device_dto.dart';
 import 'package:app_demo/src/core/data/source/user_device_source.dart';
 import 'package:app_demo/src/core/domain/user_device_model.dart';
@@ -16,13 +15,20 @@ class UserDeviceRepo {
 
   UserDeviceRepo(this._source);
 
+  Future<Either<AppException, bool>> saveFcmToken({
+    required String userId,
+    required String fcmToken,
+  }) async {
+    return _source.updateFcmToken(userId: userId, fcmToken: fcmToken);
+  }
 
-  Future<Either<AppException, List<UserDeviceModel>>> getUserFcmToken({required String userId}) async{
+  Future<Either<AppException, List<UserDeviceModel>>> getUserFcmToken({
+    required String userId,
+  }) async {
     final result = await _source.getUserFcmToken(userId: userId);
-    return result.map((dailyword){
+    return result.map((dailyword) {
       return dailyword.map((dto) => dto.toDomain()).toList();
     });
-
   }
 
   Future<Either<AppException, bool>> deleteFcmToken({
@@ -31,8 +37,4 @@ class UserDeviceRepo {
   }) async {
     return _source.deleteFcmToken(userId: userId, fcmToken: fcmToken);
   }
-
-
-  
-
 }

@@ -23,6 +23,5 @@ extension QuizAttemptItemsModelMapper on QuizAttemptItemsModel {
     'attempt_id': attemptId,
     'flashcard_id': flashcardId,
     'is_correct': isCorrect,
-    'created_at': createdAt?.toIso8601String(),
   };
 }
