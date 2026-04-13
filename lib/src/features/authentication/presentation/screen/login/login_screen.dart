@@ -118,8 +118,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 colorScheme.primary, BlendMode.srcIn),
                           ),
                           Text(
-                            'Welcome to E-com',
+                            'Chào mừng đến với Zenith',
                             style: MyTextStyle.poppinsHeading1,
+                            textAlign: TextAlign.center,
                           ),
                           Text(
                             'Đăng nhập để tiếp tục',
@@ -146,7 +147,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           Text(
                             'HOẶC',
                             style: MyTextStyle.poppinsMedium700.copyWith(
-                              color: colorScheme.tertiary,
+                              color: colorScheme.outline.withOpacity(0.5),
                             ),
                           ),
                           Expanded(

@@ -2,6 +2,8 @@ import 'dart:developer' as developer;
 import 'dart:math';
 
 import 'package:app_demo/src/features/flashcard/application/flashcard_service.dart';
+import 'package:app_demo/src/features/flashcard/application/user_daily_word_service.dart';
+import 'package:app_demo/src/features/flashcard/data/dto/daily_word_summary_dto.dart';
 import 'package:app_demo/src/features/quiz/application/quiz_attempt_items_service.dart';
 import 'package:app_demo/src/features/quiz/domain/question_model.dart';
 import 'package:app_demo/src/features/quiz/domain/quiz_attempt_items_model.dart';
@@ -28,6 +30,9 @@ class QuizAttemptsService {
   );
   late final FlashcardService _flashcardService = _ref.read(
     flashcardServiceProvider,
+  );
+  late final UserDailyWordService _dailyWordService = _ref.read(
+    userDailyWordServiceProvider,
   );
 
   Future<Either<AppException, QuizAttemptsModel>> insertQuizAttemp({
@@ -104,19 +109,29 @@ class QuizAttemptsService {
     }
   }
 
-  Future<Either<AppException, QuizAttemptsModel>> submitQuiz({required QuestionModel session}) async {
-    if(session.questions.isEmpty){
-      return Either.left(AppException.errorWithMessage('Không có câu hỏi nào được tìm thấy'));
+  Future<Either<AppException, QuizAttemptsModel>> submitQuiz({
+    required QuestionModel session,
+    required QuizAttemptArgs args,
+  }) async {
+    if (session.questions.isEmpty) {
+      return Either.left(
+        AppException.errorWithMessage('Không có câu hỏi nào được tìm thấy'),
+      );
     }
     final totalQuestions = session.questions.length;
     final correctAnswers = _calculateCorrectAnswers(session);
     final score = _calculateScore(correctAnswers, totalQuestions);
 
-    final answeredCount = session.questions.where(
-      (q) => (session.userAnswers[q.flashcardId] ?? '').trim().isNotEmpty).length;
+    final answeredCount = session.questions
+        .where(
+          (q) => (session.userAnswers[q.flashcardId] ?? '').trim().isNotEmpty,
+        )
+        .length;
 
-    if(answeredCount < totalQuestions){
-      return Either.left(AppException.errorWithMessage('Chưa trả lời hết tất cả câu hỏi'));
+    if (answeredCount < totalQuestions) {
+      return Either.left(
+        AppException.errorWithMessage('Chưa trả lời hết tất cả câu hỏi'),
+      );
     }
     final attempt = await insertQuizAttemp(
       topicId: session.topicId,
@@ -126,16 +141,21 @@ class QuizAttemptsService {
     );
 
     return await attempt.fold(
-      ifLeft: (e) async => e.left(), 
-      ifRight: (attempt) async{
-        if(attempt.id.isEmpty){
+      ifLeft: (e) async => e.left(),
+      ifRight: (attempt) async {
+        if (attempt.id.isEmpty) {
           return Either.left(AppException.errorWithMessage('attempId isEmpty'));
         }
 
-        final items = _buildAttemptItems(attemptId: attempt.id, session: session);
+        final items = _buildAttemptItems(
+          attemptId: attempt.id,
+          session: session,
+        );
 
-        if(items.isEmpty){
-          return Either.left(AppException.errorWithMessage('_buildAttemptItems isEmpty'));
+        if (items.isEmpty) {
+          return Either.left(
+            AppException.errorWithMessage('_buildAttemptItems isEmpty'),
+          );
         }
 
         final insertItem = await _attemptItemsService.insertQuizAttempItems(
@@ -151,10 +171,29 @@ class QuizAttemptsService {
             );
             return error.left();
           },
-          ifRight: (_) => attempt.right(),
+          ifRight: (item) async {
+            if (args.type == QuizAttemptType.daily ||
+                args.type == QuizAttemptType.today) {
+              final listFlashcardId = session.questions
+                  .where((q){
+                    final answer = session.userAnswers[q.flashcardId]?.trim().toLowerCase();
+                    final correctAnswer = q.correctAnswer.trim().toLowerCase();
+                    return answer != null && answer.isNotEmpty &&  answer == correctAnswer;
+                  })
+                  .map((q) => q.flashcardId)
+                  .toList();
+              developer.log('correct ids: ${listFlashcardId.length}');
+              developer.log('assignedDate: ${args.assignedDate}');
+              await _dailyWordService.updateIsCompleted(
+                flashcardIds: listFlashcardId,
+                assignedDate: args.assignedDate ?? DateTime.now(),
+              );
+            }
+            return attempt.right();
+          },
         );
-      }
-      );
+      },
+    );
   }
 
   List<QuizAttemptItemsModel> _buildAttemptItems({
@@ -164,14 +203,15 @@ class QuizAttemptsService {
     final answers = session.userAnswers;
 
     return session.questions.map((q) {
-      final answer = answers[q.flashcardId]?.trim().toLowerCase();
+      final answer = answers[q.flashcardId]?.trim().toLowerCase() ?? '';
       final correct = q.correctAnswer.trim().toLowerCase();
-      final isCorrect = answer != null && answer == correct;
+      final isCorrect = answer.isNotEmpty && answer == correct;
 
       return QuizAttemptItemsModel(
         id: '',
         attemptId: attemptId,
-        flashcardId: q.flashcardId,
+        question: q.correctAnswer,
+        userAnswer: answer,
         isCorrect: isCorrect,
       );
     }).toList();

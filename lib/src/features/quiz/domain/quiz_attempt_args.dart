@@ -1,3 +1,5 @@
+import 'quiz_attempts_model.dart';
+
 enum QuizAttemptType {
   today,
   daily,
@@ -18,4 +20,14 @@ class QuizAttemptArgs{
   final DateTime? assignedDate;
   final String? title;
   final String? attemptId;
+}
+
+class QuizResultRouteArgs {
+  const QuizResultRouteArgs({
+    required this.quizAttemp,
+    required this.arg,
+  });
+
+  final QuizAttemptsModel quizAttemp;
+  final QuizAttemptArgs arg;
 }

@@ -8,7 +8,9 @@ abstract class QuizAttemptItemsModel with _$QuizAttemptItemsModel{
 
     required String attemptId,
 
-    required String flashcardId,
+    required String question,
+
+    required String userAnswer,
 
     required bool isCorrect,
 
@@ -21,7 +23,8 @@ abstract class QuizAttemptItemsModel with _$QuizAttemptItemsModel{
 extension QuizAttemptItemsModelMapper on QuizAttemptItemsModel {
   Map<String, dynamic> toJson() =>{
     'attempt_id': attemptId,
-    'flashcard_id': flashcardId,
+    'question': question,
+    'user_answer': userAnswer,
     'is_correct': isCorrect,
   };
 }

@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: AppRouter.quizResultPath,
+  initialLocation: AppRouter.loginPath,
   
   routes: <RouteBase>[
     GoRoute(
@@ -67,9 +67,11 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRouter.quizResultPath,
       builder: (context, state){
-        final extra = state.extra;
-        final attemptId = extra is String ? extra : '';
-        return QuizResultScreen(quizAttempId: attemptId);
+        final extra = state.extra as QuizResultRouteArgs;
+        return QuizResultScreen(
+          quizAttemp: extra.quizAttemp, 
+          arg: extra.arg,
+        );
       } 
     ),
     // GoRoute(

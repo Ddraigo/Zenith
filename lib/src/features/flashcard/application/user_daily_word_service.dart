@@ -104,7 +104,7 @@ class UserDailyWordService {
         developer.log('UserDailyWordService: error updateIsCompleted', error: error);
         throw error;
       },  
-      ifRight: (_) => true,
+      ifRight: (updated) => updated,
     );
   }
 }

@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$QuizAttemptItemsModel {
 
- String get id; String get attemptId; String get flashcardId; bool get isCorrect; DateTime? get createdAt;
+ String get id; String get attemptId; String get question; String get userAnswer; bool get isCorrect; DateTime? get createdAt;
 /// Create a copy of QuizAttemptItemsModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $QuizAttemptItemsModelCopyWith<QuizAttemptItemsModel> get copyWith => _$QuizAtte
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuizAttemptItemsModel&&(identical(other.id, id) || other.id == id)&&(identical(other.attemptId, attemptId) || other.attemptId == attemptId)&&(identical(other.flashcardId, flashcardId) || other.flashcardId == flashcardId)&&(identical(other.isCorrect, isCorrect) || other.isCorrect == isCorrect)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuizAttemptItemsModel&&(identical(other.id, id) || other.id == id)&&(identical(other.attemptId, attemptId) || other.attemptId == attemptId)&&(identical(other.question, question) || other.question == question)&&(identical(other.userAnswer, userAnswer) || other.userAnswer == userAnswer)&&(identical(other.isCorrect, isCorrect) || other.isCorrect == isCorrect)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,attemptId,flashcardId,isCorrect,createdAt);
+int get hashCode => Object.hash(runtimeType,id,attemptId,question,userAnswer,isCorrect,createdAt);
 
 @override
 String toString() {
-  return 'QuizAttemptItemsModel(id: $id, attemptId: $attemptId, flashcardId: $flashcardId, isCorrect: $isCorrect, createdAt: $createdAt)';
+  return 'QuizAttemptItemsModel(id: $id, attemptId: $attemptId, question: $question, userAnswer: $userAnswer, isCorrect: $isCorrect, createdAt: $createdAt)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $QuizAttemptItemsModelCopyWith<$Res>  {
   factory $QuizAttemptItemsModelCopyWith(QuizAttemptItemsModel value, $Res Function(QuizAttemptItemsModel) _then) = _$QuizAttemptItemsModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String attemptId, String flashcardId, bool isCorrect, DateTime? createdAt
+ String id, String attemptId, String question, String userAnswer, bool isCorrect, DateTime? createdAt
 });
 
 
@@ -62,11 +62,12 @@ class _$QuizAttemptItemsModelCopyWithImpl<$Res>
 
 /// Create a copy of QuizAttemptItemsModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? attemptId = null,Object? flashcardId = null,Object? isCorrect = null,Object? createdAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? attemptId = null,Object? question = null,Object? userAnswer = null,Object? isCorrect = null,Object? createdAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,attemptId: null == attemptId ? _self.attemptId : attemptId // ignore: cast_nullable_to_non_nullable
-as String,flashcardId: null == flashcardId ? _self.flashcardId : flashcardId // ignore: cast_nullable_to_non_nullable
+as String,question: null == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
+as String,userAnswer: null == userAnswer ? _self.userAnswer : userAnswer // ignore: cast_nullable_to_non_nullable
 as String,isCorrect: null == isCorrect ? _self.isCorrect : isCorrect // ignore: cast_nullable_to_non_nullable
 as bool,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
@@ -154,10 +155,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String attemptId,  String flashcardId,  bool isCorrect,  DateTime? createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String attemptId,  String question,  String userAnswer,  bool isCorrect,  DateTime? createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _QuizAttemptItemsModel() when $default != null:
-return $default(_that.id,_that.attemptId,_that.flashcardId,_that.isCorrect,_that.createdAt);case _:
+return $default(_that.id,_that.attemptId,_that.question,_that.userAnswer,_that.isCorrect,_that.createdAt);case _:
   return orElse();
 
 }
@@ -175,10 +176,10 @@ return $default(_that.id,_that.attemptId,_that.flashcardId,_that.isCorrect,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String attemptId,  String flashcardId,  bool isCorrect,  DateTime? createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String attemptId,  String question,  String userAnswer,  bool isCorrect,  DateTime? createdAt)  $default,) {final _that = this;
 switch (_that) {
 case _QuizAttemptItemsModel():
-return $default(_that.id,_that.attemptId,_that.flashcardId,_that.isCorrect,_that.createdAt);case _:
+return $default(_that.id,_that.attemptId,_that.question,_that.userAnswer,_that.isCorrect,_that.createdAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,10 +196,10 @@ return $default(_that.id,_that.attemptId,_that.flashcardId,_that.isCorrect,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String attemptId,  String flashcardId,  bool isCorrect,  DateTime? createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String attemptId,  String question,  String userAnswer,  bool isCorrect,  DateTime? createdAt)?  $default,) {final _that = this;
 switch (_that) {
 case _QuizAttemptItemsModel() when $default != null:
-return $default(_that.id,_that.attemptId,_that.flashcardId,_that.isCorrect,_that.createdAt);case _:
+return $default(_that.id,_that.attemptId,_that.question,_that.userAnswer,_that.isCorrect,_that.createdAt);case _:
   return null;
 
 }
@@ -210,12 +211,13 @@ return $default(_that.id,_that.attemptId,_that.flashcardId,_that.isCorrect,_that
 
 
 class _QuizAttemptItemsModel implements QuizAttemptItemsModel {
-  const _QuizAttemptItemsModel({required this.id, required this.attemptId, required this.flashcardId, required this.isCorrect, this.createdAt});
+  const _QuizAttemptItemsModel({required this.id, required this.attemptId, required this.question, required this.userAnswer, required this.isCorrect, this.createdAt});
   
 
 @override final  String id;
 @override final  String attemptId;
-@override final  String flashcardId;
+@override final  String question;
+@override final  String userAnswer;
 @override final  bool isCorrect;
 @override final  DateTime? createdAt;
 
@@ -229,16 +231,16 @@ _$QuizAttemptItemsModelCopyWith<_QuizAttemptItemsModel> get copyWith => __$QuizA
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuizAttemptItemsModel&&(identical(other.id, id) || other.id == id)&&(identical(other.attemptId, attemptId) || other.attemptId == attemptId)&&(identical(other.flashcardId, flashcardId) || other.flashcardId == flashcardId)&&(identical(other.isCorrect, isCorrect) || other.isCorrect == isCorrect)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuizAttemptItemsModel&&(identical(other.id, id) || other.id == id)&&(identical(other.attemptId, attemptId) || other.attemptId == attemptId)&&(identical(other.question, question) || other.question == question)&&(identical(other.userAnswer, userAnswer) || other.userAnswer == userAnswer)&&(identical(other.isCorrect, isCorrect) || other.isCorrect == isCorrect)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,attemptId,flashcardId,isCorrect,createdAt);
+int get hashCode => Object.hash(runtimeType,id,attemptId,question,userAnswer,isCorrect,createdAt);
 
 @override
 String toString() {
-  return 'QuizAttemptItemsModel(id: $id, attemptId: $attemptId, flashcardId: $flashcardId, isCorrect: $isCorrect, createdAt: $createdAt)';
+  return 'QuizAttemptItemsModel(id: $id, attemptId: $attemptId, question: $question, userAnswer: $userAnswer, isCorrect: $isCorrect, createdAt: $createdAt)';
 }
 
 
@@ -249,7 +251,7 @@ abstract mixin class _$QuizAttemptItemsModelCopyWith<$Res> implements $QuizAttem
   factory _$QuizAttemptItemsModelCopyWith(_QuizAttemptItemsModel value, $Res Function(_QuizAttemptItemsModel) _then) = __$QuizAttemptItemsModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String attemptId, String flashcardId, bool isCorrect, DateTime? createdAt
+ String id, String attemptId, String question, String userAnswer, bool isCorrect, DateTime? createdAt
 });
 
 
@@ -266,11 +268,12 @@ class __$QuizAttemptItemsModelCopyWithImpl<$Res>
 
 /// Create a copy of QuizAttemptItemsModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? attemptId = null,Object? flashcardId = null,Object? isCorrect = null,Object? createdAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? attemptId = null,Object? question = null,Object? userAnswer = null,Object? isCorrect = null,Object? createdAt = freezed,}) {
   return _then(_QuizAttemptItemsModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,attemptId: null == attemptId ? _self.attemptId : attemptId // ignore: cast_nullable_to_non_nullable
-as String,flashcardId: null == flashcardId ? _self.flashcardId : flashcardId // ignore: cast_nullable_to_non_nullable
+as String,question: null == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
+as String,userAnswer: null == userAnswer ? _self.userAnswer : userAnswer // ignore: cast_nullable_to_non_nullable
 as String,isCorrect: null == isCorrect ? _self.isCorrect : isCorrect // ignore: cast_nullable_to_non_nullable
 as bool,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,

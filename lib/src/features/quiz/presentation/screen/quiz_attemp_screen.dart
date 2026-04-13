@@ -4,12 +4,15 @@ import 'package:app_demo/configs/routes/app_router.dart';
 import 'package:app_demo/configs/themes/text_style.dart';
 import 'package:app_demo/src/features/quiz/domain/question_model.dart';
 import 'package:app_demo/src/features/quiz/domain/quiz_attempt_args.dart';
+import 'package:app_demo/src/features/quiz/domain/quiz_attempts_model.dart';
 import 'package:app_demo/src/features/quiz/presentation/controller/quiz_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../home/presentation/home_screen.dart';
 
 class QuizAttempScreen extends ConsumerStatefulWidget {
   const QuizAttempScreen({super.key, required this.arg});
@@ -61,7 +64,10 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
         centerTitle: true,
         title: Text(widget.arg.title ?? ''),
         leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: (){
+            ref.read(homeTapProvider.notifier).state = 2;
+            context.go(AppRouter.homePath);
+          },
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
         ),
       ),
@@ -79,12 +85,13 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
 
               final answeredCount = quizes.questions
                   .where(
-                    (q) =>
-                        (quizes.userAnswers[q.flashcardId] ?? '').trim().isNotEmpty,
+                    (q) => (quizes.userAnswers[q.flashcardId] ?? '')
+                        .trim()
+                        .isNotEmpty,
                   )
                   .length;
-              final progressValue =
-                  (answeredCount / quizes.questions.length).clamp(0.0, 1.0);
+              final progressValue = (answeredCount / quizes.questions.length)
+                  .clamp(0.0, 1.0);
               return Column(
                 spacing: 40.h,
 
@@ -92,10 +99,7 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Tiến độ',
-                        style: MyTextStyle.poppinsMedium600,
-                      ),
+                      Text('Tiến độ', style: MyTextStyle.poppinsMedium600),
                       Text(
                         '$answeredCount/${quizes.questions.length}',
                         style: MyTextStyle.poppinsMedium600.copyWith(
@@ -233,19 +237,21 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
 
     result.fold(
       ifLeft: (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Nộp bài thất bại: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Nộp bài thất bại: $e')));
       },
-          ifRight: (attempt) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Nộp bài thành công')),
+      ifRight: (attempt) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Nộp bài thành công')));
+        context.pushReplacement(
+          AppRouter.quizResultPath,
+          extra: QuizResultRouteArgs(quizAttemp: attempt, arg: widget.arg),
         );
-            context.push(AppRouter.quizResultPath, extra: attempt.id);
       },
     );
   }
-
 
   TextFormField _userInput(ColorScheme color) {
     return TextFormField(

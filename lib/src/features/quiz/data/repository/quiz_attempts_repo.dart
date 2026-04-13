@@ -36,8 +36,10 @@ class QuizAttemptsRepo {
     required int score,
     required int totalQuestions,
     required int correctAnswers,
+    required String id,
   }) async {
     final result = await _source.updateQuizAttemp(
+      id: id,
       userId: userId,
       topicId: topicId,
       score: score,

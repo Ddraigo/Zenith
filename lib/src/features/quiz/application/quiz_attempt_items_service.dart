@@ -12,13 +12,41 @@ class QuizAttemptItemsService {
   QuizAttemptItemsService(this._ref);
   late final QuizAttemptItemsRepo _repo = _ref.read(quizAttemptItemsRepoProvider);
 
-  Future<Either<AppException, bool>> insertQuizAttempItems({
+  Future<Either<AppException, List<QuizAttemptItemsModel>>> insertQuizAttempItems({
     required List<QuizAttemptItemsModel> items,
   }) async {
     if(items.isEmpty){
       return Either.left(AppException.errorWithMessage('Không có item nào để lưu'));
     }
-    return _repo.insertQuizAttempItems(items: items);
+    final result  = await _repo.insertQuizAttempItems(items: items);
+    return result.fold(
+      ifLeft: (e) => e.left(),
+      ifRight: (items) {
+        if (items.isEmpty) {
+          return Either.left(AppException.errorWithMessage('Không có danh sách nào'));
+        }
+        return Either.right(items);
+      },
+    );
+  }
+
+  Future<Either<AppException, List<QuizAttemptItemsModel>>> getQuizAttempItemsById({
+    required String quizAttemptId,
+  }) async {
+    if(quizAttemptId.isEmpty ){
+      return Either.left(AppException.badRequest('attempId isEmpty'));
+    }
+    final result = await _repo.getQuizAttempItemsById(quizAttemptId: quizAttemptId);
+
+    return result.fold(
+      ifLeft: (e) => e.left(),
+      ifRight: (items) {
+        if (items.isEmpty) {
+          return Either.left(AppException.errorWithMessage('Không có danh sách nào'));
+        }
+        return Either.right(items);
+      },
+    );
   }
   
 }

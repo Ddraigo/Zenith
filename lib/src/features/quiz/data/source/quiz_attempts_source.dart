@@ -42,27 +42,31 @@ class QuizAttemptsSource{
     }
   }
 
+
   Future<Either<AppException, QuizAttemptsDTO>> updateQuizAttemp({
     required String userId,
     int? topicId,
     required int score,
     required int totalQuestions,
     required int correctAnswers, 
+    required String id,
   })async{
     try {
-      final data = await _client
+      final data =  _client
                 .from('quiz_attempts')
-                .insert({
-                'user_id': userId,
-                'topic_id': topicId,
+                .update({
                 'score': score,
                 'total_questions': totalQuestions,
                 'correct_answers': correctAnswers,
               })
-              .select()
-              .single();
+              .eq('id', id)
+              .eq('user_id', userId);
+      if(topicId != 0 && topicId != null){
+        data.eq('topic_id', topicId);
+      }
+      data.select().single();
                 
-    return Either.right(QuizAttemptsDTO.fromJson(data));
+    return Either.right(QuizAttemptsDTO.fromJson(await data));
                           
     } catch (e) {
       return Either.left(SupabaseErrorHandle.handle(e));

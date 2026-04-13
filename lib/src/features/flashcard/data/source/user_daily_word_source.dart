@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'package:app_demo/src/features/flashcard/data/dto/daily_word_summary_dto.dart';
 import 'package:app_demo/src/features/flashcard/data/dto/user_daily_word_dto.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
@@ -80,18 +81,27 @@ class UserDailyWordSource {
     required String assignedDate,
   }) async {
     try {
-      if(flashcardIds.isEmpty){
+      if (flashcardIds.isEmpty) {
         return Either.right(false);
       }
-      await _client
+      
+      developer.log('[updateIsCompleted] userId: $userId');
+      developer.log('[updateIsCompleted] assignedDate: $assignedDate');
+      developer.log('[updateIsCompleted] flashcardIds: $flashcardIds (count: ${flashcardIds.length})');
+      
+      final updatedRows = await _client
           .from('user_daily_word')
           .update({'is_completed': true})
           .eq('user_id', userId)
           .eq('assigned_date', assignedDate)
-          .inFilter('flashcard_id', flashcardIds);
+          .inFilter('flashcard_id', flashcardIds)
+          .select('flashcard_id') as List<dynamic>;
 
-      return const Either.right(true);
+      developer.log('[updateIsCompleted] updatedRows: ${updatedRows.length}');
+      
+      return Either.right(updatedRows.isNotEmpty);
     } catch (e) {
+      developer.log('[updateIsCompleted] ERROR: $e');
       return Either.left(SupabaseErrorHandle.handle(e));
     }
   }

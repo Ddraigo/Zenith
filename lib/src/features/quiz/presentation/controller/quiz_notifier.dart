@@ -63,7 +63,14 @@ class QuizSessionNotifier extends _$QuizSessionNotifier {
       );
     }
 
-    return ref.read(quizAttemptsServiceProvider).submitQuiz(session: session);
+    return ref.read(quizAttemptsServiceProvider).submitQuiz(
+      session: session, 
+      args: QuizAttemptArgs(
+        type: type,
+        topicId: topicId,
+        assignedDate: assignedDate,
+        ),
+      );
   }
 
   

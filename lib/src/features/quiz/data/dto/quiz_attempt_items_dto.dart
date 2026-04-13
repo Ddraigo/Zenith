@@ -11,8 +11,11 @@ const factory QuizAttemptItemsDTO({
     @JsonKey(name: 'attempt_id')
     required String attemptId,
 
-    @JsonKey(name:'flashcard_id') 
-    required String flashcardId,
+    @JsonKey(name:'question') 
+    required String question,
+
+    @JsonKey(name:'user_answer') 
+    required String userAnswer,
 
 
     @JsonKey(name:'is_correct') 
@@ -31,7 +34,8 @@ extension QuizAttemptItemsDTOMapper on QuizAttemptItemsDTO {
     return QuizAttemptItemsModel(
       id: id,
       attemptId: attemptId,
-      flashcardId: flashcardId,
+      question: question,
+      userAnswer: userAnswer,
       isCorrect: isCorrect,
       createdAt: createdAt,
     );
