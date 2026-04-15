@@ -6,19 +6,27 @@ part 'user_stats_dto.g.dart';
 @freezed
 abstract class UserStatsDTO with _$UserStatsDTO{
   const factory UserStatsDTO({
+    
+    @JsonKey(name:'user_id')
     required String userId,
 
     @JsonKey(name:'streak_count')
-    int? streakCount,
+    required int streakCount,
 
     @JsonKey(name: 'last_learned_date')
     DateTime? lastLearnedDate,
 
     @JsonKey(name: 'total_points')
-    int? totaPoints,
+    required int totalPoints,
 
-    @JsonKey(name: 'updated_at')
-    DateTime? updatedAt,
+    @JsonKey(name: 'last_points_awarded_date')
+    DateTime? lastPointsAwardedDate,
+
+    @JsonKey(name: 'last_streak_counted_date')
+    DateTime? lastStreakCountedDate,
+
+    @JsonKey(name: 'created_at')
+    DateTime? createdAt,
 
   }) = _UserStatsDTO;
 
@@ -31,8 +39,9 @@ extension UserStatsDTOMapper on UserStatsDTO{
       userId: userId, 
       streakCount: streakCount,
       lastLearnedDate: lastLearnedDate,
-      totaPoints: totaPoints,
-      updatedAt: updatedAt,
+      totalPoints: totalPoints,
+      lastPointsAwardedDate: lastPointsAwardedDate,
+      lastStreakCountedDate: lastStreakCountedDate,
     );
   }
 }

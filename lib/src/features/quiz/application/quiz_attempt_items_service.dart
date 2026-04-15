@@ -16,7 +16,7 @@ class QuizAttemptItemsService {
     required List<QuizAttemptItemsModel> items,
   }) async {
     if(items.isEmpty){
-      return Either.left(AppException.errorWithMessage('Không có item nào để lưu'));
+      return Either.left(AppException.errorWithMessage('insertQuizAttempItems: Không có item nào để lưu'));
     }
     final result  = await _repo.insertQuizAttempItems(items: items);
     return result.fold(

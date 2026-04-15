@@ -63,5 +63,7 @@ class MyIcons{
   static const String tap =  'assets/icons/tap.svg';
   static const String learn =  'assets/icons/learn.svg';
   static const String quiz =  'assets/icons/quiz.svg';
+  static const String progress =  'assets/icons/progress.svg';
+  static const String streak =  'assets/icons/streak.svg';
 }
 

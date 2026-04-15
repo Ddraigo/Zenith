@@ -30,18 +30,25 @@ class QuizList extends StatelessWidget {
     final color = Theme.of(context).colorScheme;
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Text('Từ vựng hằng ngày', style: MyTextStyle.poppinsMedium700),
-            TextButton(
-              onPressed: () {
-                
-              },
-              child: Text('Tất cả', style: MyTextStyle.poppinsMedium600),
-            ),
-          ],
+        Padding(
+          padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Text('Từ vựng hằng ngày', style: MyTextStyle.poppinsMedium.copyWith(
+                fontSize: 17.sp
+              )),
+              TextButton(
+                onPressed: () {
+                  
+                },
+                child: Text('Tất cả', style: MyTextStyle.poppinsMedium.copyWith(
+                fontSize: 17.sp
+              )),
+              ),
+            ],
+          ),
         ),
         SizedBox(
           height: 150.h,
@@ -49,22 +56,29 @@ class QuizList extends StatelessWidget {
         ),
 
         SizedBox(height: 16.h),
-        Column(
-          spacing: 8.h,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Text('Từ vựng chủ đề', style: MyTextStyle.poppinsMedium700),
-                TextButton(
-                  onPressed: () {},
-                  child: Text('Tất cả', style: MyTextStyle.poppinsMedium600),
-                ),
-              ],
-            ),
-            _topicQuizList(context, topicList, color),
-          ],
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          child: Column(
+            
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Text('Từ vựng chủ đề',style: MyTextStyle.poppinsMedium.copyWith(
+                fontSize: 17.sp
+              )),
+                  TextButton(
+                    onPressed: () {},
+                    child: Text('Tất cả', style: MyTextStyle.poppinsMedium.copyWith(
+                fontSize: 17.sp
+              )),
+                  ),
+                ],
+              ),
+              _topicQuizList(context, topicList, color),
+            ],
+          ),
         ),
       ],
     );
@@ -75,76 +89,80 @@ class QuizList extends StatelessWidget {
     List<DailyWordSummaryModel> items,
     ColorScheme color,
   ) {
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        final item = items[index];
-
-        return GestureDetector(
-          onTap: () {
-            final args = QuizAttemptArgs(
-              type: QuizAttemptType.daily,
-              topicId: item.topicId,
-              title: item.topicName,
-              assignedDate: item.assignedDate,
-            );
-            
-            context.go(AppRouter.quizAttempPath, extra: args);
-          },
-          child: Container(
-            margin: EdgeInsets.symmetric(vertical: 16.h, horizontal: 8.w),
-            padding: EdgeInsets.all(10.r),
-            width: 140.w,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.r),
-              color: color.outline.withOpacity(0.08),
-              border: Border.all(color: color.outlineVariant.withOpacity(0.5)),
-            ),
-
-            child: Column(
-              spacing: 5.h,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  Format.formatDMY(item.assignedDate).isEmpty
-                      ? 'N/A'
-                      : Format.formatDMY(item.assignedDate),
-                  style: MyTextStyle.poppinsMedium600.copyWith(
-                    color: color.primary,
-                  ),
-                ),
-                Text(
-                  item.topicName.isEmpty ? 'N/A' : item.topicName,
-                  style: MyTextStyle.poppinsLarge600.copyWith(
-                    fontSize: 20.sp,
-                    color: color.outline,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
-                Row(
-                  spacing: 2.w,
-                  children: [
-                    Icon(
-                      Icons.play_circle_outline_rounded,
-                      color: color.outline,
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 8.w),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          final item = items[index];
+      
+          return GestureDetector(
+            onTap: () {
+              final args = QuizAttemptArgs(
+                type: QuizAttemptType.daily,
+                topicId: item.topicId,
+                title: item.topicName,
+                assignedDate: item.assignedDate,
+              );
+              
+              context.go(AppRouter.quizAttempPath, extra: args);
+            },
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
+              padding: EdgeInsets.all(10.r),
+              width: 140.w,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16.r),
+                color: color.outline.withOpacity(0.08),
+                border: Border.all(color: color.outlineVariant.withOpacity(0.5)),
+              ),
+      
+              child: Column(
+                spacing: 2.h,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  
+                  Text(
+                    item.topicName.isEmpty ? 'N/A' : item.topicName,
+                    style: MyTextStyle.poppinsLarge600.copyWith(
+                      fontSize: 20.sp,
+                      color: color.onPrimaryFixedVariant.withOpacity(0.7),
                     ),
-                    Text(
-                      "Start",
-                      style: MyTextStyle.poppinsMedium700.copyWith(
-                        color: color.outline,
-                      ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                  Text(
+                    Format.formatDMY(item.assignedDate).isEmpty
+                        ? 'N/A'
+                        : Format.formatDMY(item.assignedDate),
+                    style: MyTextStyle.poppinsMedium.copyWith(
+                      color: color.primary,
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                  // Row(
+                  //   spacing: 2.w,
+                  //   children: [
+                  //     Icon(
+                  //       Icons.play_circle_outline_rounded,
+                  //       color: color.outline,
+                  //     ),
+                  //     Text(
+                  //       "Start",
+                  //       style: MyTextStyle.poppinsMedium700.copyWith(
+                  //         color: color.outline,
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
@@ -166,7 +184,7 @@ class QuizList extends StatelessWidget {
           error: (_, _) => 'N/A',
         );
         return Container(
-          margin: EdgeInsets.symmetric(vertical: 16.h),
+          margin: EdgeInsets.symmetric(vertical: 8.h),
           padding: EdgeInsets.all(16.r),
           width: double.infinity,
           decoration: BoxDecoration(
@@ -179,7 +197,7 @@ class QuizList extends StatelessWidget {
             children: [
               Expanded(
                 child: Row(
-                  spacing: 10.h,
+                  spacing: 16.h,
                   children: [
                     Container(
                       padding: EdgeInsets.all(10.r),
@@ -198,7 +216,6 @@ class QuizList extends StatelessWidget {
                     ),
                     Expanded(
                       child: Column(
-                        spacing: 3.h,
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -206,6 +223,7 @@ class QuizList extends StatelessWidget {
                             item.name.isEmpty ? 'N/A' : item.name,
                             style: MyTextStyle.poppinsLarge600.copyWith(
                               color: color.primary,
+                              height: 1.2.h,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -222,7 +240,7 @@ class QuizList extends StatelessWidget {
                   ],
                 ),
               ),
-              OutlinedButton(
+              IconButton(
                 onPressed: () {
                   final args = QuizAttemptArgs(
                     type: QuizAttemptType.topic,
@@ -231,15 +249,11 @@ class QuizList extends StatelessWidget {
                   );
                   context.go(AppRouter.quizAttempPath, extra: args);
                 },
-                style: OutlinedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
-                  minimumSize: Size(100.w, 50.h),
-                  side: BorderSide(color: color.outline.withOpacity(0.2)),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadiusGeometry.circular(32.r),
-                  ),
+                style: IconButton.styleFrom(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+                  
                 ),
-                child: Text('START'),
+                icon: Icon(Icons.arrow_forward_ios_rounded, color: color.outline.withOpacity(0.5),),
               ),
             ],
           ),

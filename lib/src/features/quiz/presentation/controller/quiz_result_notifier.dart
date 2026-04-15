@@ -18,7 +18,7 @@ class QuizResultNotifier extends _$QuizResultNotifier {
     );
 
     return result.fold(
-      ifLeft: (e) => throw AppException.errorWithMessage(e.toString()),
+      ifLeft: (e) => throw e,
       ifRight: (items) => items,
     );
   }

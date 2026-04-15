@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserFlashcardProgressModel {
 
- String get userId; String get flashcardId; bool? get isLearned; int? get wrongCount; DateTime? get createdAt; DateTime? get updatedAt;
+ String get userId; String get flashcardId; bool get isLearned; int get wrongCount; DateTime? get createdAt; DateTime? get updatedAt;
 /// Create a copy of UserFlashcardProgressModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $UserFlashcardProgressModelCopyWith<$Res>  {
   factory $UserFlashcardProgressModelCopyWith(UserFlashcardProgressModel value, $Res Function(UserFlashcardProgressModel) _then) = _$UserFlashcardProgressModelCopyWithImpl;
 @useResult
 $Res call({
- String userId, String flashcardId, bool? isLearned, int? wrongCount, DateTime? createdAt, DateTime? updatedAt
+ String userId, String flashcardId, bool isLearned, int wrongCount, DateTime? createdAt, DateTime? updatedAt
 });
 
 
@@ -62,13 +62,13 @@ class _$UserFlashcardProgressModelCopyWithImpl<$Res>
 
 /// Create a copy of UserFlashcardProgressModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? flashcardId = null,Object? isLearned = freezed,Object? wrongCount = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? flashcardId = null,Object? isLearned = null,Object? wrongCount = null,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(_self.copyWith(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,flashcardId: null == flashcardId ? _self.flashcardId : flashcardId // ignore: cast_nullable_to_non_nullable
-as String,isLearned: freezed == isLearned ? _self.isLearned : isLearned // ignore: cast_nullable_to_non_nullable
-as bool?,wrongCount: freezed == wrongCount ? _self.wrongCount : wrongCount // ignore: cast_nullable_to_non_nullable
-as int?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as String,isLearned: null == isLearned ? _self.isLearned : isLearned // ignore: cast_nullable_to_non_nullable
+as bool,wrongCount: null == wrongCount ? _self.wrongCount : wrongCount // ignore: cast_nullable_to_non_nullable
+as int,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
@@ -155,7 +155,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String userId,  String flashcardId,  bool? isLearned,  int? wrongCount,  DateTime? createdAt,  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String userId,  String flashcardId,  bool isLearned,  int wrongCount,  DateTime? createdAt,  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserFlashcardProgressModel() when $default != null:
 return $default(_that.userId,_that.flashcardId,_that.isLearned,_that.wrongCount,_that.createdAt,_that.updatedAt);case _:
@@ -176,7 +176,7 @@ return $default(_that.userId,_that.flashcardId,_that.isLearned,_that.wrongCount,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String userId,  String flashcardId,  bool? isLearned,  int? wrongCount,  DateTime? createdAt,  DateTime? updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String userId,  String flashcardId,  bool isLearned,  int wrongCount,  DateTime? createdAt,  DateTime? updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _UserFlashcardProgressModel():
 return $default(_that.userId,_that.flashcardId,_that.isLearned,_that.wrongCount,_that.createdAt,_that.updatedAt);case _:
@@ -196,7 +196,7 @@ return $default(_that.userId,_that.flashcardId,_that.isLearned,_that.wrongCount,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String userId,  String flashcardId,  bool? isLearned,  int? wrongCount,  DateTime? createdAt,  DateTime? updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String userId,  String flashcardId,  bool isLearned,  int wrongCount,  DateTime? createdAt,  DateTime? updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _UserFlashcardProgressModel() when $default != null:
 return $default(_that.userId,_that.flashcardId,_that.isLearned,_that.wrongCount,_that.createdAt,_that.updatedAt);case _:
@@ -211,13 +211,13 @@ return $default(_that.userId,_that.flashcardId,_that.isLearned,_that.wrongCount,
 
 
 class _UserFlashcardProgressModel implements UserFlashcardProgressModel {
-  const _UserFlashcardProgressModel({required this.userId, required this.flashcardId, this.isLearned = false, this.wrongCount = -1, this.createdAt, this.updatedAt});
+  const _UserFlashcardProgressModel({required this.userId, required this.flashcardId, required this.isLearned, required this.wrongCount, this.createdAt, this.updatedAt});
   
 
 @override final  String userId;
 @override final  String flashcardId;
-@override@JsonKey() final  bool? isLearned;
-@override@JsonKey() final  int? wrongCount;
+@override final  bool isLearned;
+@override final  int wrongCount;
 @override final  DateTime? createdAt;
 @override final  DateTime? updatedAt;
 
@@ -251,7 +251,7 @@ abstract mixin class _$UserFlashcardProgressModelCopyWith<$Res> implements $User
   factory _$UserFlashcardProgressModelCopyWith(_UserFlashcardProgressModel value, $Res Function(_UserFlashcardProgressModel) _then) = __$UserFlashcardProgressModelCopyWithImpl;
 @override @useResult
 $Res call({
- String userId, String flashcardId, bool? isLearned, int? wrongCount, DateTime? createdAt, DateTime? updatedAt
+ String userId, String flashcardId, bool isLearned, int wrongCount, DateTime? createdAt, DateTime? updatedAt
 });
 
 
@@ -268,13 +268,13 @@ class __$UserFlashcardProgressModelCopyWithImpl<$Res>
 
 /// Create a copy of UserFlashcardProgressModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? flashcardId = null,Object? isLearned = freezed,Object? wrongCount = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? flashcardId = null,Object? isLearned = null,Object? wrongCount = null,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(_UserFlashcardProgressModel(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,flashcardId: null == flashcardId ? _self.flashcardId : flashcardId // ignore: cast_nullable_to_non_nullable
-as String,isLearned: freezed == isLearned ? _self.isLearned : isLearned // ignore: cast_nullable_to_non_nullable
-as bool?,wrongCount: freezed == wrongCount ? _self.wrongCount : wrongCount // ignore: cast_nullable_to_non_nullable
-as int?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as String,isLearned: null == isLearned ? _self.isLearned : isLearned // ignore: cast_nullable_to_non_nullable
+as bool,wrongCount: null == wrongCount ? _self.wrongCount : wrongCount // ignore: cast_nullable_to_non_nullable
+as int,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));

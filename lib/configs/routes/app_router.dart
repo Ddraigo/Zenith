@@ -6,6 +6,7 @@ import 'package:app_demo/src/features/flashcard/presentation/screen/flashcard_sc
 import 'package:app_demo/src/features/quiz/domain/quiz_attempt_args.dart';
 import 'package:app_demo/src/features/quiz/presentation/screen/quiz_attemp_screen.dart';
 import 'package:app_demo/src/features/quiz/presentation/screen/quiz_result_screen.dart';
+import 'package:app_demo/src/features/statistics/presentation/screen/statistics_screen.dart';
 import 'package:app_demo/src/features/topic/presentation/screen/topic_srceen.dart';
 import 'package:app_demo/src/features/home/presentation/home_screen.dart';
 import 'package:app_demo/src/features/profile/presentation/screen/profile_screen.dart';
@@ -14,8 +15,10 @@ import 'package:app_demo/src/shared/constants/images_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+
+
 final GoRouter appRouter = GoRouter(
-  initialLocation: AppRouter.loginPath,
+  initialLocation: AppRouter.userStatsPath,
   
   routes: <RouteBase>[
     GoRoute(
@@ -74,14 +77,11 @@ final GoRouter appRouter = GoRouter(
         );
       } 
     ),
-    // GoRoute(
-    //   path: '${AppRouter.flashcardPath}/:topicId',
-    //   builder: (context, state){
-    //     final topicId = int.tryParse(state.pathParameters['topicId'] ?? '') ?? 0;
-    //     final topicName = state.extra is String ? state.extra as String : 'Unknown';
-    //     return FlashcardScreen(topicId: topicId, topicName: topicName);
-    //   }
-    // ),
+    GoRoute(
+      path: AppRouter.userStatsPath,
+      builder: (context, state)=> StatisticsScreen(),
+    ),
+
   ],
   errorBuilder: (context, state) {
     return const Scaffold(
@@ -102,6 +102,7 @@ class AppRouter {
   static const String quizPath =  '/quiz';
   static const String quizAttempPath =  '/quiz_attemp';
   static const String quizResultPath =  '/quiz_result';
+  static const String userStatsPath = '/user_stats';
 
 
 }

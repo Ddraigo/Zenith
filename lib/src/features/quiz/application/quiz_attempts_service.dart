@@ -9,11 +9,16 @@ import 'package:app_demo/src/features/quiz/domain/question_model.dart';
 import 'package:app_demo/src/features/quiz/domain/quiz_attempt_items_model.dart';
 import 'package:app_demo/src/features/quiz/domain/quiz_attempts_model.dart';
 import 'package:app_demo/src/features/quiz/domain/quiz_attempt_args.dart';
+import 'package:app_demo/src/features/statistics/application/statistics_service.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:dart_either/dart_either.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fpdart/fpdart.dart' hide Either;
 
 import '../../../core/controller/current_user_id_notifire.dart';
+import '../../../core/domain/user_flashcard_progress_model.dart';
+import '../../../core/service/user_flashcard_progress_service.dart';
+import '../../../shared/constants/format.dart';
 import '../../flashcard/domain/flashcard_model.dart';
 import '../data/repository/quiz_attempts_repo.dart';
 
@@ -33,6 +38,13 @@ class QuizAttemptsService {
   );
   late final UserDailyWordService _dailyWordService = _ref.read(
     userDailyWordServiceProvider,
+  );
+  late final UserFlashcardProgressService _flashcardProgressService = _ref.read(
+    userFlashcardProgressServiceProvider,
+  );
+
+  late final StatisticsService _statisticsService = _ref.read(
+    userStatsServiceProvider,
   );
 
   Future<Either<AppException, QuizAttemptsModel>> insertQuizAttemp({
@@ -111,17 +123,36 @@ class QuizAttemptsService {
 
   Future<Either<AppException, QuizAttemptsModel>> submitQuiz({
     required QuestionModel session,
-    required QuizAttemptArgs args,
+    required QuizAttemptArgs agrs,
   }) async {
+    final validateError = _validateSession(session);
+    if (validateError != null) {
+      return validateError.left();
+    }
+
+    final saveResult = await _saveAttemptAndItems(session: session);
+    return saveResult.fold(
+      ifLeft: (e) => e.left(),
+      ifRight: (attempt) async {
+        final effectResult = await _runPostSubmitEffects(
+          session: session,
+          agrs: agrs,
+        );
+        return effectResult.fold(
+          ifLeft: (e) => e.left(),
+          ifRight: (_) => attempt.right(),
+        );
+      },
+    );
+  }
+
+  AppException? _validateSession(QuestionModel session) {
     if (session.questions.isEmpty) {
-      return Either.left(
-        AppException.errorWithMessage('Không có câu hỏi nào được tìm thấy'),
+      return AppException.errorWithMessage(
+        'Không có câu hỏi nào được tìm thấy',
       );
     }
     final totalQuestions = session.questions.length;
-    final correctAnswers = _calculateCorrectAnswers(session);
-    final score = _calculateScore(correctAnswers, totalQuestions);
-
     final answeredCount = session.questions
         .where(
           (q) => (session.userAnswers[q.flashcardId] ?? '').trim().isNotEmpty,
@@ -129,19 +160,26 @@ class QuizAttemptsService {
         .length;
 
     if (answeredCount < totalQuestions) {
-      return Either.left(
-        AppException.errorWithMessage('Chưa trả lời hết tất cả câu hỏi'),
-      );
+      return AppException.errorWithMessage('Chưa trả lời hết tất cả câu hỏi');
     }
-    final attempt = await insertQuizAttemp(
+    return null;
+  }
+
+  Future<Either<AppException, QuizAttemptsModel>> _saveAttemptAndItems({
+    required QuestionModel session,
+  }) async {
+    final totalQuestions = session.questions.length;
+    final correctAnswers = _calculateCorrectAnswers(session);
+    final score = _calculateScore(correctAnswers, totalQuestions);
+    final attempts = await insertQuizAttemp(
       topicId: session.topicId,
       score: score,
       totalQuestions: totalQuestions,
       correctAnswers: correctAnswers,
     );
 
-    return await attempt.fold(
-      ifLeft: (e) async => e.left(),
+    return attempts.fold(
+      ifLeft: (e) => e.left(),
       ifRight: (attempt) async {
         if (attempt.id.isEmpty) {
           return Either.left(AppException.errorWithMessage('attempId isEmpty'));
@@ -171,29 +209,109 @@ class QuizAttemptsService {
             );
             return error.left();
           },
-          ifRight: (item) async {
-            if (args.type == QuizAttemptType.daily ||
-                args.type == QuizAttemptType.today) {
-              final listFlashcardId = session.questions
-                  .where((q){
-                    final answer = session.userAnswers[q.flashcardId]?.trim().toLowerCase();
-                    final correctAnswer = q.correctAnswer.trim().toLowerCase();
-                    return answer != null && answer.isNotEmpty &&  answer == correctAnswer;
-                  })
-                  .map((q) => q.flashcardId)
-                  .toList();
-              developer.log('correct ids: ${listFlashcardId.length}');
-              developer.log('assignedDate: ${args.assignedDate}');
-              await _dailyWordService.updateIsCompleted(
-                flashcardIds: listFlashcardId,
-                assignedDate: args.assignedDate ?? DateTime.now(),
-              );
-            }
-            return attempt.right();
-          },
+          ifRight: (_) => attempt.right(),
         );
       },
     );
+  }
+
+  Future<Either<AppException, Unit>> _runPostSubmitEffects({
+    required QuestionModel session,
+    required QuizAttemptArgs agrs,
+  }) async {
+    try {
+      if (agrs.type == QuizAttemptType.daily ||
+          agrs.type == QuizAttemptType.today) {
+        final listFlashcardId = session.questions
+            .where((q) {
+              final answer = session.userAnswers[q.flashcardId]
+                  ?.trim()
+                  .toLowerCase();
+              final correct = q.correctAnswer.trim().toLowerCase();
+              return answer != null && answer == correct;
+            })
+            .map((q) => q.flashcardId)
+            .toList();
+
+        final completionResult = await _dailyWordService.updateIsCompleted(
+          flashcardIds: listFlashcardId,
+          assignedDate: agrs.assignedDate ?? Format.normalizeDate(DateTime.now()),
+        );
+
+        final statsResult = await _statisticsService.handleDailyReward(
+          userId: _currentUserId,
+          assignedDate: agrs.assignedDate ?? Format.normalizeDate(DateTime.now()),
+          topicId: agrs.topicId,
+        );
+
+        completionResult.fold(
+          ifLeft: (e) {
+            developer.log(
+              'QuizAttemptsService.updateIsCompleted failed',
+              error: e,
+              stackTrace: StackTrace.current,
+            );
+          },
+          ifRight: (result) => result.right(),
+        );
+
+        statsResult.fold(
+          ifLeft: (e) {
+            developer.log(
+              'QuizAttemptsService.handleDailyReward failed',
+              error: e,
+              stackTrace: StackTrace.current,
+            );
+          },
+          ifRight: (result) => result.right(),
+        );
+      }
+
+      final itemProgress = _buildFlashcardProgress(session: session);
+
+      final progressResult = await _flashcardProgressService
+          .updateFlashcardProgress(items: itemProgress);
+
+      return progressResult.fold(
+        ifLeft: (e) => e.left(),
+        ifRight: (result) {
+          if (result.isEmpty) {
+            return Either.left(AppException.errorWithMessage('progressResult'));
+          }
+
+          return unit.right();
+        },
+      );
+    } catch (e, st) {
+      developer.log(
+        'QuizAttemptsService.submitQuiz side-effect failed',
+        error: e,
+        stackTrace: st,
+      );
+      return Either.left(
+        e is AppException
+            ? e
+            : AppException.errorWithMessage('Lỗi xử lý sau khi nộp quiz'),
+      );
+    }
+  }
+
+  List<UserFlashcardProgressModel> _buildFlashcardProgress({
+    required QuestionModel session,
+  }) {
+    final answers = session.userAnswers;
+    return session.questions.map((q) {
+      final answer = answers[q.flashcardId]?.trim().toLowerCase() ?? '';
+      final correct = q.correctAnswer.trim().toLowerCase();
+      final isCorrect = answer.isNotEmpty && answer == correct;
+
+      return UserFlashcardProgressModel(
+        userId: _currentUserId,
+        flashcardId: q.flashcardId,
+        isLearned: true,
+        wrongCount: isCorrect ? 0 : 1,
+      );
+    }).toList();
   }
 
   List<QuizAttemptItemsModel> _buildAttemptItems({
@@ -230,30 +348,4 @@ class QuizAttemptsService {
     if (totalQuestions == 0) return 0;
     return ((correctAnswers / totalQuestions) * 100).round();
   }
-
-  // Future<QuizAttemptsModel> updateQuizAttemp({
-  //   int? topicId,
-  //   required int score,
-  //   required int totalQuestions,
-  //   required int correctAnswers,
-  // }) async {
-  //   final result = await _repo.updateQuizAttemp(
-  //     userId: _currentUserId,
-  //     topicId: topicId,
-  //     score: score,
-  //     totalQuestions: totalQuestions,
-  //     correctAnswers: correctAnswers,
-  //   );
-  //   return result.fold(
-  //     ifLeft: (error) {
-  //       developer.log(
-  //         'UserDailyWordService: Error fetching data',
-  //         error: error,
-  //         stackTrace: StackTrace.current,
-  //       );
-  //       throw error;
-  //     },
-  //     ifRight: (){},
-  //   );
-  // }
 }

@@ -178,7 +178,7 @@ ThemeData getLightTheme() {
 
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: AppColors.elementBackground,
+      fillColor: lightColorScheme.outline.withOpacity(0.08),
       contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 16.h),
       hintStyle: MyTextStyle.poppinsMedium400.copyWith(
         color: lightColorScheme.outlineVariant,
@@ -198,7 +198,7 @@ ThemeData getLightTheme() {
 
       focusedBorder: defaultInputBorder.copyWith(
         borderSide: BorderSide(
-          color: lightColorScheme.primary,
+          color: lightColorScheme.primary.withOpacity(0.6),
           width: 2,
         ),
       ),
@@ -214,7 +214,7 @@ ThemeData getLightTheme() {
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: radius,
         borderSide: BorderSide(
-          color: lightColorScheme.error,
+          color: lightColorScheme.error.withOpacity(0.5),
           width: 2,
         ),
       ),

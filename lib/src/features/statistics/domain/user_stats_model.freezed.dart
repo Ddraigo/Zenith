@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserStatsModel {
 
- String get userId; int? get streakCount; DateTime? get lastLearnedDate; int? get totaPoints; DateTime? get updatedAt;
+ String get userId; int get streakCount; int get totalPoints; int? get pointAdded; DateTime? get lastPointsAwardedDate; DateTime? get lastStreakCountedDate; DateTime? get lastLearnedDate;
 /// Create a copy of UserStatsModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $UserStatsModelCopyWith<UserStatsModel> get copyWith => _$UserStatsModelCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserStatsModel&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.streakCount, streakCount) || other.streakCount == streakCount)&&(identical(other.lastLearnedDate, lastLearnedDate) || other.lastLearnedDate == lastLearnedDate)&&(identical(other.totaPoints, totaPoints) || other.totaPoints == totaPoints)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserStatsModel&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.streakCount, streakCount) || other.streakCount == streakCount)&&(identical(other.totalPoints, totalPoints) || other.totalPoints == totalPoints)&&(identical(other.pointAdded, pointAdded) || other.pointAdded == pointAdded)&&(identical(other.lastPointsAwardedDate, lastPointsAwardedDate) || other.lastPointsAwardedDate == lastPointsAwardedDate)&&(identical(other.lastStreakCountedDate, lastStreakCountedDate) || other.lastStreakCountedDate == lastStreakCountedDate)&&(identical(other.lastLearnedDate, lastLearnedDate) || other.lastLearnedDate == lastLearnedDate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,userId,streakCount,lastLearnedDate,totaPoints,updatedAt);
+int get hashCode => Object.hash(runtimeType,userId,streakCount,totalPoints,pointAdded,lastPointsAwardedDate,lastStreakCountedDate,lastLearnedDate);
 
 @override
 String toString() {
-  return 'UserStatsModel(userId: $userId, streakCount: $streakCount, lastLearnedDate: $lastLearnedDate, totaPoints: $totaPoints, updatedAt: $updatedAt)';
+  return 'UserStatsModel(userId: $userId, streakCount: $streakCount, totalPoints: $totalPoints, pointAdded: $pointAdded, lastPointsAwardedDate: $lastPointsAwardedDate, lastStreakCountedDate: $lastStreakCountedDate, lastLearnedDate: $lastLearnedDate)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $UserStatsModelCopyWith<$Res>  {
   factory $UserStatsModelCopyWith(UserStatsModel value, $Res Function(UserStatsModel) _then) = _$UserStatsModelCopyWithImpl;
 @useResult
 $Res call({
- String userId, int? streakCount, DateTime? lastLearnedDate, int? totaPoints, DateTime? updatedAt
+ String userId, int streakCount, int totalPoints, int? pointAdded, DateTime? lastPointsAwardedDate, DateTime? lastStreakCountedDate, DateTime? lastLearnedDate
 });
 
 
@@ -62,13 +62,15 @@ class _$UserStatsModelCopyWithImpl<$Res>
 
 /// Create a copy of UserStatsModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? streakCount = freezed,Object? lastLearnedDate = freezed,Object? totaPoints = freezed,Object? updatedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? streakCount = null,Object? totalPoints = null,Object? pointAdded = freezed,Object? lastPointsAwardedDate = freezed,Object? lastStreakCountedDate = freezed,Object? lastLearnedDate = freezed,}) {
   return _then(_self.copyWith(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
-as String,streakCount: freezed == streakCount ? _self.streakCount : streakCount // ignore: cast_nullable_to_non_nullable
-as int?,lastLearnedDate: freezed == lastLearnedDate ? _self.lastLearnedDate : lastLearnedDate // ignore: cast_nullable_to_non_nullable
-as DateTime?,totaPoints: freezed == totaPoints ? _self.totaPoints : totaPoints // ignore: cast_nullable_to_non_nullable
-as int?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as String,streakCount: null == streakCount ? _self.streakCount : streakCount // ignore: cast_nullable_to_non_nullable
+as int,totalPoints: null == totalPoints ? _self.totalPoints : totalPoints // ignore: cast_nullable_to_non_nullable
+as int,pointAdded: freezed == pointAdded ? _self.pointAdded : pointAdded // ignore: cast_nullable_to_non_nullable
+as int?,lastPointsAwardedDate: freezed == lastPointsAwardedDate ? _self.lastPointsAwardedDate : lastPointsAwardedDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,lastStreakCountedDate: freezed == lastStreakCountedDate ? _self.lastStreakCountedDate : lastStreakCountedDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,lastLearnedDate: freezed == lastLearnedDate ? _self.lastLearnedDate : lastLearnedDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
 }
@@ -154,10 +156,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String userId,  int? streakCount,  DateTime? lastLearnedDate,  int? totaPoints,  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String userId,  int streakCount,  int totalPoints,  int? pointAdded,  DateTime? lastPointsAwardedDate,  DateTime? lastStreakCountedDate,  DateTime? lastLearnedDate)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserStatsModel() when $default != null:
-return $default(_that.userId,_that.streakCount,_that.lastLearnedDate,_that.totaPoints,_that.updatedAt);case _:
+return $default(_that.userId,_that.streakCount,_that.totalPoints,_that.pointAdded,_that.lastPointsAwardedDate,_that.lastStreakCountedDate,_that.lastLearnedDate);case _:
   return orElse();
 
 }
@@ -175,10 +177,10 @@ return $default(_that.userId,_that.streakCount,_that.lastLearnedDate,_that.totaP
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String userId,  int? streakCount,  DateTime? lastLearnedDate,  int? totaPoints,  DateTime? updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String userId,  int streakCount,  int totalPoints,  int? pointAdded,  DateTime? lastPointsAwardedDate,  DateTime? lastStreakCountedDate,  DateTime? lastLearnedDate)  $default,) {final _that = this;
 switch (_that) {
 case _UserStatsModel():
-return $default(_that.userId,_that.streakCount,_that.lastLearnedDate,_that.totaPoints,_that.updatedAt);case _:
+return $default(_that.userId,_that.streakCount,_that.totalPoints,_that.pointAdded,_that.lastPointsAwardedDate,_that.lastStreakCountedDate,_that.lastLearnedDate);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,10 +197,10 @@ return $default(_that.userId,_that.streakCount,_that.lastLearnedDate,_that.totaP
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String userId,  int? streakCount,  DateTime? lastLearnedDate,  int? totaPoints,  DateTime? updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String userId,  int streakCount,  int totalPoints,  int? pointAdded,  DateTime? lastPointsAwardedDate,  DateTime? lastStreakCountedDate,  DateTime? lastLearnedDate)?  $default,) {final _that = this;
 switch (_that) {
 case _UserStatsModel() when $default != null:
-return $default(_that.userId,_that.streakCount,_that.lastLearnedDate,_that.totaPoints,_that.updatedAt);case _:
+return $default(_that.userId,_that.streakCount,_that.totalPoints,_that.pointAdded,_that.lastPointsAwardedDate,_that.lastStreakCountedDate,_that.lastLearnedDate);case _:
   return null;
 
 }
@@ -210,14 +212,16 @@ return $default(_that.userId,_that.streakCount,_that.lastLearnedDate,_that.totaP
 
 
 class _UserStatsModel implements UserStatsModel {
-  const _UserStatsModel({required this.userId, this.streakCount = 0, this.lastLearnedDate, this.totaPoints = 0, this.updatedAt});
+  const _UserStatsModel({required this.userId, required this.streakCount, required this.totalPoints, this.pointAdded, this.lastPointsAwardedDate, this.lastStreakCountedDate, this.lastLearnedDate});
   
 
 @override final  String userId;
-@override@JsonKey() final  int? streakCount;
+@override final  int streakCount;
+@override final  int totalPoints;
+@override final  int? pointAdded;
+@override final  DateTime? lastPointsAwardedDate;
+@override final  DateTime? lastStreakCountedDate;
 @override final  DateTime? lastLearnedDate;
-@override@JsonKey() final  int? totaPoints;
-@override final  DateTime? updatedAt;
 
 /// Create a copy of UserStatsModel
 /// with the given fields replaced by the non-null parameter values.
@@ -229,16 +233,16 @@ _$UserStatsModelCopyWith<_UserStatsModel> get copyWith => __$UserStatsModelCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserStatsModel&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.streakCount, streakCount) || other.streakCount == streakCount)&&(identical(other.lastLearnedDate, lastLearnedDate) || other.lastLearnedDate == lastLearnedDate)&&(identical(other.totaPoints, totaPoints) || other.totaPoints == totaPoints)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserStatsModel&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.streakCount, streakCount) || other.streakCount == streakCount)&&(identical(other.totalPoints, totalPoints) || other.totalPoints == totalPoints)&&(identical(other.pointAdded, pointAdded) || other.pointAdded == pointAdded)&&(identical(other.lastPointsAwardedDate, lastPointsAwardedDate) || other.lastPointsAwardedDate == lastPointsAwardedDate)&&(identical(other.lastStreakCountedDate, lastStreakCountedDate) || other.lastStreakCountedDate == lastStreakCountedDate)&&(identical(other.lastLearnedDate, lastLearnedDate) || other.lastLearnedDate == lastLearnedDate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,userId,streakCount,lastLearnedDate,totaPoints,updatedAt);
+int get hashCode => Object.hash(runtimeType,userId,streakCount,totalPoints,pointAdded,lastPointsAwardedDate,lastStreakCountedDate,lastLearnedDate);
 
 @override
 String toString() {
-  return 'UserStatsModel(userId: $userId, streakCount: $streakCount, lastLearnedDate: $lastLearnedDate, totaPoints: $totaPoints, updatedAt: $updatedAt)';
+  return 'UserStatsModel(userId: $userId, streakCount: $streakCount, totalPoints: $totalPoints, pointAdded: $pointAdded, lastPointsAwardedDate: $lastPointsAwardedDate, lastStreakCountedDate: $lastStreakCountedDate, lastLearnedDate: $lastLearnedDate)';
 }
 
 
@@ -249,7 +253,7 @@ abstract mixin class _$UserStatsModelCopyWith<$Res> implements $UserStatsModelCo
   factory _$UserStatsModelCopyWith(_UserStatsModel value, $Res Function(_UserStatsModel) _then) = __$UserStatsModelCopyWithImpl;
 @override @useResult
 $Res call({
- String userId, int? streakCount, DateTime? lastLearnedDate, int? totaPoints, DateTime? updatedAt
+ String userId, int streakCount, int totalPoints, int? pointAdded, DateTime? lastPointsAwardedDate, DateTime? lastStreakCountedDate, DateTime? lastLearnedDate
 });
 
 
@@ -266,13 +270,15 @@ class __$UserStatsModelCopyWithImpl<$Res>
 
 /// Create a copy of UserStatsModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? streakCount = freezed,Object? lastLearnedDate = freezed,Object? totaPoints = freezed,Object? updatedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? streakCount = null,Object? totalPoints = null,Object? pointAdded = freezed,Object? lastPointsAwardedDate = freezed,Object? lastStreakCountedDate = freezed,Object? lastLearnedDate = freezed,}) {
   return _then(_UserStatsModel(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
-as String,streakCount: freezed == streakCount ? _self.streakCount : streakCount // ignore: cast_nullable_to_non_nullable
-as int?,lastLearnedDate: freezed == lastLearnedDate ? _self.lastLearnedDate : lastLearnedDate // ignore: cast_nullable_to_non_nullable
-as DateTime?,totaPoints: freezed == totaPoints ? _self.totaPoints : totaPoints // ignore: cast_nullable_to_non_nullable
-as int?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as String,streakCount: null == streakCount ? _self.streakCount : streakCount // ignore: cast_nullable_to_non_nullable
+as int,totalPoints: null == totalPoints ? _self.totalPoints : totalPoints // ignore: cast_nullable_to_non_nullable
+as int,pointAdded: freezed == pointAdded ? _self.pointAdded : pointAdded // ignore: cast_nullable_to_non_nullable
+as int?,lastPointsAwardedDate: freezed == lastPointsAwardedDate ? _self.lastPointsAwardedDate : lastPointsAwardedDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,lastStreakCountedDate: freezed == lastStreakCountedDate ? _self.lastStreakCountedDate : lastStreakCountedDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,lastLearnedDate: freezed == lastLearnedDate ? _self.lastLearnedDate : lastLearnedDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
 }

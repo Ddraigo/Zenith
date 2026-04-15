@@ -4,7 +4,6 @@ import 'package:app_demo/configs/routes/app_router.dart';
 import 'package:app_demo/configs/themes/text_style.dart';
 import 'package:app_demo/src/features/quiz/domain/question_model.dart';
 import 'package:app_demo/src/features/quiz/domain/quiz_attempt_args.dart';
-import 'package:app_demo/src/features/quiz/domain/quiz_attempts_model.dart';
 import 'package:app_demo/src/features/quiz/presentation/controller/quiz_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
@@ -61,10 +60,13 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
     );
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: color.onPrimary,
+        toolbarHeight: 70.h,
+        titleSpacing: 0,
         centerTitle: true,
         title: Text(widget.arg.title ?? ''),
         leading: IconButton(
-          onPressed: (){
+          onPressed: () {
             ref.read(homeTapProvider.notifier).state = 2;
             context.go(AppRouter.homePath);
           },
@@ -73,7 +75,7 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
       ),
       body: SafeArea(
         child: Container(
-          padding: EdgeInsets.all(32.r),
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
           child: quizAsync.when(
             data: (quizes) {
               if (quizes.questions.isEmpty) {
@@ -93,92 +95,110 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
               final progressValue = (answeredCount / quizes.questions.length)
                   .clamp(0.0, 1.0);
               return Column(
-                spacing: 40.h,
-
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Tiến độ', style: MyTextStyle.poppinsMedium600),
-                      Text(
-                        '$answeredCount/${quizes.questions.length}',
-                        style: MyTextStyle.poppinsMedium600.copyWith(
-                          color: color.primary,
-                        ),
-                      ),
-                    ],
-                  ),
-                  LinearProgressIndicator(
-                    minHeight: 16.h,
-                    borderRadius: BorderRadius.circular(10.r),
-                    backgroundColor: color.outline.withOpacity(0.4),
-                    value: progressValue,
-                    valueColor: AlwaysStoppedAnimation<Color>(color.primary),
-                    // semanticsValue:
-                    //     '${(progessValue * 100).toStringAsFixed(0)}%',
-                  ),
-                  Flexible(
-                    child: CardSwiper(
-                      allowedSwipeDirection: const AllowedSwipeDirection.none(),
-                      controller: _swiperController,
-                      cardsCount: quizes.questions.length,
-                      numberOfCardsDisplayed: math.min(
-                        3,
-                        quizes.questions.length,
-                      ),
-                      backCardOffset: const Offset(0, 20),
-
-                      cardBuilder:
-                          (
-                            context,
-                            index,
-                            horizontalThresholdPercentage,
-                            verticalThresholdPercentage,
-                          ) {
-                            final question = quizes.questions[index];
-                            return _questionCard(question, color);
-                          },
-                      onSwipe: (previousIndex, currentIndex, direction) {
-                        setState(() {
-                          if (currentIndex != null) {
-                            _currentIndex = currentIndex;
-                          }
-                          _isError = false;
-                        });
-
-                        userAnswer.clear();
-                        _isError = false;
-                        return true;
-                      },
-                    ),
-                  ),
-                  Flexible(child: _userInput(color)),
-                  ElevatedButton(
-                    onPressed: _isSubmitting
-                        ? null
-                        : () => _handleNextOrSubmit(quizes),
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadiusGeometry.circular(32.r),
-                      ),
-                    ),
-                    child: Row(
-                      spacing: 8.w,
-                      mainAxisAlignment: MainAxisAlignment.center,
+                  Expanded(
+                    child: Column(
+                      spacing: 16.h,
                       children: [
-                        Text(
-                          isLastQuestion ? 'Nộp bài' : 'Câu tiếp theo',
-                          style: MyTextStyle.poppinsMedium600.copyWith(
-                            color: color.onPrimary,
+                        SizedBox(height: 8.h,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Tiến độ', style: MyTextStyle.poppinsMedium600.copyWith(color: color.outline.withOpacity(0.7))),
+                            Text(
+                              '$answeredCount/${quizes.questions.length}',
+                              style: MyTextStyle.poppinsMedium600.copyWith(
+                                color: color.primary,
+                              ),
+                            ),
+                          ],
+                        ),
+                        LinearProgressIndicator(
+                          minHeight: 16.h,
+                          borderRadius: BorderRadius.circular(10.r),
+                          backgroundColor: color.outline.withOpacity(0.4),
+                          value: progressValue,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            color.primary,
+                          ),
+                          
+                        ),
+                        Expanded(
+                          child: CardSwiper(
+                            allowedSwipeDirection:
+                                const AllowedSwipeDirection.none(),
+                            controller: _swiperController,
+                            cardsCount: quizes.questions.length,
+                            numberOfCardsDisplayed: math.min(
+                              3,
+                              quizes.questions.length,
+                            ),
+                            backCardOffset: const Offset(0, 20),
+                    
+                            cardBuilder:
+                                (
+                                  context,
+                                  index,
+                                  horizontalThresholdPercentage,
+                                  verticalThresholdPercentage,
+                                ) {
+                                  final question = quizes.questions[index];
+                                  return _questionCard(question, color);
+                                },
+                            onSwipe: (previousIndex, currentIndex, direction) {
+                              setState(() {
+                                if (currentIndex != null) {
+                                  _currentIndex = currentIndex;
+                                }
+                                _isError = false;
+                              });
+                    
+                              userAnswer.clear();
+                              _isError = false;
+                              return true;
+                            },
                           ),
                         ),
-                        Icon(
-                          isLastQuestion
-                              ? Icons.check_rounded
-                              : Icons.arrow_forward_rounded,
-                          color: color.onPrimary,
-                        ),
+                        Expanded(child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16.h),
+                          child: _userInput(color),
+                        )),
                       ],
+                    ),
+                  ),
+
+                  SafeArea(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 32.h),
+                      child: ElevatedButton(
+                        onPressed: _isSubmitting
+                            ? null
+                            : () => _handleNextOrSubmit(quizes),
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadiusGeometry.circular(32.r),
+                          ),
+                        ),
+                        child: Row(
+                          spacing: 8.w,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              isLastQuestion ? 'Nộp bài' : 'Câu tiếp theo',
+                              style: MyTextStyle.poppinsMedium600.copyWith(
+                                color: color.onPrimary,
+                              ),
+                            ),
+                            Icon(
+                              isLastQuestion
+                                  ? Icons.check_rounded
+                                  : Icons.arrow_forward_rounded,
+                              color: color.onPrimary,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -239,7 +259,7 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
       ifLeft: (e) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Nộp bài thất bại: $e')));
+        ).showSnackBar(SnackBar(content: Text('Nộp bài thất bại')));
       },
       ifRight: (attempt) {
         ScaffoldMessenger.of(
@@ -285,7 +305,7 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
           children: [
             Text(
               'Câu hỏi',
-              style: MyTextStyle.poppinsLarge600.copyWith(
+              style: MyTextStyle.poppinsLarge.copyWith(
                 color: color.primary,
                 fontSize: 20.sp,
               ),
@@ -297,7 +317,7 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
                   question.question,
                   style: MyTextStyle.poppinsLarge700.copyWith(
                     wordSpacing: 2.w,
-                    fontSize: 25.sp,
+                    fontSize: 26.sp,
                   ),
                   maxLines: 5,
                 ),

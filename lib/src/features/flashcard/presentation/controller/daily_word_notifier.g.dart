@@ -51,7 +51,7 @@ final class DailyWordNotifierProvider
   }
 }
 
-String _$dailyWordNotifierHash() => r'783ebf54100e8611019b386bffd6f2faaa297f69';
+String _$dailyWordNotifierHash() => r'8bda334ff306ee016df537e2876d486af7bdc801';
 
 final class DailyWordNotifierFamily extends $Family
     with

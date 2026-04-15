@@ -29,78 +29,29 @@ class QuizResultScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: color.onPrimary,
+        toolbarHeight: 70.h,
+        titleSpacing: 0,
         elevation: 1,
         centerTitle: true,
         title: const Text('Kết quả'),
         leading: IconButton(
-          onPressed: (){
+          onPressed: () {
             ref.read(homeTapProvider.notifier).state = 2;
             context.go(AppRouter.homePath);
           },
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
         ),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(32.r),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            spacing: 20.h,
-            children: [
-              _summaryResult(color),
-              quizResultAsync.when(
-                data: (quizResults) {
-                  return ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: quizResults.length,
-                      itemBuilder: (context, index) {
-                        final item = quizResults[index];
-                        return Container(
-                          margin: EdgeInsets.symmetric(vertical: 8.h),
-                          padding: EdgeInsets.all(8.r),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20.r),
-                            color: color.onPrimary,
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Text(item.question, style: MyTextStyle.poppinsMedium600.copyWith(color: color.primary),),
-                                  ),
-                                  SizedBox(width: 8.w),
-                                  Icon(
-                                    item.isCorrect
-                                        ? Icons.check_circle_outline_rounded
-                                        : Icons.cancel_outlined,
-                                    color: item.isCorrect ? const Color.fromARGB(255, 40, 116, 41) : color.error,
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 8.h),
-                              Text('Bạn trả lời', style: MyTextStyle.poppinsMedium.copyWith(color: color.outline.withOpacity(0.7)),),
-                              Text(item.userAnswer,
-                                style: MyTextStyle.poppinsMedium400.copyWith(
-                                  color: item.isCorrect ? AppColors.gradientDark : color.error.withOpacity(0.5),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  
-                },
-                error: (e, _) => Center(child: Text('Lỗi $e')),
-                loading: () => Center(child: CircularProgressIndicator()),
-              ),
-
-              ElevatedButton.icon(
+      bottomNavigationBar: SafeArea(
+        minimum: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(32.r),
@@ -109,23 +60,127 @@ class QuizResultScreen extends ConsumerWidget {
                 onPressed: () {
                   context.go(AppRouter.quizAttempPath, extra: arg);
                 },
-                
                 icon: const Icon(Icons.refresh_rounded),
                 label: const Text('Làm lại'),
               ),
-              OutlinedButton.icon(
-                style: ElevatedButton.styleFrom(
+            ),
+            SizedBox(height: 12.h),
+            SizedBox(
+              height: 50.h,
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(32.r),
                   ),
                 ),
-                onPressed: (){
+                onPressed: () {
                   ref.read(homeTapProvider.notifier).state = 2;
                   context.go(AppRouter.homePath);
                 },
-                    
                 icon: const Icon(Icons.home_rounded),
                 label: const Text('Về trang chủ'),
+              ),
+            ),
+          ],
+        ),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(16.r),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            spacing: 20.h,
+            children: [
+              _summaryResult(color),
+              quizResultAsync.when(
+                data: (quizResults) {
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: quizResults.length,
+                    itemBuilder: (context, index) {
+                      final item = quizResults[index];
+                      return Container(
+                        margin: EdgeInsets.symmetric(vertical: 8.h),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 10.h,
+                          horizontal: 16.w,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20.r),
+                          color: color.onPrimary,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 1.h,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Icon(
+                                  item.isCorrect
+                                      ? Icons.check_circle_outline_rounded
+                                      : Icons.cancel_outlined,
+                                  color: item.isCorrect
+                                      ? const Color.fromARGB(255, 40, 116, 41)
+                                      : color.error,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Đáp án',
+                                        style: MyTextStyle.poppinsMedium.copyWith(
+                                          color: color.outline.withOpacity(0.7),
+                                        ),
+                                      ),
+                                      Text(
+                                          item.question,
+                                          style: MyTextStyle.poppinsLarge600.copyWith(
+                                            color: color.primary,
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Trả lời',
+                                        style: MyTextStyle.poppinsMedium.copyWith(
+                                          color: color.outline.withOpacity(0.7),
+                                        ),
+                                      ),
+                                      Text(
+                                        item.userAnswer,
+                                        style: MyTextStyle.poppinsLarge600.copyWith(
+                                          color: item.isCorrect
+                                              ? AppColors.gradientDark
+                                              : color.error.withOpacity(0.7),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+                error: (e, _) => Center(child: Text('Lỗi $e')),
+                loading: () => Center(child: CircularProgressIndicator()),
               ),
             ],
           ),
@@ -177,7 +232,7 @@ class QuizResultScreen extends ConsumerWidget {
                     ),
                     Text(
                       "${quizAttemp.correctAnswers ?? 0} / ${quizAttemp.totalQuestions}",
-                      style: MyTextStyle.poppinsSmall500.copyWith(
+                      style: MyTextStyle.poppinsMedium600.copyWith(
                         color: color.outline.withOpacity(0.7),
                       ),
                     ),
@@ -198,7 +253,7 @@ class QuizResultScreen extends ConsumerWidget {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20.r),
-                      color: color.onPrimary,
+                      color: AppColors.primary300.withOpacity(0.3),
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -221,7 +276,7 @@ class QuizResultScreen extends ConsumerWidget {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20.r),
-                      color: color.onPrimary,
+                      color: color.error.withOpacity(0.1),
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,

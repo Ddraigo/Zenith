@@ -7,15 +7,15 @@ abstract class UserStatsModel with _$UserStatsModel{
 
     required String userId,
 
-    @Default(0)
-    int? streakCount,
+    required int streakCount,
+    
+    required int totalPoints,
 
+    int? pointAdded,
+
+    DateTime? lastPointsAwardedDate,
+    DateTime? lastStreakCountedDate,
     DateTime? lastLearnedDate,
-
-    @Default(0)
-    int? totaPoints,
-
-    DateTime? updatedAt,
 
   }) = _UserStatsModel;
 

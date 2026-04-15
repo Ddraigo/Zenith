@@ -6,6 +6,7 @@ part 'user_daily_word_dto.g.dart';
 @freezed
 abstract class UserDailyWordDTO with _$UserDailyWordDTO{
   const factory UserDailyWordDTO({
+    @JsonKey(name:'user_id')
     required String userId,
 
     @JsonKey(name:'flashcard_id')

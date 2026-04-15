@@ -8,7 +8,7 @@ part of 'user_daily_word_dto.dart';
 
 _UserDailyWordDTO _$UserDailyWordDTOFromJson(Map<String, dynamic> json) =>
     _UserDailyWordDTO(
-      userId: json['userId'] as String,
+      userId: json['user_id'] as String,
       flashcardId: json['flashcard_id'] as String,
       topicId: (json['topic_id'] as num?)?.toInt(),
       assignedDate: DateTime.parse(json['assigned_date'] as String),
@@ -20,7 +20,7 @@ _UserDailyWordDTO _$UserDailyWordDTOFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$UserDailyWordDTOToJson(_UserDailyWordDTO instance) =>
     <String, dynamic>{
-      'userId': instance.userId,
+      'user_id': instance.userId,
       'flashcard_id': instance.flashcardId,
       'topic_id': instance.topicId,
       'assigned_date': instance.assignedDate.toIso8601String(),

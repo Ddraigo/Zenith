@@ -38,7 +38,7 @@ class MyTextStyle {
 
   static final TextStyle poppinsLarge = _basePoppins.copyWith(
     fontSize: 17.sp,
-    fontWeight: FontWeight.bold,
+    fontWeight: FontWeight.normal,
     letterSpacing: -0.17,
     height: 1.3.h,
   );

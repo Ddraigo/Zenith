@@ -1,4 +1,5 @@
 
+import 'package:app_demo/src/core/data/dto/user_flashcard_progress_dto.dart';
 import 'package:app_demo/src/core/data/source/user_flashcard_progress_source.dart';
 import 'package:app_demo/src/core/domain/user_flashcard_progress_model.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
@@ -13,12 +14,15 @@ class UserFlashcardProgressRepo {
   final UserFlashcardProgressSource _source;
   UserFlashcardProgressRepo(this._source);
 
-  Future<Either<AppException, bool>> updateFlashcardProgress({
+  Future<Either<AppException, List<UserFlashcardProgressModel>>> updateFlashcardProgress({
     required List<UserFlashcardProgressModel> items,
   }) async {
+
     final mapItems = items.map((e)=>e.toJson()).toList();
-    await _source.updateFlashcardProgress(items: mapItems);
-    return Either.right(true);
+    final result =  await _source.updateFlashcardProgress(items: mapItems);
+    return result.map((items){
+      return items.map((dto) => dto.toDomain()).toList();
+    });
   }
 
 }

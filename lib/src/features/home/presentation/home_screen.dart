@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../flashcard/presentation/screen/flashcard_screen.dart';
+import '../../statistics/presentation/screen/statistics_screen.dart';
 import '../../topic/presentation/screen/topic_srceen.dart';
 import '../../profile/presentation/screen/profile_screen.dart';
 import '../../quiz/presentation/screen/quiz_screen.dart';
@@ -21,6 +22,9 @@ class HomeScreen extends ConsumerWidget {
     final color = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: color.onPrimary,
+        toolbarHeight: 70.h,
+        titleSpacing: 0,
         elevation: 1,
         actions: [
           Padding(
@@ -45,7 +49,7 @@ class HomeScreen extends ConsumerWidget {
           FlashcardScreen(),
           TopicSrceen(),
           QuizScreen(),
-          ProfileScreen(),
+          StatisticsScreen(),
         ],
       ),
     );

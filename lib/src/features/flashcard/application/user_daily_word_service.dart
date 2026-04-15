@@ -5,6 +5,7 @@ import 'package:app_demo/src/features/flashcard/domain/daily_word_summary.dart';
 import 'package:app_demo/src/features/flashcard/domain/user_daily_word_model.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:app_demo/src/shared/http/supabase_provider.dart';
+import 'package:dart_either/dart_either.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 
@@ -16,35 +17,26 @@ class UserDailyWordService {
   late final _client = _ref.read(supabaseClientProvider);
   late final _repo = _ref.read(userDailyWordRepoProvider);
 
-  String get _currentUserId{
+  Either<AppException, String> _currentUserIdEither() {
     final user = _client.auth.currentUser;
-    if(user == null){
-      throw AppException.unauthorized();
+    if (user == null) {
+      return const AppException.unauthorized().left();
     }
-    return user.id;
+    return user.id.right();
   }
 
-  Future<List<UserDailyWordModel>> getDailyWords({
+  Future<Either<AppException, List<UserDailyWordModel>>> getDailyWords({
     int? topicId,
     DateTime? assignedDate,
   }) async {
-
-    final result = await _repo.fetchDailyWords(
-      userId: _currentUserId,
-      topicId: topicId ?? 0,
-      assignedDate: assignedDate,
-    );
-
-    return result.fold(
-      ifLeft: (error) {
-        developer.log(
-          'UserDailyWordService: Error fetching data',
-          error: error,
-          stackTrace: StackTrace.current,
-        );
-        throw error;
-      },
-      ifRight: (topics) => topics,
+    final userIdResult = _currentUserIdEither();
+    return userIdResult.fold(
+      ifLeft: (e) => e.left(),
+      ifRight: (userId) => _repo.fetchDailyWords(
+        userId: userId,
+        topicId: topicId ?? 0,
+        assignedDate: assignedDate,
+      ),
     );
   }
 
@@ -58,8 +50,14 @@ class UserDailyWordService {
     final end = endDate ?? now;
     final start = startDate ?? now.subtract(Duration(days: dayRange ?? 7));
 
+    final userIdResult = _currentUserIdEither();
+    final userId = userIdResult.fold(
+      ifLeft: (e) => throw e,
+      ifRight: (id) => id,
+    );
+
     final result = await _repo.fetchDailyTopicSummary(
-      userId: _currentUserId, 
+      userId: userId, 
       startDate: start,
       endDate: end,
     );
@@ -87,24 +85,35 @@ class UserDailyWordService {
     );
   }
 
-  Future<bool> updateIsCompleted({
+  Future<Either<AppException, bool>> updateIsCompleted({
     required List<String> flashcardIds,
     required DateTime assignedDate,
   }) async {
     if (flashcardIds.isEmpty) {
-      return false;
+      return const AppException.badRequest(
+        'updateIsCompleted: flashcardIds is empty',
+      ).left();
     }
-    final result = await _repo.updateIsCompleted(
-      userId: _currentUserId,
-      flashcardIds: flashcardIds,
-      assignedDate: assignedDate,
-    );
-    return result.fold(
-      ifLeft: (error) {
-        developer.log('UserDailyWordService: error updateIsCompleted', error: error);
-        throw error;
-      },  
-      ifRight: (updated) => updated,
+    final userIdResult = _currentUserIdEither();
+    return userIdResult.fold(
+      ifLeft: (e) => e.left(),
+      ifRight: (userId) async {
+        final result = await _repo.updateIsCompleted(
+          userId: userId,
+          flashcardIds: flashcardIds,
+          assignedDate: assignedDate,
+        );
+        return result.fold(
+          ifLeft: (error) {
+            developer.log(
+              'UserDailyWordService: error updateIsCompleted',
+              error: error,
+            );
+            return error.left();
+          },
+          ifRight: (updated) => updated.right(),
+        );
+      },
     );
   }
 }

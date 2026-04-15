@@ -3,22 +3,12 @@ import 'package:app_demo/src/features/home/presentation/home_screen.dart';
 import 'package:app_demo/src/features/topic/presentation/controller/list_topic_notifier.dart';
 import 'package:app_demo/src/features/topic/presentation/screen/list_topic.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
+import 'package:app_demo/src/shared/utils/helper_function.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TopicSrceen extends ConsumerWidget {
   const TopicSrceen({super.key});
-
-  String _getErrorMessage(AppException exception) {
-    return exception.when(
-      connectivity: () => 'Lỗi kết nối mạng',
-      unauthorized: () => 'Không có quyền truy cập',
-      errorWithMessage: (msg) => msg,
-      unknown: () => 'Lỗi không xác định',
-      badRequest: (msg) => msg,
-      server: (msg) => msg,
-    );
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -57,7 +47,7 @@ class TopicSrceen extends ConsumerWidget {
       },
       error: (error, _) {
         final msg = error is AppException
-            ? _getErrorMessage(error)
+            ? MyHelper.getErrorMessage(error)
             : 'Đã xảy ra lỗi: $error';
         return Center(child: Text(msg));
       },

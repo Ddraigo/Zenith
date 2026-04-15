@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserDailyWordDTO {
 
- String get userId;@JsonKey(name: 'flashcard_id') String get flashcardId;@JsonKey(name: 'topic_id') int? get topicId;@JsonKey(name: 'assigned_date') DateTime get assignedDate;@JsonKey(name: 'is_completed') bool? get isCompleted;@JsonKey(name: 'created_at') DateTime? get createdAt;
+@JsonKey(name: 'user_id') String get userId;@JsonKey(name: 'flashcard_id') String get flashcardId;@JsonKey(name: 'topic_id') int? get topicId;@JsonKey(name: 'assigned_date') DateTime get assignedDate;@JsonKey(name: 'is_completed') bool? get isCompleted;@JsonKey(name: 'created_at') DateTime? get createdAt;
 /// Create a copy of UserDailyWordDTO
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $UserDailyWordDTOCopyWith<$Res>  {
   factory $UserDailyWordDTOCopyWith(UserDailyWordDTO value, $Res Function(UserDailyWordDTO) _then) = _$UserDailyWordDTOCopyWithImpl;
 @useResult
 $Res call({
- String userId,@JsonKey(name: 'flashcard_id') String flashcardId,@JsonKey(name: 'topic_id') int? topicId,@JsonKey(name: 'assigned_date') DateTime assignedDate,@JsonKey(name: 'is_completed') bool? isCompleted,@JsonKey(name: 'created_at') DateTime? createdAt
+@JsonKey(name: 'user_id') String userId,@JsonKey(name: 'flashcard_id') String flashcardId,@JsonKey(name: 'topic_id') int? topicId,@JsonKey(name: 'assigned_date') DateTime assignedDate,@JsonKey(name: 'is_completed') bool? isCompleted,@JsonKey(name: 'created_at') DateTime? createdAt
 });
 
 
@@ -158,7 +158,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String userId, @JsonKey(name: 'flashcard_id')  String flashcardId, @JsonKey(name: 'topic_id')  int? topicId, @JsonKey(name: 'assigned_date')  DateTime assignedDate, @JsonKey(name: 'is_completed')  bool? isCompleted, @JsonKey(name: 'created_at')  DateTime? createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'user_id')  String userId, @JsonKey(name: 'flashcard_id')  String flashcardId, @JsonKey(name: 'topic_id')  int? topicId, @JsonKey(name: 'assigned_date')  DateTime assignedDate, @JsonKey(name: 'is_completed')  bool? isCompleted, @JsonKey(name: 'created_at')  DateTime? createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserDailyWordDTO() when $default != null:
 return $default(_that.userId,_that.flashcardId,_that.topicId,_that.assignedDate,_that.isCompleted,_that.createdAt);case _:
@@ -179,7 +179,7 @@ return $default(_that.userId,_that.flashcardId,_that.topicId,_that.assignedDate,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String userId, @JsonKey(name: 'flashcard_id')  String flashcardId, @JsonKey(name: 'topic_id')  int? topicId, @JsonKey(name: 'assigned_date')  DateTime assignedDate, @JsonKey(name: 'is_completed')  bool? isCompleted, @JsonKey(name: 'created_at')  DateTime? createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'user_id')  String userId, @JsonKey(name: 'flashcard_id')  String flashcardId, @JsonKey(name: 'topic_id')  int? topicId, @JsonKey(name: 'assigned_date')  DateTime assignedDate, @JsonKey(name: 'is_completed')  bool? isCompleted, @JsonKey(name: 'created_at')  DateTime? createdAt)  $default,) {final _that = this;
 switch (_that) {
 case _UserDailyWordDTO():
 return $default(_that.userId,_that.flashcardId,_that.topicId,_that.assignedDate,_that.isCompleted,_that.createdAt);case _:
@@ -199,7 +199,7 @@ return $default(_that.userId,_that.flashcardId,_that.topicId,_that.assignedDate,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String userId, @JsonKey(name: 'flashcard_id')  String flashcardId, @JsonKey(name: 'topic_id')  int? topicId, @JsonKey(name: 'assigned_date')  DateTime assignedDate, @JsonKey(name: 'is_completed')  bool? isCompleted, @JsonKey(name: 'created_at')  DateTime? createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'user_id')  String userId, @JsonKey(name: 'flashcard_id')  String flashcardId, @JsonKey(name: 'topic_id')  int? topicId, @JsonKey(name: 'assigned_date')  DateTime assignedDate, @JsonKey(name: 'is_completed')  bool? isCompleted, @JsonKey(name: 'created_at')  DateTime? createdAt)?  $default,) {final _that = this;
 switch (_that) {
 case _UserDailyWordDTO() when $default != null:
 return $default(_that.userId,_that.flashcardId,_that.topicId,_that.assignedDate,_that.isCompleted,_that.createdAt);case _:
@@ -214,10 +214,10 @@ return $default(_that.userId,_that.flashcardId,_that.topicId,_that.assignedDate,
 @JsonSerializable()
 
 class _UserDailyWordDTO implements UserDailyWordDTO {
-  const _UserDailyWordDTO({required this.userId, @JsonKey(name: 'flashcard_id') required this.flashcardId, @JsonKey(name: 'topic_id') this.topicId, @JsonKey(name: 'assigned_date') required this.assignedDate, @JsonKey(name: 'is_completed') this.isCompleted, @JsonKey(name: 'created_at') this.createdAt});
+  const _UserDailyWordDTO({@JsonKey(name: 'user_id') required this.userId, @JsonKey(name: 'flashcard_id') required this.flashcardId, @JsonKey(name: 'topic_id') this.topicId, @JsonKey(name: 'assigned_date') required this.assignedDate, @JsonKey(name: 'is_completed') this.isCompleted, @JsonKey(name: 'created_at') this.createdAt});
   factory _UserDailyWordDTO.fromJson(Map<String, dynamic> json) => _$UserDailyWordDTOFromJson(json);
 
-@override final  String userId;
+@override@JsonKey(name: 'user_id') final  String userId;
 @override@JsonKey(name: 'flashcard_id') final  String flashcardId;
 @override@JsonKey(name: 'topic_id') final  int? topicId;
 @override@JsonKey(name: 'assigned_date') final  DateTime assignedDate;
@@ -257,7 +257,7 @@ abstract mixin class _$UserDailyWordDTOCopyWith<$Res> implements $UserDailyWordD
   factory _$UserDailyWordDTOCopyWith(_UserDailyWordDTO value, $Res Function(_UserDailyWordDTO) _then) = __$UserDailyWordDTOCopyWithImpl;
 @override @useResult
 $Res call({
- String userId,@JsonKey(name: 'flashcard_id') String flashcardId,@JsonKey(name: 'topic_id') int? topicId,@JsonKey(name: 'assigned_date') DateTime assignedDate,@JsonKey(name: 'is_completed') bool? isCompleted,@JsonKey(name: 'created_at') DateTime? createdAt
+@JsonKey(name: 'user_id') String userId,@JsonKey(name: 'flashcard_id') String flashcardId,@JsonKey(name: 'topic_id') int? topicId,@JsonKey(name: 'assigned_date') DateTime assignedDate,@JsonKey(name: 'is_completed') bool? isCompleted,@JsonKey(name: 'created_at') DateTime? createdAt
 });
 
 
