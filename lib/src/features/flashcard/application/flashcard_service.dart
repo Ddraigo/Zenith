@@ -1,5 +1,5 @@
 import 'dart:developer' as developer;
-import 'package:app_demo/src/core/controller/current_user_id_notifire.dart';
+import 'package:app_demo/src/core/provider/current_user_id_notifire.dart';
 import 'package:app_demo/src/features/flashcard/data/repository/flashcard_repository.dart';
 import 'package:app_demo/src/features/flashcard/domain/flashcard_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,10 +11,9 @@ final flashcardServiceProvider = Provider(FlashcardService.new);
 class FlashcardService {
   final Ref _ref;
   FlashcardService(this._ref);
-  // late final _client = _ref.read(supabaseClientProvider);
   late final _repo = _ref.read(flashcardRepoProvider);
 
-  late final _currentUserId = _ref.read(currentUserIdProvider);
+  String get _currentUserId => _ref.read(currentUserIdProvider);
 
   Future<List<FlashcardModel>> fetchFlashcardById({
     required int topicId,

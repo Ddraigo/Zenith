@@ -269,7 +269,7 @@ final class GetDailyTopicsGroupedProvider
 }
 
 String _$getDailyTopicsGroupedHash() =>
-    r'52de2132ce8c960bb66c3f1b1cf9ad31bc46767d';
+    r'9ee98ca8fb3a86ab60fd13bc1a5d03c50f409eee';
 
 final class GetDailyTopicsGroupedFamily extends $Family
     with
@@ -332,7 +332,7 @@ final class GetDailyAllTopicsGroupedProvider
 }
 
 String _$getDailyAllTopicsGroupedHash() =>
-    r'2789b6afc8f5375803e71458f7070ae1a6baf2a8';
+    r'ca37817c61a544749298b6dcdcf9b5df60324732';
 
 @ProviderFor(formatDailyDate)
 final formatDailyDateProvider = FormatDailyDateFamily._();

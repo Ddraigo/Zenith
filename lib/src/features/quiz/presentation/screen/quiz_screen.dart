@@ -8,10 +8,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../configs/routes/app_router.dart';
-import '../../../../core/controller/shared_flashcard_notifier.dart';
+import '../../../../core/provider/shared_flashcard_notifier.dart';
 import '../../../../shared/constants/format.dart';
 import '../../../../shared/http/app_exception.dart';
-import '../../domain/quiz_attempt_args.dart';
+import '../../../../core/domain/quiz_attempt_args.dart';
 
 class QuizScreen extends ConsumerWidget {
   const QuizScreen({super.key});
@@ -113,7 +113,7 @@ class QuizScreen extends ConsumerWidget {
             style: MyTextStyle.poppinsHeading2,
           ),
           Text(
-            "Làm quiz ngay để giữ chuỗi 12 ngày học hành siêng năng nhé!",
+            "Làm quiz ngay để giữ chuỗi ngày học hành siêng năng nhé!",
             style: MyTextStyle.poppinsLarge400.copyWith(color: color.secondary),
           ),
           Row(
@@ -164,7 +164,7 @@ class QuizScreen extends ConsumerWidget {
                   );
                   if (todayProgress.userId.isNotEmpty &&
                       todayProgress.topicId != 0)
-                    context.go(AppRouter.quizAttempPath, extra: args);
+                    context.push(AppRouter.quizAttempPath, extra: args);
                 },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(

@@ -38,15 +38,6 @@ Future<List<TopicModel>> getTopicList(Ref ref)async{
   return ref.read(topicServiceProvider).getTopicList();
 }
 
-
-// @riverpod
-// Future<List<FlashcardModel>> getTopicFlashcard(Ref ref, {required int topicId})async{
-//   return ref.read(flashcardServiceProvider).fetchFlashcardById(
-//       topicId: topicId,
-//   );
-// }
-
-
 @riverpod
 Future<List<FlashcardModel>> getFlashcards( Ref ref, int selectedTopicId)async{
   final isDaily = ref.watch(isDailyModeProvider);
@@ -63,6 +54,7 @@ Future<List<FlashcardModel>> getFlashcards( Ref ref, int selectedTopicId)async{
   }
 
   // Xem hôm nay (selectedTopicId = 0) - resolve topicId thực tế
+  
   final topicId = await ref.watch(resolvedTopicIdProvider(selectedTopicId).future);
   final daily = await ref.watch(flashcardProvider(topicId).future);
   if(daily.isNotEmpty) return daily;
@@ -74,13 +66,13 @@ Future<List<FlashcardModel>> getFlashcards( Ref ref, int selectedTopicId)async{
 Future<Map<DateTime, List<DailyWordSummaryModel>>> getDailyTopicsGrouped (
   Ref ref,
   {required int dayRange}) async{
-    return ref.read(userDailyWordServiceProvider)
+    return ref.watch(userDailyWordServiceProvider)
     .getDailyTopicsGrouped(dayRange: dayRange);
 }
 
 @riverpod
 Future<Map<DateTime, List<DailyWordSummaryModel>>> getDailyAllTopicsGrouped (Ref ref) async{
-  return ref.read(userDailyWordServiceProvider)
+  return ref.watch(userDailyWordServiceProvider)
     .getDailyTopicsGrouped(startDate: DateTime(1999,1,1));
 }
 

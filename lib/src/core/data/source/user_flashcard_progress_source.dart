@@ -17,6 +17,24 @@ class UserFlashcardProgressSource {
   final SupabaseClient _client;
   UserFlashcardProgressSource(this._client);
 
+  Future<Either<AppException, List<UserFlashcardProgressDTO>>> fetchFlashcardProgress({
+    required String userId,
+  }) async {
+    try {
+      final data = await _client
+                        .from('user_flashcard_progress')
+                        .select()
+                        .eq('user_id', userId) as List<dynamic>;
+
+      return Either.right(data.map((e) => UserFlashcardProgressDTO.fromJson(e)).toList());
+
+    } catch (e, st) {
+      developer.log('fetchFlashcardProgress error: $e');
+      developer.log('$st');
+      return Either.left(SupabaseErrorHandle.handle(e));
+    }
+  }
+
   Future<Either<AppException, List<UserFlashcardProgressDTO>>> updateFlashcardProgress({
     required List<Map<String, dynamic>> items,
   }) async {

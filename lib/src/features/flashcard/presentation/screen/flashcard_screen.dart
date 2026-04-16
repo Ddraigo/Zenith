@@ -1,5 +1,5 @@
 import 'package:app_demo/configs/themes/text_style.dart';
-import 'package:app_demo/src/core/controller/shared_flashcard_notifier.dart';
+import 'package:app_demo/src/core/provider/shared_flashcard_notifier.dart';
 import 'package:app_demo/src/features/flashcard/presentation/screen/daily_word_bottom_sheet.dart';
 import 'package:app_demo/src/features/flashcard/presentation/screen/flashcard_list.dart';
 import 'package:app_demo/src/features/topic/presentation/controller/list_topic_notifier.dart';

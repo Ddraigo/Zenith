@@ -1,6 +1,6 @@
 import 'package:app_demo/src/features/quiz/application/quiz_attempts_service.dart';
 import 'package:app_demo/src/features/quiz/domain/question_model.dart';
-import 'package:app_demo/src/features/quiz/domain/quiz_attempt_args.dart';
+import 'package:app_demo/src/core/domain/quiz_attempt_args.dart';
 import 'package:app_demo/src/features/quiz/domain/quiz_attempts_model.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:dart_either/dart_either.dart';

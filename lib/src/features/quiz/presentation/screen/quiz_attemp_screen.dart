@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:app_demo/configs/routes/app_router.dart';
 import 'package:app_demo/configs/themes/text_style.dart';
 import 'package:app_demo/src/features/quiz/domain/question_model.dart';
-import 'package:app_demo/src/features/quiz/domain/quiz_attempt_args.dart';
+import 'package:app_demo/src/core/domain/quiz_attempt_args.dart';
 import 'package:app_demo/src/features/quiz/presentation/controller/quiz_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';

@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$QuizAttemptsModel {
 
- String get id; String get userId; int? get topicId; int? get score; int get totalQuestions; int? get correctAnswers; DateTime? get createdAt;
+ String get id; String get userId; int? get topicId; String get attemptType; int? get score; int get totalQuestions; int? get correctAnswers; DateTime? get createdAt;
 /// Create a copy of QuizAttemptsModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $QuizAttemptsModelCopyWith<QuizAttemptsModel> get copyWith => _$QuizAttemptsMode
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuizAttemptsModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.topicId, topicId) || other.topicId == topicId)&&(identical(other.score, score) || other.score == score)&&(identical(other.totalQuestions, totalQuestions) || other.totalQuestions == totalQuestions)&&(identical(other.correctAnswers, correctAnswers) || other.correctAnswers == correctAnswers)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuizAttemptsModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.topicId, topicId) || other.topicId == topicId)&&(identical(other.attemptType, attemptType) || other.attemptType == attemptType)&&(identical(other.score, score) || other.score == score)&&(identical(other.totalQuestions, totalQuestions) || other.totalQuestions == totalQuestions)&&(identical(other.correctAnswers, correctAnswers) || other.correctAnswers == correctAnswers)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,userId,topicId,score,totalQuestions,correctAnswers,createdAt);
+int get hashCode => Object.hash(runtimeType,id,userId,topicId,attemptType,score,totalQuestions,correctAnswers,createdAt);
 
 @override
 String toString() {
-  return 'QuizAttemptsModel(id: $id, userId: $userId, topicId: $topicId, score: $score, totalQuestions: $totalQuestions, correctAnswers: $correctAnswers, createdAt: $createdAt)';
+  return 'QuizAttemptsModel(id: $id, userId: $userId, topicId: $topicId, attemptType: $attemptType, score: $score, totalQuestions: $totalQuestions, correctAnswers: $correctAnswers, createdAt: $createdAt)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $QuizAttemptsModelCopyWith<$Res>  {
   factory $QuizAttemptsModelCopyWith(QuizAttemptsModel value, $Res Function(QuizAttemptsModel) _then) = _$QuizAttemptsModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String userId, int? topicId, int? score, int totalQuestions, int? correctAnswers, DateTime? createdAt
+ String id, String userId, int? topicId, String attemptType, int? score, int totalQuestions, int? correctAnswers, DateTime? createdAt
 });
 
 
@@ -62,12 +62,13 @@ class _$QuizAttemptsModelCopyWithImpl<$Res>
 
 /// Create a copy of QuizAttemptsModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? userId = null,Object? topicId = freezed,Object? score = freezed,Object? totalQuestions = null,Object? correctAnswers = freezed,Object? createdAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? userId = null,Object? topicId = freezed,Object? attemptType = null,Object? score = freezed,Object? totalQuestions = null,Object? correctAnswers = freezed,Object? createdAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,topicId: freezed == topicId ? _self.topicId : topicId // ignore: cast_nullable_to_non_nullable
-as int?,score: freezed == score ? _self.score : score // ignore: cast_nullable_to_non_nullable
+as int?,attemptType: null == attemptType ? _self.attemptType : attemptType // ignore: cast_nullable_to_non_nullable
+as String,score: freezed == score ? _self.score : score // ignore: cast_nullable_to_non_nullable
 as int?,totalQuestions: null == totalQuestions ? _self.totalQuestions : totalQuestions // ignore: cast_nullable_to_non_nullable
 as int,correctAnswers: freezed == correctAnswers ? _self.correctAnswers : correctAnswers // ignore: cast_nullable_to_non_nullable
 as int?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
@@ -156,10 +157,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String userId,  int? topicId,  int? score,  int totalQuestions,  int? correctAnswers,  DateTime? createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String userId,  int? topicId,  String attemptType,  int? score,  int totalQuestions,  int? correctAnswers,  DateTime? createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _QuizAttemptsModel() when $default != null:
-return $default(_that.id,_that.userId,_that.topicId,_that.score,_that.totalQuestions,_that.correctAnswers,_that.createdAt);case _:
+return $default(_that.id,_that.userId,_that.topicId,_that.attemptType,_that.score,_that.totalQuestions,_that.correctAnswers,_that.createdAt);case _:
   return orElse();
 
 }
@@ -177,10 +178,10 @@ return $default(_that.id,_that.userId,_that.topicId,_that.score,_that.totalQuest
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String userId,  int? topicId,  int? score,  int totalQuestions,  int? correctAnswers,  DateTime? createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String userId,  int? topicId,  String attemptType,  int? score,  int totalQuestions,  int? correctAnswers,  DateTime? createdAt)  $default,) {final _that = this;
 switch (_that) {
 case _QuizAttemptsModel():
-return $default(_that.id,_that.userId,_that.topicId,_that.score,_that.totalQuestions,_that.correctAnswers,_that.createdAt);case _:
+return $default(_that.id,_that.userId,_that.topicId,_that.attemptType,_that.score,_that.totalQuestions,_that.correctAnswers,_that.createdAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +198,10 @@ return $default(_that.id,_that.userId,_that.topicId,_that.score,_that.totalQuest
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String userId,  int? topicId,  int? score,  int totalQuestions,  int? correctAnswers,  DateTime? createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String userId,  int? topicId,  String attemptType,  int? score,  int totalQuestions,  int? correctAnswers,  DateTime? createdAt)?  $default,) {final _that = this;
 switch (_that) {
 case _QuizAttemptsModel() when $default != null:
-return $default(_that.id,_that.userId,_that.topicId,_that.score,_that.totalQuestions,_that.correctAnswers,_that.createdAt);case _:
+return $default(_that.id,_that.userId,_that.topicId,_that.attemptType,_that.score,_that.totalQuestions,_that.correctAnswers,_that.createdAt);case _:
   return null;
 
 }
@@ -212,12 +213,13 @@ return $default(_that.id,_that.userId,_that.topicId,_that.score,_that.totalQuest
 
 
 class _QuizAttemptsModel implements QuizAttemptsModel {
-  const _QuizAttemptsModel({required this.id, required this.userId, this.topicId = 0, this.score = 0, required this.totalQuestions, this.correctAnswers = 0, this.createdAt});
+  const _QuizAttemptsModel({required this.id, required this.userId, this.topicId = 0, this.attemptType = 'daily', this.score = 0, required this.totalQuestions, this.correctAnswers = 0, this.createdAt});
   
 
 @override final  String id;
 @override final  String userId;
 @override@JsonKey() final  int? topicId;
+@override@JsonKey() final  String attemptType;
 @override@JsonKey() final  int? score;
 @override final  int totalQuestions;
 @override@JsonKey() final  int? correctAnswers;
@@ -233,16 +235,16 @@ _$QuizAttemptsModelCopyWith<_QuizAttemptsModel> get copyWith => __$QuizAttemptsM
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuizAttemptsModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.topicId, topicId) || other.topicId == topicId)&&(identical(other.score, score) || other.score == score)&&(identical(other.totalQuestions, totalQuestions) || other.totalQuestions == totalQuestions)&&(identical(other.correctAnswers, correctAnswers) || other.correctAnswers == correctAnswers)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuizAttemptsModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.topicId, topicId) || other.topicId == topicId)&&(identical(other.attemptType, attemptType) || other.attemptType == attemptType)&&(identical(other.score, score) || other.score == score)&&(identical(other.totalQuestions, totalQuestions) || other.totalQuestions == totalQuestions)&&(identical(other.correctAnswers, correctAnswers) || other.correctAnswers == correctAnswers)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,userId,topicId,score,totalQuestions,correctAnswers,createdAt);
+int get hashCode => Object.hash(runtimeType,id,userId,topicId,attemptType,score,totalQuestions,correctAnswers,createdAt);
 
 @override
 String toString() {
-  return 'QuizAttemptsModel(id: $id, userId: $userId, topicId: $topicId, score: $score, totalQuestions: $totalQuestions, correctAnswers: $correctAnswers, createdAt: $createdAt)';
+  return 'QuizAttemptsModel(id: $id, userId: $userId, topicId: $topicId, attemptType: $attemptType, score: $score, totalQuestions: $totalQuestions, correctAnswers: $correctAnswers, createdAt: $createdAt)';
 }
 
 
@@ -253,7 +255,7 @@ abstract mixin class _$QuizAttemptsModelCopyWith<$Res> implements $QuizAttemptsM
   factory _$QuizAttemptsModelCopyWith(_QuizAttemptsModel value, $Res Function(_QuizAttemptsModel) _then) = __$QuizAttemptsModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String userId, int? topicId, int? score, int totalQuestions, int? correctAnswers, DateTime? createdAt
+ String id, String userId, int? topicId, String attemptType, int? score, int totalQuestions, int? correctAnswers, DateTime? createdAt
 });
 
 
@@ -270,12 +272,13 @@ class __$QuizAttemptsModelCopyWithImpl<$Res>
 
 /// Create a copy of QuizAttemptsModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? userId = null,Object? topicId = freezed,Object? score = freezed,Object? totalQuestions = null,Object? correctAnswers = freezed,Object? createdAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? userId = null,Object? topicId = freezed,Object? attemptType = null,Object? score = freezed,Object? totalQuestions = null,Object? correctAnswers = freezed,Object? createdAt = freezed,}) {
   return _then(_QuizAttemptsModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,topicId: freezed == topicId ? _self.topicId : topicId // ignore: cast_nullable_to_non_nullable
-as int?,score: freezed == score ? _self.score : score // ignore: cast_nullable_to_non_nullable
+as int?,attemptType: null == attemptType ? _self.attemptType : attemptType // ignore: cast_nullable_to_non_nullable
+as String,score: freezed == score ? _self.score : score // ignore: cast_nullable_to_non_nullable
 as int?,totalQuestions: null == totalQuestions ? _self.totalQuestions : totalQuestions // ignore: cast_nullable_to_non_nullable
 as int,correctAnswers: freezed == correctAnswers ? _self.correctAnswers : correctAnswers // ignore: cast_nullable_to_non_nullable
 as int?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable

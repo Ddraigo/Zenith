@@ -157,7 +157,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   }
 
   Widget _buildFormRegister(AsyncValue<void> asyncState) {
-    final _notifier = ref.read(signUpProvider.notifier);
+    final notifier = ref.read(signUpProvider.notifier);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -168,13 +168,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           hintText: 'Họ và tên',
           focusNode: _fullNameFocusNode,
           controller: _fullNameController,
-          errorText: isSubmit ? _notifier.validateUsername(_fullNameController.text) : null,
+          errorText: isSubmit ? notifier.validateUsername(_fullNameController.text) : null,
         ),
         DatePickerCustom(
           initialDate: _selectedDate,
           hintText: 'Ngày sinh',
           onChanged: (date) => setState(() => _selectedDate = date),
-          errorText: isSubmit ? _notifier.validateDayOfBirth(_selectedDate ) : null,
+          errorText: isSubmit ? notifier.validateDayOfBirth(_selectedDate ) : null,
         ),
         DropdownButtonFormField<Gender?>(
           value: _selectedGender == Gender.none ? null : _selectedGender,
@@ -199,7 +199,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           hintText: 'Địa chỉ Email',
           focusNode: _emailFocusNode,
           controller: _emailController,
-          errorText: isSubmit ? _notifier.validateEmail(_emailController.text) : null
+          errorText: isSubmit ? notifier.validateEmail(_emailController.text) : null
         ),
         TextFieldCustom(
           icon: MyIcons.lockIcon,
@@ -207,7 +207,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           focusNode: _passwordFocusNode,
           obscureText: true,
           controller: _passwordController,
-          errorText: isSubmit ? _notifier.validatePassword(_passwordController.text) : null,
+          errorText: isSubmit ? notifier.validatePassword(_passwordController.text) : null,
         ),
         TextFieldCustom(
           icon: MyIcons.lockIcon,
@@ -215,7 +215,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           focusNode: _rePasswordFocusNode,
           obscureText: true,
           controller: _rePasswordController,
-          errorText: isSubmit ? _notifier.validateConfirmPassword(_passwordController.text, _rePasswordController.text) : null,
+          errorText: isSubmit ? notifier.validateConfirmPassword(_passwordController.text, _rePasswordController.text) : null,
         ),
         asyncState.when(
           data: (_) {

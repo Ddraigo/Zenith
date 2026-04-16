@@ -14,6 +14,9 @@ const factory QuizAttemptsDTO({
     @JsonKey(name:'topic_id') 
     required int topicId,
 
+    @JsonKey(name:'attempt_type')
+    String? attemptType,
+
     required int score,
 
     @JsonKey(name:'total_questions') 
@@ -37,6 +40,7 @@ extension QuizAttemptsDTOMapper on QuizAttemptsDTO {
       id: id,
       userId: userId,
       topicId: topicId,
+      attemptType: attemptType ?? 'daily',
       score: score,
       totalQuestions: totalQuestions,
       correctAnswers: correctAnswers,

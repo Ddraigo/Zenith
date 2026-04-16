@@ -3,7 +3,7 @@ import 'package:app_demo/configs/themes/app_colors.dart';
 import 'package:app_demo/configs/themes/text_style.dart';
 import 'package:app_demo/src/features/home/presentation/home_screen.dart';
 import 'package:app_demo/src/features/quiz/domain/quiz_attempts_model.dart';
-import 'package:app_demo/src/features/quiz/presentation/controller/quiz_result_notifier.dart';
+import 'package:app_demo/src/core/presentation/controller/quiz_result_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -37,6 +37,10 @@ class QuizResultScreen extends ConsumerWidget {
         title: const Text('Kết quả'),
         leading: IconButton(
           onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+              return;
+            }
             ref.read(homeTapProvider.notifier).state = 2;
             context.go(AppRouter.homePath);
           },
@@ -58,7 +62,7 @@ class QuizResultScreen extends ConsumerWidget {
                   ),
                 ),
                 onPressed: () {
-                  context.go(AppRouter.quizAttempPath, extra: arg);
+                  context.pushReplacement(AppRouter.quizAttempPath, extra: arg);
                 },
                 icon: const Icon(Icons.refresh_rounded),
                 label: const Text('Làm lại'),
@@ -75,7 +79,6 @@ class QuizResultScreen extends ConsumerWidget {
                   ),
                 ),
                 onPressed: () {
-                  ref.read(homeTapProvider.notifier).state = 2;
                   context.go(AppRouter.homePath);
                 },
                 icon: const Icon(Icons.home_rounded),

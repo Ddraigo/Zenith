@@ -1,9 +1,7 @@
-import 'dart:developer' as developer;
 
 import 'package:app_demo/src/features/flashcard/application/user_daily_word_service.dart';
 import 'package:app_demo/src/features/flashcard/domain/user_daily_word_model.dart';
-import 'package:app_demo/src/shared/http/app_exception.dart';
-import 'package:dart_either/dart_either.dart';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'daily_word_notifier.g.dart';
 

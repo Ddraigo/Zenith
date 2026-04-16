@@ -8,7 +8,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../flashcard/presentation/screen/flashcard_screen.dart';
 import '../../statistics/presentation/screen/statistics_screen.dart';
 import '../../topic/presentation/screen/topic_srceen.dart';
-import '../../profile/presentation/screen/profile_screen.dart';
 import '../../quiz/presentation/screen/quiz_screen.dart';
 
 final homeTapProvider = StateProvider<int>((ref) => 0);

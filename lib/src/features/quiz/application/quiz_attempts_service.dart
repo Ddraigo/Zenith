@@ -3,19 +3,18 @@ import 'dart:math';
 
 import 'package:app_demo/src/features/flashcard/application/flashcard_service.dart';
 import 'package:app_demo/src/features/flashcard/application/user_daily_word_service.dart';
-import 'package:app_demo/src/features/flashcard/data/dto/daily_word_summary_dto.dart';
 import 'package:app_demo/src/features/quiz/application/quiz_attempt_items_service.dart';
 import 'package:app_demo/src/features/quiz/domain/question_model.dart';
 import 'package:app_demo/src/features/quiz/domain/quiz_attempt_items_model.dart';
 import 'package:app_demo/src/features/quiz/domain/quiz_attempts_model.dart';
-import 'package:app_demo/src/features/quiz/domain/quiz_attempt_args.dart';
+import 'package:app_demo/src/core/domain/quiz_attempt_args.dart';
 import 'package:app_demo/src/features/statistics/application/statistics_service.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:dart_either/dart_either.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart' hide Either;
 
-import '../../../core/controller/current_user_id_notifire.dart';
+import '../../../core/provider/current_user_id_notifire.dart';
 import '../../../core/domain/user_flashcard_progress_model.dart';
 import '../../../core/service/user_flashcard_progress_service.dart';
 import '../../../shared/constants/format.dart';
@@ -29,7 +28,7 @@ class QuizAttemptsService {
   QuizAttemptsService(this._ref);
 
   late final QuizAttemptsRepo _repo = _ref.read(quizAttemptsRepoProvider);
-  late final _currentUserId = _ref.read(currentUserIdProvider);
+  String get _currentUserId => _ref.read(currentUserIdProvider);
   late final QuizAttemptItemsService _attemptItemsService = _ref.read(
     quizAttemptItemsServiceProvider,
   );
@@ -47,8 +46,29 @@ class QuizAttemptsService {
     userStatsServiceProvider,
   );
 
+  Future<Either<AppException, List<QuizAttemptsModel>>> getQuizAttempList() async {
+    final result = await _repo.fetchQuizAttemp(userId: _currentUserId);
+    return result.fold(
+      ifLeft: (error) {
+        developer.log(
+          'StatisticsService: getQuizAttempList error',
+          error: error,
+          stackTrace: StackTrace.current,
+        );
+        return error.left();
+      },
+      ifRight: (data){
+        if(data.isEmpty){
+          return Either.right([]);
+        }
+        return data.right();
+      },
+    );
+  }
+
   Future<Either<AppException, QuizAttemptsModel>> insertQuizAttemp({
     required int topicId,
+    required QuizAttemptType type,
     required int score,
     required int totalQuestions,
     required int correctAnswers,
@@ -56,6 +76,7 @@ class QuizAttemptsService {
     final result = await _repo.insertQuizAttemp(
       userId: _currentUserId,
       topicId: topicId,
+      attemptType: type.name,
       score: score,
       totalQuestions: totalQuestions,
       correctAnswers: correctAnswers,
@@ -63,7 +84,7 @@ class QuizAttemptsService {
     return result.fold(
       ifLeft: (error) {
         developer.log(
-          'UserDailyWordService: Error fetching data',
+          'StatisticsService: Error fetching data',
           error: error,
           stackTrace: StackTrace.current,
         );
@@ -130,7 +151,7 @@ class QuizAttemptsService {
       return validateError.left();
     }
 
-    final saveResult = await _saveAttemptAndItems(session: session);
+    final saveResult = await _saveAttemptAndItems(session: session, agrs: agrs);
     return saveResult.fold(
       ifLeft: (e) => e.left(),
       ifRight: (attempt) async {
@@ -167,12 +188,14 @@ class QuizAttemptsService {
 
   Future<Either<AppException, QuizAttemptsModel>> _saveAttemptAndItems({
     required QuestionModel session,
+    required QuizAttemptArgs agrs,
   }) async {
     final totalQuestions = session.questions.length;
     final correctAnswers = _calculateCorrectAnswers(session);
     final score = _calculateScore(correctAnswers, totalQuestions);
     final attempts = await insertQuizAttemp(
       topicId: session.topicId,
+      type: agrs.type,
       score: score,
       totalQuestions: totalQuestions,
       correctAnswers: correctAnswers,

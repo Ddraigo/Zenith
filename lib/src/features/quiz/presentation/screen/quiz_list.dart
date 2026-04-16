@@ -1,5 +1,5 @@
 import 'package:app_demo/configs/routes/app_router.dart';
-import 'package:app_demo/src/features/quiz/domain/quiz_attempt_args.dart';
+import 'package:app_demo/src/core/domain/quiz_attempt_args.dart';
 import 'package:app_demo/src/features/topic/domain/topic_model.dart';
 import 'package:app_demo/src/shared/constants/format.dart';
 import 'package:app_demo/src/shared/constants/images_constants.dart';
@@ -106,7 +106,7 @@ class QuizList extends StatelessWidget {
                 assignedDate: item.assignedDate,
               );
               
-              context.go(AppRouter.quizAttempPath, extra: args);
+              context.push(AppRouter.quizAttempPath, extra: args);
             },
             child: Container(
               margin: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
@@ -212,6 +212,8 @@ class QuizList extends StatelessWidget {
                           color.primary,
                           BlendMode.srcIn,
                         ),
+                        height: 30.h,
+                        width: 30.w,
                       ),
                     ),
                     Expanded(
@@ -247,7 +249,7 @@ class QuizList extends StatelessWidget {
                     topicId: item.id,
                     title: item.name,
                   );
-                  context.go(AppRouter.quizAttempPath, extra: args);
+                  context.push(AppRouter.quizAttempPath, extra: args);
                 },
                 style: IconButton.styleFrom(
                   padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),

@@ -3,9 +3,9 @@ import 'package:app_demo/src/features/authentication/presentation/screen/onboard
 import 'package:app_demo/src/features/authentication/presentation/screen/login/login_screen.dart';
 import 'package:app_demo/src/features/authentication/presentation/screen/signIn/sign_up_screen.dart';
 import 'package:app_demo/src/features/flashcard/presentation/screen/flashcard_screen.dart';
-import 'package:app_demo/src/features/quiz/domain/quiz_attempt_args.dart';
+import 'package:app_demo/src/core/domain/quiz_attempt_args.dart';
 import 'package:app_demo/src/features/quiz/presentation/screen/quiz_attemp_screen.dart';
-import 'package:app_demo/src/features/quiz/presentation/screen/quiz_result_screen.dart';
+import 'package:app_demo/src/core/presentation/screen/quiz_result_screen.dart';
 import 'package:app_demo/src/features/statistics/presentation/screen/statistics_screen.dart';
 import 'package:app_demo/src/features/topic/presentation/screen/topic_srceen.dart';
 import 'package:app_demo/src/features/home/presentation/home_screen.dart';
@@ -15,10 +15,8 @@ import 'package:app_demo/src/shared/constants/images_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-
-
 final GoRouter appRouter = GoRouter(
-  initialLocation: AppRouter.userStatsPath,
+  initialLocation: AppRouter.loginPath,
   
   routes: <RouteBase>[
     GoRoute(

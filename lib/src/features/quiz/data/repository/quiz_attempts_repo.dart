@@ -16,6 +16,7 @@ class QuizAttemptsRepo {
   Future<Either<AppException, QuizAttemptsModel>> insertQuizAttemp({
     required String userId,
     required int topicId,
+    required String attemptType,
     required int score,
     required int totalQuestions,
     required int correctAnswers,
@@ -23,6 +24,7 @@ class QuizAttemptsRepo {
     final result = await _source.insertQuizAttemp(
       userId: userId,
       topicId: topicId,
+      attemptType: attemptType,
       score: score,
       totalQuestions: totalQuestions,
       correctAnswers: correctAnswers,
@@ -47,5 +49,14 @@ class QuizAttemptsRepo {
       correctAnswers: correctAnswers,
     );
     return result.map((dto) => dto.toDomain());
+  }
+
+  Future<Either<AppException, List<QuizAttemptsModel>>> fetchQuizAttemp({
+    required String userId,
+  }) async {
+    final result = await _source.fetchQuizAttemp(userId: userId);
+    return result.map((items){
+      return items.map((dto) => dto.toDomain()).toList();
+    });
   }
 }

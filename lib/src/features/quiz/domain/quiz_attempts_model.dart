@@ -8,8 +8,8 @@ abstract class QuizAttemptsModel with _$QuizAttemptsModel{
 
     required String userId,
     @Default(0) int? topicId,
+    @Default('daily') String attemptType,
     @Default(0) int? score,
-
     required int totalQuestions,
     @Default(0) int? correctAnswers,
 

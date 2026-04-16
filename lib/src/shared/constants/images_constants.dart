@@ -65,5 +65,9 @@ class MyIcons{
   static const String quiz =  'assets/icons/quiz.svg';
   static const String progress =  'assets/icons/progress.svg';
   static const String streak =  'assets/icons/streak.svg';
+  static const String streakPurple =  'assets/icons/streak_purple.svg';
+  static const String totalLearn =  'assets/icons/total_learn.svg';
+  static const String starGreen =  'assets/icons/star_green.svg';
+  static const String bookPurple =  'assets/icons/book_purple.svg';
 }
 

@@ -25,4 +25,13 @@ class UserFlashcardProgressRepo {
     });
   }
 
+  Future<Either<AppException, List<UserFlashcardProgressModel>>> fetchFlashcardProgress({
+    required String userId,
+  }) async {
+    final result = await _source.fetchFlashcardProgress(userId: userId);
+    return result.map((item){
+      return item.map((dto) => dto.toDomain()).toList();
+    });
+  }
+
 }

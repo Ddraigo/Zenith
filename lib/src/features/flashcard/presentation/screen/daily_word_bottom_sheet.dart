@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/controller/shared_flashcard_notifier.dart';
+import '../../../../core/provider/shared_flashcard_notifier.dart';
 
 class DailyWordBottomSheet extends ConsumerWidget {
   const DailyWordBottomSheet({

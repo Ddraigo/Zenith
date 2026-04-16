@@ -17,6 +17,7 @@ class QuizAttemptsSource {
   Future<Either<AppException, QuizAttemptsDTO>> insertQuizAttemp({
     required String userId,
     required int topicId,
+    required String attemptType,
     required int score,
     required int totalQuestions,
     required int correctAnswers,
@@ -27,6 +28,7 @@ class QuizAttemptsSource {
           .insert({
             'user_id': userId,
             'topic_id': topicId,
+            'attempt_type': attemptType,
             'score': score,
             'total_questions': totalQuestions,
             'correct_answers': correctAnswers,
@@ -74,7 +76,10 @@ class QuizAttemptsSource {
   }) async {
     try {
       final data =
-          await _client.from('quiz_attempts').select().eq('user_id', userId)
+          await _client.from('quiz_attempts')
+                        .select()
+                        .eq('user_id', userId)
+                        .order('created_at')
               as List<dynamic>;
 
       return Either.right(
