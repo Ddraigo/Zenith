@@ -69,5 +69,6 @@ class MyIcons{
   static const String totalLearn =  'assets/icons/total_learn.svg';
   static const String starGreen =  'assets/icons/star_green.svg';
   static const String bookPurple =  'assets/icons/book_purple.svg';
+  static const String aiGemini =  'assets/icons/ai_gemini.svg';
 }
 

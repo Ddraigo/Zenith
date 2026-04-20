@@ -1,29 +1,27 @@
-
 import 'package:app_demo/src/shared/utils/email_validator.dart';
 
 class Validator {
-
-  static bool isValidEmail(String? value){
-    if(value == null){
+  static bool isValidEmail(String? value) {
+    if (value == null) {
       return false;
     }
-    if(value.isEmpty){
+    if (value.isEmpty) {
       return false;
     }
-    if(value.length < 4){
+    if (value.length < 4) {
       return false;
     }
     return EmailValidator.validate(value);
   }
 
-  static bool isValidPassword(String? value){
-    if(value == null){
+  static bool isValidPassword(String? value) {
+    if (value == null) {
       return false;
     }
-    if(value.isEmpty){
+    if (value.isEmpty) {
       return false;
     }
-    if(value.length < 5){
+    if (value.length < 5) {
       return false;
     }
     // bool passValid = RegExp(
@@ -36,22 +34,26 @@ class Validator {
     return true;
   }
 
-  static bool isValidDayOfBirth(DateTime? value){
-    if(value == null || value.toIso8601String().isEmpty) return false;
+  static bool isValidDayOfBirth(DateTime? value) {
+    if (value == null || value.toIso8601String().isEmpty) return false;
     final now = DateTime.now();
-    if(value.isAfter(now)) return false;
-    final age = now.year - value.year - 
-          ((now.month < value.month ||
-           ( now.month == value.month && now.day < value.day)) ? 1 : 0);
-    if(age <= 3) return false;
+    if (value.isAfter(now)) return false;
+    final age =
+        now.year -
+        value.year -
+        ((now.month < value.month ||
+                (now.month == value.month && now.day < value.day))
+            ? 1
+            : 0);
+    if (age <= 3) return false;
     return true;
   }
 
-  static bool isValidValue(String value){
-    if(value.trim().isEmpty){
+  static bool isValidValue(String value) {
+    if (value.trim().isEmpty) {
       return false;
     }
-    if(value == null){
+    if (value == null) {
       return false;
     }
     return true;

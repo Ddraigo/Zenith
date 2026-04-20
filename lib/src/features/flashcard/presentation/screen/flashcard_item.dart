@@ -1,4 +1,5 @@
 import 'package:app_demo/configs/themes/text_style.dart';
+import 'package:app_demo/src/features/ai_support/presentation/screen/ai_support_bottom_sheet.dart';
 import 'package:app_demo/src/features/flashcard/domain/flashcard_model.dart';
 import 'package:app_demo/src/shared/constants/images_constants.dart';
 import 'package:flutter/material.dart';
@@ -9,26 +10,29 @@ import 'package:flutter_svg/svg.dart';
 class FlashcardItem extends StatefulWidget {
   const FlashcardItem({
     super.key,
-    this.onPress,
     required this.flashcard,
+    this.onCallAI,
   });
-
-  final VoidCallback? onPress;
+  final VoidCallback? onCallAI;
   final FlashcardModel flashcard;
 
   @override
   State<FlashcardItem> createState() => _FlashcardItemState();
 }
 
-class _FlashcardItemState extends State<FlashcardItem> with SingleTickerProviderStateMixin{
+class _FlashcardItemState extends State<FlashcardItem>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
   late bool _isFront;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    _controller = AnimationController(duration: Duration(milliseconds: 600), vsync: this);
+    _controller = AnimationController(
+      duration: Duration(milliseconds: 600),
+      vsync: this,
+    );
     _animation = Tween<double>(begin: 0, end: 1).animate(_controller);
     _isFront = true;
   }
@@ -36,32 +40,31 @@ class _FlashcardItemState extends State<FlashcardItem> with SingleTickerProvider
   @override
   void didUpdateWidget(covariant FlashcardItem oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if(oldWidget.flashcard.id != widget.flashcard.id){
+    if (oldWidget.flashcard.id != widget.flashcard.id) {
       _controller
-      ..stop()
-      ..value = 0;
+        ..stop()
+        ..value = 0;
       _isFront = true;
     }
   }
 
   @override
-  void dispose(){
+  void dispose() {
     _controller.dispose();
     super.dispose();
   }
 
-  void _toggleCard(){
+  void _toggleCard() {
     HapticFeedback.lightImpact();
-    if(_isFront){
+    if (_isFront) {
       _controller.forward();
-    }else{
+    } else {
       _controller.reverse();
     }
     setState(() {
       _isFront = !_isFront;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -70,71 +73,84 @@ class _FlashcardItemState extends State<FlashcardItem> with SingleTickerProvider
       onTap: _toggleCard,
       child: AnimatedBuilder(
         animation: _animation,
-        builder: (context, child){
+        builder: (context, child) {
           return Transform(
             transform: Matrix4.identity()
-            ..setEntry(3, 2, 0.001)
-            ..rotateY(_animation.value * 3.14159),
-            
+              ..setEntry(3, 2, 0.001)
+              ..rotateY(_animation.value * 3.14159),
+
             alignment: Alignment.center,
             child: SizedBox(
               height: 420.h,
               width: double.infinity,
               child: _animation.value < 0.5
-                ? _flashcardFront(colorScheme)
-                : Transform.scale(
-                  scaleX: -1,
-                  scaleY: 1,
-                  child: _flashcardBack(colorScheme),
-                ),
-            )
+                  ? _flashcardFront(colorScheme)
+                  : Transform.scale(
+                      scaleX: -1,
+                      scaleY: 1,
+                      child: _flashcardBack(colorScheme),
+                    ),
+            ),
           );
-        }
+        },
       ),
     );
   }
 
   Widget _flashcardFront(ColorScheme colorScheme) {
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(36.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(36.r)),
       elevation: 0,
       color: colorScheme.surface,
       child: Padding(
-        padding: EdgeInsets.all(30.r),
+        padding: EdgeInsets.all(16.r),
         child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Text(
-            //   'NHẤN ĐỂ LẬT THẺ',
-            //   style: MyTextStyle.poppinsSmall600.copyWith(
-            //     color: colorScheme.outline,
-            //     letterSpacing: 1.5,
-            //   ),
-            // ),
-            SizedBox(height: 70.h),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                widget.flashcard.word,
-                textAlign: TextAlign.center,
-                style: MyTextStyle.poppinsHeading2.copyWith(
-                  fontSize: 40.sp,
-                  color: colorScheme.primary,
-                ),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      widget.flashcard.word,
+                      textAlign: TextAlign.center,
+                      style: MyTextStyle.poppinsHeading2.copyWith(
+                        fontSize: 40.sp,
+                        color: colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 52.h),
+                  SvgPicture.asset(
+                    MyIcons.tap,
+                    width: 34.w,
+                    height: 34.w,
+                    colorFilter: ColorFilter.mode(
+                      colorScheme.outline,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ],
               ),
             ),
-            SizedBox(height: 52.h),
-            SvgPicture.asset(
-              MyIcons.tap,
-              width: 34.w,
-              height: 34.w,
-              colorFilter: ColorFilter.mode(
-                colorScheme.outline,
-                BlendMode.srcIn,
+            Align(
+              alignment: Alignment.centerRight,
+              child: IconButton(
+                onPressed: (){
+                  showModalBottomSheet(
+                    context: context, 
+                    builder: (context) => AiSupportBottomSheet(
+                      flashcard: widget.flashcard,
+                    ),
+                  );
+                },
+                icon: SvgPicture.asset(
+                  MyIcons.aiGemini,
+                  height: 45.h,
+                  width: 45.w,
+                ),
               ),
             ),
           ],
@@ -145,9 +161,7 @@ class _FlashcardItemState extends State<FlashcardItem> with SingleTickerProvider
 
   Widget _flashcardBack(ColorScheme colorScheme) {
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(36.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(36.r)),
       elevation: 0,
       color: colorScheme.surface,
       child: Padding(
@@ -162,7 +176,6 @@ class _FlashcardItemState extends State<FlashcardItem> with SingleTickerProvider
               textAlign: TextAlign.center,
               style: MyTextStyle.poppinsLarge600.copyWith(
                 color: colorScheme.outline,
-                
               ),
             ),
             SizedBox(height: 12.h),
@@ -174,7 +187,7 @@ class _FlashcardItemState extends State<FlashcardItem> with SingleTickerProvider
                 style: MyTextStyle.poppinsLarge700.copyWith(
                   color: colorScheme.primary,
                   fontSize: 40.sp,
-                  ),
+                ),
               ),
             ),
             SizedBox(height: 14.h),

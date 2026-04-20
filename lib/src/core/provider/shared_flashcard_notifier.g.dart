@@ -12,19 +12,52 @@ part of 'shared_flashcard_notifier.dart';
 /// - Nếu selectedTopicId > 0 → trả về nó
 /// - Nếu selectedTopicId = 0 → lấy từ daily hoặc topic random
 
-@ProviderFor(resolvedTopicId)
-final resolvedTopicIdProvider = ResolvedTopicIdFamily._();
+@ProviderFor(streakDay)
+final streakDayProvider = StreakDayProvider._();
 
 /// Resolve topicId thực tế từ selectedTopicId
 /// - Nếu selectedTopicId > 0 → trả về nó
 /// - Nếu selectedTopicId = 0 → lấy từ daily hoặc topic random
 
-final class ResolvedTopicIdProvider
+final class StreakDayProvider
     extends $FunctionalProvider<AsyncValue<int>, int, FutureOr<int>>
     with $FutureModifier<int>, $FutureProvider<int> {
   /// Resolve topicId thực tế từ selectedTopicId
   /// - Nếu selectedTopicId > 0 → trả về nó
   /// - Nếu selectedTopicId = 0 → lấy từ daily hoặc topic random
+  StreakDayProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'streakDayProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$streakDayHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<int> create(Ref ref) {
+    return streakDay(ref);
+  }
+}
+
+String _$streakDayHash() => r'636e68c97875c8a4cf46a5875d394079c0796f85';
+
+@ProviderFor(resolvedTopicId)
+final resolvedTopicIdProvider = ResolvedTopicIdFamily._();
+
+final class ResolvedTopicIdProvider
+    extends $FunctionalProvider<AsyncValue<int>, int, FutureOr<int>>
+    with $FutureModifier<int>, $FutureProvider<int> {
   ResolvedTopicIdProvider._({
     required ResolvedTopicIdFamily super.from,
     required int super.argument,
@@ -70,10 +103,6 @@ final class ResolvedTopicIdProvider
 
 String _$resolvedTopicIdHash() => r'682788c2b084f7eaf89d4fd5be6a61a1eca592b4';
 
-/// Resolve topicId thực tế từ selectedTopicId
-/// - Nếu selectedTopicId > 0 → trả về nó
-/// - Nếu selectedTopicId = 0 → lấy từ daily hoặc topic random
-
 final class ResolvedTopicIdFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<int>, int> {
   ResolvedTopicIdFamily._()
@@ -84,10 +113,6 @@ final class ResolvedTopicIdFamily extends $Family
         $allTransitiveDependencies: null,
         isAutoDispose: true,
       );
-
-  /// Resolve topicId thực tế từ selectedTopicId
-  /// - Nếu selectedTopicId > 0 → trả về nó
-  /// - Nếu selectedTopicId = 0 → lấy từ daily hoặc topic random
 
   ResolvedTopicIdProvider call(int selectedTopicId) =>
       ResolvedTopicIdProvider._(argument: selectedTopicId, from: this);

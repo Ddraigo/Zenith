@@ -4,7 +4,6 @@ import 'package:app_demo/src/features/statistics/data/source/user_stats_source.d
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:dart_either/dart_either.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../../shared/constants/format.dart';
 import '../../domain/user_stats_model.dart';
 

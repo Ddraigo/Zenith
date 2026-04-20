@@ -2,6 +2,7 @@ import 'package:app_demo/src/features/flashcard/application/flashcard_service.da
 import 'package:app_demo/src/features/flashcard/application/user_daily_word_service.dart';
 import 'package:app_demo/src/features/flashcard/domain/flashcard_model.dart';
 import 'package:app_demo/src/features/flashcard/presentation/controller/flashcard_notifier.dart';
+import 'package:app_demo/src/features/statistics/application/statistics_service.dart';
 import 'package:app_demo/src/features/topic/presentation/controller/topic_flashcard_notifier.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -22,10 +23,14 @@ final isDailyModeProvider = StateProvider<bool>((ref) => true);
 final selectedDateProvider = StateProvider<DateTime?>((ref) => null);
 
 
-
 /// Resolve topicId thực tế từ selectedTopicId
 /// - Nếu selectedTopicId > 0 → trả về nó
 /// - Nếu selectedTopicId = 0 → lấy từ daily hoặc topic random
+@riverpod
+Future<int> streakDay( Ref ref)async{
+  return ref.read(userStatsServiceProvider).getStreakDay();
+}
+
 @riverpod
 Future<int> resolvedTopicId( Ref ref, int selectedTopicId)async{
   return ref.read(flashcardServiceProvider).resolveInitialTopicId(

@@ -34,7 +34,7 @@ final class StatisticsNotifierProvider
 }
 
 String _$statisticsNotifierHash() =>
-    r'efd9d8d1bed2d6b7697646390bc46238f1940389';
+    r'c72966ad73ec83529043103c6df80e987b50f530';
 
 abstract class _$StatisticsNotifier extends $AsyncNotifier<StatisticsViewData> {
   FutureOr<StatisticsViewData> build();

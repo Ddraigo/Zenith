@@ -7,6 +7,8 @@ import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:dart_either/dart_either.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/provider/current_user_id_notifire.dart';
+
 final userStatsServiceProvider = Provider(StatisticsService.new);
 
 class StatisticsService {
@@ -14,13 +16,13 @@ class StatisticsService {
   StatisticsService(this._ref);
   late final _repo = _ref.read(userStatsRepoProvider);
   late final _userDailyWordRepo = _ref.read(userDailyWordServiceProvider);
+  String get _currentUserId => _ref.read(currentUserIdProvider);
 
   Future<Either<AppException, UserStatsModel>> handleDailyReward({
-    required String userId,
     required DateTime assignedDate,
     required int topicId,
   }) async {
-    final userStatsResult = await _repo.fetchUserStats(userId: userId);
+    final userStatsResult = await _repo.fetchUserStats(userId: _currentUserId);
 
     return userStatsResult.fold(
       ifLeft: (e) {
@@ -147,7 +149,7 @@ class StatisticsService {
 
             return _repo.updatedUserStats(
               userStats: UserStatsModel(
-                userId: userId,
+                userId: _currentUserId,
                 streakCount: streakCount,
                 totalPoints: totalPoints,
                 pointAdded: pointAdded,
@@ -159,6 +161,14 @@ class StatisticsService {
           },
         );
       },
+    );
+  }
+
+  Future<int> getStreakDay()async{
+    final streakDay = await _repo.fetchUserStats(userId: _currentUserId);
+    return streakDay.fold(
+      ifLeft: (e) => throw e, 
+      ifRight: (streak) => streak.streakCount,
     );
   }
 

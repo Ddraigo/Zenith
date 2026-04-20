@@ -8,9 +8,6 @@ part 'daily_word_notifier.g.dart';
 @riverpod
 class DailyWordNotifier extends _$DailyWordNotifier{
 
-  // FutureOr<void> build() {
-  // }
-
   @override
   Future<List<UserDailyWordModel>> build(DateTime assignedDate) async {
     return _loadDailyWord(assignedDate);

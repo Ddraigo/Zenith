@@ -262,7 +262,6 @@ class QuizAttemptsService {
         );
 
         final statsResult = await _statisticsService.handleDailyReward(
-          userId: _currentUserId,
           assignedDate: agrs.assignedDate ?? Format.normalizeDate(DateTime.now()),
           topicId: agrs.topicId,
         );

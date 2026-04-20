@@ -30,7 +30,7 @@ class StatisticsNotifier extends _$StatisticsNotifier {
       ref.read(quizAttemptsServiceProvider).getQuizAttempList(),
       ref
           .read(userFlashcardProgressServiceProvider)
-          .fetchFlashcardProgress(userId: userId),
+          .fetchFlashcardProgress(),
     ]);
 
     final userStatsResult = results[0] as Either<AppException, UserStatsModel>;

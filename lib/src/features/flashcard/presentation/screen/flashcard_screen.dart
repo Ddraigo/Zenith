@@ -21,6 +21,7 @@ class FlashcardScreen extends ConsumerWidget {
 
     final selectedTopicId = ref.watch(selectedTopicProvider) ?? 0;
     final flashcardAsync = ref.watch(getFlashcardsProvider(selectedTopicId));
+    
 
     final getTopicName = topicAsync.maybeWhen(
       data: (topics) {
@@ -48,7 +49,7 @@ class FlashcardScreen extends ConsumerWidget {
         );
 
         return Padding(
-          padding: EdgeInsets.only(bottom: 32.h, right: 32.h, left: 32.h),
+          padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.h),
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
@@ -123,6 +124,8 @@ class FlashcardScreen extends ConsumerWidget {
   }
 
   Widget _header(ColorScheme color, BuildContext context, WidgetRef ref) {
+    final streakDayAsycn = ref.watch(streakDayProvider);
+    final streakDay = streakDayAsycn.value ?? 0;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       mainAxisSize: MainAxisSize.max,
@@ -167,7 +170,7 @@ class FlashcardScreen extends ConsumerWidget {
                   colorFilter: ColorFilter.mode(color.error, BlendMode.srcIn),
                 ),
                 Text(
-                  '5 Ngày',
+                  '$streakDay Streak',
                   style: MyTextStyle.poppinsMedium400.copyWith(
                     color: color.primary,
                   ),

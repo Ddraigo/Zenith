@@ -25,4 +25,22 @@ class Format {
         '${date.month.toString().padLeft(2, '0')}-'
         '${date.day.toString().padLeft(2,'0')}';
   }
+
+  static Map<String, dynamic> asMap(dynamic value) {
+    if (value is Map<String, dynamic>) return value;
+    if (value is Map) return Map<String, dynamic>.from(value);
+    return const <String, dynamic>{};
+  }
+
+  static String asString(dynamic value) {
+    return value == null ? '' : value.toString().trim();
+  }
+
+  static List<String> asStringList(dynamic value) {
+    if (value is! List) return const <String>[];
+    return value
+        .map((e) => asString(e))
+        .where((e) => e.isNotEmpty)
+        .toList(growable: false);
+  }
 }

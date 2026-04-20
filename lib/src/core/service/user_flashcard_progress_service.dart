@@ -17,11 +17,9 @@ class UserFlashcardProgressService {
   String get _currentUserId => _ref.read(currentUserIdProvider);
 
   Future<Either<AppException, List<UserFlashcardProgressModel>>>
-  fetchFlashcardProgress({
-    required String userId,
-  }) async {
+  fetchFlashcardProgress() async {
     final result = await _repo.fetchFlashcardProgress(
-      userId: userId,
+      userId: _currentUserId,
     );
     return result.fold(
       ifLeft: (e) => e.left(),
