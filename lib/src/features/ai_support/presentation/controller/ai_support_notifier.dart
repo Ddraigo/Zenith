@@ -11,7 +11,6 @@ class AISupportNotifier extends _$AISupportNotifier{
     return _loadData(flashcardId);
 
   }
-
   Future<AISupportResultModel>_loadData(String flashcardId)async{
     final result = await ref.read(aiSupportServiceProvider).getAISupport(flashcardId: flashcardId);
     return result.fold(

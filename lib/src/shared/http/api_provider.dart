@@ -110,7 +110,7 @@ class ApiProvider {
         }else{
           if(response.data['message'] != null){
             return APIResponse.error(AppException.errorWithMessage(
-              response.data['message'] as String ?? ''
+              response.data['message'] as String
             ));
           }else{
             return const APIResponse.error(AppException.unknown());
@@ -203,7 +203,7 @@ class ApiProvider {
         }else{
           if(response.data['error'] != null){
             return APIResponse.error(AppException.errorWithMessage(
-              response.data['error'] as String ?? ''
+              response.data['error'] as String
             ));
           }else{
             return const APIResponse.error(AppException.unknown());

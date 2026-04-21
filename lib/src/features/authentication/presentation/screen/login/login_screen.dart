@@ -147,7 +147,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           Text(
                             'HOẶC',
                             style: MyTextStyle.poppinsMedium700.copyWith(
-                              color: colorScheme.outline.withOpacity(0.5),
+                              color: colorScheme.outline.withValues(alpha: 0.5),
                             ),
                           ),
                           Expanded(
@@ -176,7 +176,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Widget _buildformLogin(AsyncValue<void> asyncState) {
-    final _loginNotifier = ref.read(authProvider.notifier);
+    final loginNotifier = ref.read(authProvider.notifier);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -188,7 +188,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           focusNode: _emailFocusNode,
           controller: _emailController,
           errorText: isSubmitted 
-          ? _loginNotifier.validateEmail(_emailController.text) 
+          ? loginNotifier.validateEmail(_emailController.text) 
           : null, 
         ),
         TextFieldCustom(
@@ -198,7 +198,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           obscureText: true,
           controller: _passwordController,
           errorText: isSubmitted 
-          ? _loginNotifier.validatePassword(_passwordController.text) 
+          ? loginNotifier.validatePassword(_passwordController.text) 
           : null, 
 
         ),

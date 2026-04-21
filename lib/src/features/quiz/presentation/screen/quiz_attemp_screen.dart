@@ -105,7 +105,7 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Tiến độ', style: MyTextStyle.poppinsMedium600.copyWith(color: color.outline.withOpacity(0.7))),
+                            Text('Tiến độ', style: MyTextStyle.poppinsMedium600.copyWith(color: color.outline.withValues(alpha: 0.7))),
                             Text(
                               '$answeredCount/${quizes.questions.length}',
                               style: MyTextStyle.poppinsMedium600.copyWith(
@@ -117,7 +117,7 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
                         LinearProgressIndicator(
                           minHeight: 16.h,
                           borderRadius: BorderRadius.circular(10.r),
-                          backgroundColor: color.outline.withOpacity(0.4),
+                          backgroundColor: color.outline.withValues(alpha:  0.4),
                           value: progressValue,
                           valueColor: AlwaysStoppedAnimation<Color>(
                             color.primary,

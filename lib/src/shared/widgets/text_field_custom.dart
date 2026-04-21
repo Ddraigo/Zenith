@@ -62,7 +62,7 @@ class TextFieldCustom extends StatelessWidget {
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: hintStyle,
-            fillColor: hasError ? colorScheme.errorContainer : colorScheme.outline.withOpacity(0.08),
+            fillColor: hasError ? colorScheme.errorContainer : colorScheme.outline.withValues(alpha: 0.08),
             errorText: errorText,
             prefixIcon: Padding(
               padding: EdgeInsets.only(left: 16.w, right: 12.w),

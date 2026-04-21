@@ -1,5 +1,5 @@
 import 'package:app_demo/src/shared/constants/images_constants.dart';
-import 'package:app_demo/src/shared/widgets/bottomNavigationBar.dart';
+import 'package:app_demo/src/shared/widgets/bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
@@ -25,6 +25,12 @@ class HomeScreen extends ConsumerWidget {
         toolbarHeight: 70.h,
         titleSpacing: 0,
         elevation: 1,
+        leading: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            
+          ),
+        ),
         actions: [
           Padding(
             padding: EdgeInsetsGeometry.only(right: 16.w, top: 12.h),

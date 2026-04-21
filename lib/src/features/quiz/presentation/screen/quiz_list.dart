@@ -114,8 +114,8 @@ class QuizList extends StatelessWidget {
               width: 140.w,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16.r),
-                color: color.outline.withOpacity(0.08),
-                border: Border.all(color: color.outlineVariant.withOpacity(0.5)),
+                color: color.outline.withValues(alpha:  0.08),
+                border: Border.all(color: color.outlineVariant.withValues(alpha: 0.5)),
               ),
       
               child: Column(
@@ -129,7 +129,7 @@ class QuizList extends StatelessWidget {
                     item.topicName.isEmpty ? 'N/A' : item.topicName,
                     style: MyTextStyle.poppinsLarge600.copyWith(
                       fontSize: 20.sp,
-                      color: color.onPrimaryFixedVariant.withOpacity(0.7),
+                      color: color.onPrimaryFixedVariant.withValues(alpha: 0.7),
                     ),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
@@ -189,7 +189,7 @@ class QuizList extends StatelessWidget {
           width: double.infinity,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(32.r),
-            color: color.outline.withOpacity(0.08),
+            color: color.outline.withValues(alpha: 0.08),
           ),
 
           child: Row(
@@ -203,7 +203,7 @@ class QuizList extends StatelessWidget {
                       padding: EdgeInsets.all(10.r),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: color.secondaryContainer.withOpacity(0.8),
+                        color: color.secondaryContainer.withValues(alpha: 0.8),
                       ),
 
                       child: SvgPicture.asset(
@@ -233,7 +233,7 @@ class QuizList extends StatelessWidget {
                           Text(
                             wordCountText,
                             style: MyTextStyle.poppinsMedium400.copyWith(
-                              color: color.outline.withOpacity(0.8),
+                              color: color.outline.withValues(alpha: 0.8),
                             ),
                           ),
                         ],
@@ -255,7 +255,7 @@ class QuizList extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
                   
                 ),
-                icon: Icon(Icons.arrow_forward_ios_rounded, color: color.outline.withOpacity(0.5),),
+                icon: Icon(Icons.arrow_forward_ios_rounded, color: color.outline.withValues(alpha:  0.5),),
               ),
             ],
           ),

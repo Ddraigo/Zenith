@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AISupportResultModel {
 
- bool get cached; String get source; FlashcardAiSupportModel get data;
+ bool get cached; String get source; FlashcardAiSupportModel get data; String? get phonetic; String? get audioUs;
 /// Create a copy of AISupportResultModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $AISupportResultModelCopyWith<AISupportResultModel> get copyWith => _$AISupportR
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AISupportResultModel&&(identical(other.cached, cached) || other.cached == cached)&&(identical(other.source, source) || other.source == source)&&(identical(other.data, data) || other.data == data));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AISupportResultModel&&(identical(other.cached, cached) || other.cached == cached)&&(identical(other.source, source) || other.source == source)&&(identical(other.data, data) || other.data == data)&&(identical(other.phonetic, phonetic) || other.phonetic == phonetic)&&(identical(other.audioUs, audioUs) || other.audioUs == audioUs));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,cached,source,data);
+int get hashCode => Object.hash(runtimeType,cached,source,data,phonetic,audioUs);
 
 @override
 String toString() {
-  return 'AISupportResultModel(cached: $cached, source: $source, data: $data)';
+  return 'AISupportResultModel(cached: $cached, source: $source, data: $data, phonetic: $phonetic, audioUs: $audioUs)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $AISupportResultModelCopyWith<$Res>  {
   factory $AISupportResultModelCopyWith(AISupportResultModel value, $Res Function(AISupportResultModel) _then) = _$AISupportResultModelCopyWithImpl;
 @useResult
 $Res call({
- bool cached, String source, FlashcardAiSupportModel data
+ bool cached, String source, FlashcardAiSupportModel data, String? phonetic, String? audioUs
 });
 
 
@@ -62,12 +62,14 @@ class _$AISupportResultModelCopyWithImpl<$Res>
 
 /// Create a copy of AISupportResultModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? cached = null,Object? source = null,Object? data = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? cached = null,Object? source = null,Object? data = null,Object? phonetic = freezed,Object? audioUs = freezed,}) {
   return _then(_self.copyWith(
 cached: null == cached ? _self.cached : cached // ignore: cast_nullable_to_non_nullable
 as bool,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
 as String,data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as FlashcardAiSupportModel,
+as FlashcardAiSupportModel,phonetic: freezed == phonetic ? _self.phonetic : phonetic // ignore: cast_nullable_to_non_nullable
+as String?,audioUs: freezed == audioUs ? _self.audioUs : audioUs // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 /// Create a copy of AISupportResultModel
@@ -161,10 +163,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool cached,  String source,  FlashcardAiSupportModel data)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool cached,  String source,  FlashcardAiSupportModel data,  String? phonetic,  String? audioUs)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AISupportResultModel() when $default != null:
-return $default(_that.cached,_that.source,_that.data);case _:
+return $default(_that.cached,_that.source,_that.data,_that.phonetic,_that.audioUs);case _:
   return orElse();
 
 }
@@ -182,10 +184,10 @@ return $default(_that.cached,_that.source,_that.data);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool cached,  String source,  FlashcardAiSupportModel data)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool cached,  String source,  FlashcardAiSupportModel data,  String? phonetic,  String? audioUs)  $default,) {final _that = this;
 switch (_that) {
 case _AISupportResultModel():
-return $default(_that.cached,_that.source,_that.data);case _:
+return $default(_that.cached,_that.source,_that.data,_that.phonetic,_that.audioUs);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -202,10 +204,10 @@ return $default(_that.cached,_that.source,_that.data);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool cached,  String source,  FlashcardAiSupportModel data)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool cached,  String source,  FlashcardAiSupportModel data,  String? phonetic,  String? audioUs)?  $default,) {final _that = this;
 switch (_that) {
 case _AISupportResultModel() when $default != null:
-return $default(_that.cached,_that.source,_that.data);case _:
+return $default(_that.cached,_that.source,_that.data,_that.phonetic,_that.audioUs);case _:
   return null;
 
 }
@@ -217,12 +219,14 @@ return $default(_that.cached,_that.source,_that.data);case _:
 
 
 class _AISupportResultModel implements AISupportResultModel {
-  const _AISupportResultModel({required this.cached, required this.source, required this.data});
+  const _AISupportResultModel({required this.cached, required this.source, required this.data, this.phonetic = '', this.audioUs = ''});
   
 
 @override final  bool cached;
 @override final  String source;
 @override final  FlashcardAiSupportModel data;
+@override@JsonKey() final  String? phonetic;
+@override@JsonKey() final  String? audioUs;
 
 /// Create a copy of AISupportResultModel
 /// with the given fields replaced by the non-null parameter values.
@@ -234,16 +238,16 @@ _$AISupportResultModelCopyWith<_AISupportResultModel> get copyWith => __$AISuppo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AISupportResultModel&&(identical(other.cached, cached) || other.cached == cached)&&(identical(other.source, source) || other.source == source)&&(identical(other.data, data) || other.data == data));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AISupportResultModel&&(identical(other.cached, cached) || other.cached == cached)&&(identical(other.source, source) || other.source == source)&&(identical(other.data, data) || other.data == data)&&(identical(other.phonetic, phonetic) || other.phonetic == phonetic)&&(identical(other.audioUs, audioUs) || other.audioUs == audioUs));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,cached,source,data);
+int get hashCode => Object.hash(runtimeType,cached,source,data,phonetic,audioUs);
 
 @override
 String toString() {
-  return 'AISupportResultModel(cached: $cached, source: $source, data: $data)';
+  return 'AISupportResultModel(cached: $cached, source: $source, data: $data, phonetic: $phonetic, audioUs: $audioUs)';
 }
 
 
@@ -254,7 +258,7 @@ abstract mixin class _$AISupportResultModelCopyWith<$Res> implements $AISupportR
   factory _$AISupportResultModelCopyWith(_AISupportResultModel value, $Res Function(_AISupportResultModel) _then) = __$AISupportResultModelCopyWithImpl;
 @override @useResult
 $Res call({
- bool cached, String source, FlashcardAiSupportModel data
+ bool cached, String source, FlashcardAiSupportModel data, String? phonetic, String? audioUs
 });
 
 
@@ -271,12 +275,14 @@ class __$AISupportResultModelCopyWithImpl<$Res>
 
 /// Create a copy of AISupportResultModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? cached = null,Object? source = null,Object? data = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? cached = null,Object? source = null,Object? data = null,Object? phonetic = freezed,Object? audioUs = freezed,}) {
   return _then(_AISupportResultModel(
 cached: null == cached ? _self.cached : cached // ignore: cast_nullable_to_non_nullable
 as bool,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
 as String,data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as FlashcardAiSupportModel,
+as FlashcardAiSupportModel,phonetic: freezed == phonetic ? _self.phonetic : phonetic // ignore: cast_nullable_to_non_nullable
+as String?,audioUs: freezed == audioUs ? _self.audioUs : audioUs // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

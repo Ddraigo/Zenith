@@ -21,7 +21,7 @@ class FlashcardList extends StatelessWidget {
       
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: Colors.red.withOpacity(0.1),
+        color: Colors.red.withValues(alpha: 0.1),
       ),
       child: CardSwiper(
         cardsCount: flashcards.length,

@@ -209,7 +209,7 @@ class FlashcardScreen extends ConsumerWidget {
                 ),
               ),
               Text(
-                'TIẾN ĐỘ',
+                'SỐ TỪ',
                 style: MyTextStyle.poppinsLarge400.copyWith(
                   color: color.outline,
                 ),
@@ -230,7 +230,7 @@ class FlashcardScreen extends ConsumerWidget {
                       color: color.primary,
                     ),
                   ),
-                  Text('từ', style: MyTextStyle.poppinsLarge600),
+                  // Text('từ', style: MyTextStyle.poppinsLarge600),
                 ],
               ),
             ],
@@ -238,7 +238,7 @@ class FlashcardScreen extends ConsumerWidget {
           LinearProgressIndicator(
             minHeight: 16.h,
             borderRadius: BorderRadius.circular(10.r),
-            backgroundColor: color.outline.withOpacity(0.4),
+            backgroundColor: color.outline.withValues(alpha: 0.4),
             value: total > 0 ? currentIndex / total : 0,
             valueColor: AlwaysStoppedAnimation<Color>(color.primary),
           ),

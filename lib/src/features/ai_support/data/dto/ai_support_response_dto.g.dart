@@ -12,7 +12,8 @@ _AISupportResponseDTO _$AISupportResponseDTOFromJson(
   cached: json['cached'] as bool,
   source: json['source'] as String,
   data: json['data'] as Map<String, dynamic>,
-  meta: json['meta'] as Map<String, dynamic>,
+  phonetic: json['phonetic'] as String,
+  audio: json['audio'] as String,
 );
 
 Map<String, dynamic> _$AISupportResponseDTOToJson(
@@ -21,5 +22,6 @@ Map<String, dynamic> _$AISupportResponseDTOToJson(
   'cached': instance.cached,
   'source': instance.source,
   'data': instance.data,
-  'meta': instance.meta,
+  'phonetic': instance.phonetic,
+  'audio': instance.audio,
 };

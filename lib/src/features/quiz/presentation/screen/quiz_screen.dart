@@ -99,7 +99,7 @@ class QuizScreen extends ConsumerWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.005),
+            color: Colors.black.withValues(alpha: 0.005),
             blurRadius: 20,
             offset: Offset(0, 10),
           ),
@@ -133,7 +133,7 @@ class QuizScreen extends ConsumerWidget {
                         Text(
                           'Tiến độ',
                           style: MyTextStyle.poppinsMedium600.copyWith(
-                            color: color.primary.withOpacity(0.9),
+                            color: color.primary.withValues(alpha: 0.9),
                           ),
                         ),
                         Text(
@@ -147,7 +147,7 @@ class QuizScreen extends ConsumerWidget {
                     LinearProgressIndicator(
                       minHeight: 10.h,
                       borderRadius: BorderRadius.circular(10.r),
-                      backgroundColor: color.outline.withOpacity(0.4),
+                      backgroundColor: color.outline.withValues(alpha: 0.4),
                       value: todayProgress.progressPrecent,
                       valueColor: AlwaysStoppedAnimation<Color>(color.primary),
                     ),
@@ -175,7 +175,7 @@ class QuizScreen extends ConsumerWidget {
                     vertical: 10.h,
                   ),
                   minimumSize: Size(40.w, 20.h),
-                  shadowColor: color.primary.withOpacity(0.5),
+                  shadowColor: color.primary.withValues(alpha: 0.5),
                   elevation: 5,
                 ),
                 child: Text('Start'),

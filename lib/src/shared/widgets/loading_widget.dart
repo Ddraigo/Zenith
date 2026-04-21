@@ -6,9 +6,7 @@ class LoadingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Container(
-        child: Text('Loading...'),
-      ),
+      child: CircularProgressIndicator(),
     );
   }
 }

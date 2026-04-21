@@ -13,10 +13,6 @@ abstract class FlashcardAiSupportModel with _$FlashcardAiSupportModel{
         List<String>? antonyms,
         @Default('')
         String? memoryTip,
-        @Default('')
-        String? phonetic,
-        @Default('')
-        String? audioUs,
   }) = _FlashcardAiSupportModel;
 }
 

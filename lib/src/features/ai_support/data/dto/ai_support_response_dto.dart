@@ -18,8 +18,13 @@ abstract class AISupportResponseDTO with _$AISupportResponseDTO{
         @JsonKey(name: 'data')
         required Map<String, dynamic> data,
 
-        @JsonKey(name: 'meta')
-        required Map<String, dynamic> meta,
+        @JsonKey(name: 'phonetic')
+        required String phonetic,
+
+        @JsonKey(name: 'audio')
+        required String audio,
+
+        
 
       }) = _AISupportResponseDTO;
 
@@ -29,7 +34,6 @@ abstract class AISupportResponseDTO with _$AISupportResponseDTO{
 extension AISupportResponseDTOMapper on AISupportResponseDTO{
   AISupportResultModel toDomain(){
       final dataMap = Format.asMap(data);
-      final metaMap = Format.asMap(meta);
 
         return AISupportResultModel(
           cached: cached, 
@@ -43,10 +47,11 @@ extension AISupportResponseDTOMapper on AISupportResponseDTO{
             synonyms: Format.asStringList(dataMap['synonyms']),
             antonyms: Format.asStringList(dataMap['antonyms']),
             memoryTip: Format.asString(dataMap['memory_tip']),
-            phonetic: Format.asString(metaMap['phonetic']),
-            audioUs: Format.asString(metaMap['audioUs'] ?? metaMap['audio_us']),
           ),
+          phonetic: phonetic,
+          audioUs: audio
         );
+        
     }
 }
 

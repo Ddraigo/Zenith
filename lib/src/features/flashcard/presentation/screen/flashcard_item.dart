@@ -8,11 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 class FlashcardItem extends StatefulWidget {
-  const FlashcardItem({
-    super.key,
-    required this.flashcard,
-    this.onCallAI,
-  });
+  const FlashcardItem({super.key, required this.flashcard, this.onCallAI});
   final VoidCallback? onCallAI;
   final FlashcardModel flashcard;
 
@@ -106,6 +102,7 @@ class _FlashcardItemState extends State<FlashcardItem>
         padding: EdgeInsets.all(16.r),
         child: Column(
           children: [
+            SizedBox(height: 45.h,),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -138,12 +135,32 @@ class _FlashcardItemState extends State<FlashcardItem>
             Align(
               alignment: Alignment.centerRight,
               child: IconButton(
-                onPressed: (){
+                onPressed: () {
                   showModalBottomSheet(
-                    context: context, 
-                    builder: (context) => AiSupportBottomSheet(
-                      flashcard: widget.flashcard,
+                    showDragHandle: true,
+                    isScrollControlled: true,
+                    useSafeArea: true,
+                    backgroundColor: colorScheme.onPrimary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(48.r),
+                        topRight: Radius.circular(48.r),
+                      ),
                     ),
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    context: context,
+                    builder: (context){
+                      return DraggableScrollableSheet(
+                        initialChildSize: 0.6,
+                        minChildSize: 0.4,
+                        maxChildSize: 0.95,
+                        expand: false,
+                        builder: (context, scrollController){
+                          return AiSupportBottomSheet(flashcard: widget.flashcard, controller: scrollController,);
+                        }
+                      );
+                    }
+                        
                   );
                 },
                 icon: SvgPicture.asset(

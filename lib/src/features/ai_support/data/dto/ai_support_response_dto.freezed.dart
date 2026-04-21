@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AISupportResponseDTO {
 
-@JsonKey(name: 'cached') bool get cached;@JsonKey(name: 'source') String get source;@JsonKey(name: 'data') Map<String, dynamic> get data;@JsonKey(name: 'meta') Map<String, dynamic> get meta;
+@JsonKey(name: 'cached') bool get cached;@JsonKey(name: 'source') String get source;@JsonKey(name: 'data') Map<String, dynamic> get data;@JsonKey(name: 'phonetic') String get phonetic;@JsonKey(name: 'audio') String get audio;
 /// Create a copy of AISupportResponseDTO
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $AISupportResponseDTOCopyWith<AISupportResponseDTO> get copyWith => _$AISupportR
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AISupportResponseDTO&&(identical(other.cached, cached) || other.cached == cached)&&(identical(other.source, source) || other.source == source)&&const DeepCollectionEquality().equals(other.data, data)&&const DeepCollectionEquality().equals(other.meta, meta));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AISupportResponseDTO&&(identical(other.cached, cached) || other.cached == cached)&&(identical(other.source, source) || other.source == source)&&const DeepCollectionEquality().equals(other.data, data)&&(identical(other.phonetic, phonetic) || other.phonetic == phonetic)&&(identical(other.audio, audio) || other.audio == audio));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,cached,source,const DeepCollectionEquality().hash(data),const DeepCollectionEquality().hash(meta));
+int get hashCode => Object.hash(runtimeType,cached,source,const DeepCollectionEquality().hash(data),phonetic,audio);
 
 @override
 String toString() {
-  return 'AISupportResponseDTO(cached: $cached, source: $source, data: $data, meta: $meta)';
+  return 'AISupportResponseDTO(cached: $cached, source: $source, data: $data, phonetic: $phonetic, audio: $audio)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $AISupportResponseDTOCopyWith<$Res>  {
   factory $AISupportResponseDTOCopyWith(AISupportResponseDTO value, $Res Function(AISupportResponseDTO) _then) = _$AISupportResponseDTOCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'cached') bool cached,@JsonKey(name: 'source') String source,@JsonKey(name: 'data') Map<String, dynamic> data,@JsonKey(name: 'meta') Map<String, dynamic> meta
+@JsonKey(name: 'cached') bool cached,@JsonKey(name: 'source') String source,@JsonKey(name: 'data') Map<String, dynamic> data,@JsonKey(name: 'phonetic') String phonetic,@JsonKey(name: 'audio') String audio
 });
 
 
@@ -65,13 +65,14 @@ class _$AISupportResponseDTOCopyWithImpl<$Res>
 
 /// Create a copy of AISupportResponseDTO
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? cached = null,Object? source = null,Object? data = null,Object? meta = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? cached = null,Object? source = null,Object? data = null,Object? phonetic = null,Object? audio = null,}) {
   return _then(_self.copyWith(
 cached: null == cached ? _self.cached : cached // ignore: cast_nullable_to_non_nullable
 as bool,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
 as String,data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>,meta: null == meta ? _self.meta : meta // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>,
+as Map<String, dynamic>,phonetic: null == phonetic ? _self.phonetic : phonetic // ignore: cast_nullable_to_non_nullable
+as String,audio: null == audio ? _self.audio : audio // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 
@@ -156,10 +157,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'cached')  bool cached, @JsonKey(name: 'source')  String source, @JsonKey(name: 'data')  Map<String, dynamic> data, @JsonKey(name: 'meta')  Map<String, dynamic> meta)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'cached')  bool cached, @JsonKey(name: 'source')  String source, @JsonKey(name: 'data')  Map<String, dynamic> data, @JsonKey(name: 'phonetic')  String phonetic, @JsonKey(name: 'audio')  String audio)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AISupportResponseDTO() when $default != null:
-return $default(_that.cached,_that.source,_that.data,_that.meta);case _:
+return $default(_that.cached,_that.source,_that.data,_that.phonetic,_that.audio);case _:
   return orElse();
 
 }
@@ -177,10 +178,10 @@ return $default(_that.cached,_that.source,_that.data,_that.meta);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'cached')  bool cached, @JsonKey(name: 'source')  String source, @JsonKey(name: 'data')  Map<String, dynamic> data, @JsonKey(name: 'meta')  Map<String, dynamic> meta)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'cached')  bool cached, @JsonKey(name: 'source')  String source, @JsonKey(name: 'data')  Map<String, dynamic> data, @JsonKey(name: 'phonetic')  String phonetic, @JsonKey(name: 'audio')  String audio)  $default,) {final _that = this;
 switch (_that) {
 case _AISupportResponseDTO():
-return $default(_that.cached,_that.source,_that.data,_that.meta);case _:
+return $default(_that.cached,_that.source,_that.data,_that.phonetic,_that.audio);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +198,10 @@ return $default(_that.cached,_that.source,_that.data,_that.meta);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'cached')  bool cached, @JsonKey(name: 'source')  String source, @JsonKey(name: 'data')  Map<String, dynamic> data, @JsonKey(name: 'meta')  Map<String, dynamic> meta)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'cached')  bool cached, @JsonKey(name: 'source')  String source, @JsonKey(name: 'data')  Map<String, dynamic> data, @JsonKey(name: 'phonetic')  String phonetic, @JsonKey(name: 'audio')  String audio)?  $default,) {final _that = this;
 switch (_that) {
 case _AISupportResponseDTO() when $default != null:
-return $default(_that.cached,_that.source,_that.data,_that.meta);case _:
+return $default(_that.cached,_that.source,_that.data,_that.phonetic,_that.audio);case _:
   return null;
 
 }
@@ -212,7 +213,7 @@ return $default(_that.cached,_that.source,_that.data,_that.meta);case _:
 @JsonSerializable()
 
 class _AISupportResponseDTO implements AISupportResponseDTO {
-  const _AISupportResponseDTO({@JsonKey(name: 'cached') required this.cached, @JsonKey(name: 'source') required this.source, @JsonKey(name: 'data') required final  Map<String, dynamic> data, @JsonKey(name: 'meta') required final  Map<String, dynamic> meta}): _data = data,_meta = meta;
+  const _AISupportResponseDTO({@JsonKey(name: 'cached') required this.cached, @JsonKey(name: 'source') required this.source, @JsonKey(name: 'data') required final  Map<String, dynamic> data, @JsonKey(name: 'phonetic') required this.phonetic, @JsonKey(name: 'audio') required this.audio}): _data = data;
   factory _AISupportResponseDTO.fromJson(Map<String, dynamic> json) => _$AISupportResponseDTOFromJson(json);
 
 @override@JsonKey(name: 'cached') final  bool cached;
@@ -224,13 +225,8 @@ class _AISupportResponseDTO implements AISupportResponseDTO {
   return EqualUnmodifiableMapView(_data);
 }
 
- final  Map<String, dynamic> _meta;
-@override@JsonKey(name: 'meta') Map<String, dynamic> get meta {
-  if (_meta is EqualUnmodifiableMapView) return _meta;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_meta);
-}
-
+@override@JsonKey(name: 'phonetic') final  String phonetic;
+@override@JsonKey(name: 'audio') final  String audio;
 
 /// Create a copy of AISupportResponseDTO
 /// with the given fields replaced by the non-null parameter values.
@@ -245,16 +241,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AISupportResponseDTO&&(identical(other.cached, cached) || other.cached == cached)&&(identical(other.source, source) || other.source == source)&&const DeepCollectionEquality().equals(other._data, _data)&&const DeepCollectionEquality().equals(other._meta, _meta));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AISupportResponseDTO&&(identical(other.cached, cached) || other.cached == cached)&&(identical(other.source, source) || other.source == source)&&const DeepCollectionEquality().equals(other._data, _data)&&(identical(other.phonetic, phonetic) || other.phonetic == phonetic)&&(identical(other.audio, audio) || other.audio == audio));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,cached,source,const DeepCollectionEquality().hash(_data),const DeepCollectionEquality().hash(_meta));
+int get hashCode => Object.hash(runtimeType,cached,source,const DeepCollectionEquality().hash(_data),phonetic,audio);
 
 @override
 String toString() {
-  return 'AISupportResponseDTO(cached: $cached, source: $source, data: $data, meta: $meta)';
+  return 'AISupportResponseDTO(cached: $cached, source: $source, data: $data, phonetic: $phonetic, audio: $audio)';
 }
 
 
@@ -265,7 +261,7 @@ abstract mixin class _$AISupportResponseDTOCopyWith<$Res> implements $AISupportR
   factory _$AISupportResponseDTOCopyWith(_AISupportResponseDTO value, $Res Function(_AISupportResponseDTO) _then) = __$AISupportResponseDTOCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'cached') bool cached,@JsonKey(name: 'source') String source,@JsonKey(name: 'data') Map<String, dynamic> data,@JsonKey(name: 'meta') Map<String, dynamic> meta
+@JsonKey(name: 'cached') bool cached,@JsonKey(name: 'source') String source,@JsonKey(name: 'data') Map<String, dynamic> data,@JsonKey(name: 'phonetic') String phonetic,@JsonKey(name: 'audio') String audio
 });
 
 
@@ -282,13 +278,14 @@ class __$AISupportResponseDTOCopyWithImpl<$Res>
 
 /// Create a copy of AISupportResponseDTO
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? cached = null,Object? source = null,Object? data = null,Object? meta = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? cached = null,Object? source = null,Object? data = null,Object? phonetic = null,Object? audio = null,}) {
   return _then(_AISupportResponseDTO(
 cached: null == cached ? _self.cached : cached // ignore: cast_nullable_to_non_nullable
 as bool,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
 as String,data: null == data ? _self._data : data // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>,meta: null == meta ? _self._meta : meta // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>,
+as Map<String, dynamic>,phonetic: null == phonetic ? _self.phonetic : phonetic // ignore: cast_nullable_to_non_nullable
+as String,audio: null == audio ? _self.audio : audio // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$FlashcardAiSupportModel {
 
- String get easyMeaning; List<String> get whenToUse; List<ExampleItemModel> get examples; List<String> get commonPhrases; List<String> get synonyms; List<String>? get antonyms; String? get memoryTip; String? get phonetic; String? get audioUs;
+ String get easyMeaning; List<String> get whenToUse; List<ExampleItemModel> get examples; List<String> get commonPhrases; List<String> get synonyms; List<String>? get antonyms; String? get memoryTip;
 /// Create a copy of FlashcardAiSupportModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $FlashcardAiSupportModelCopyWith<FlashcardAiSupportModel> get copyWith => _$Flas
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FlashcardAiSupportModel&&(identical(other.easyMeaning, easyMeaning) || other.easyMeaning == easyMeaning)&&const DeepCollectionEquality().equals(other.whenToUse, whenToUse)&&const DeepCollectionEquality().equals(other.examples, examples)&&const DeepCollectionEquality().equals(other.commonPhrases, commonPhrases)&&const DeepCollectionEquality().equals(other.synonyms, synonyms)&&const DeepCollectionEquality().equals(other.antonyms, antonyms)&&(identical(other.memoryTip, memoryTip) || other.memoryTip == memoryTip)&&(identical(other.phonetic, phonetic) || other.phonetic == phonetic)&&(identical(other.audioUs, audioUs) || other.audioUs == audioUs));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FlashcardAiSupportModel&&(identical(other.easyMeaning, easyMeaning) || other.easyMeaning == easyMeaning)&&const DeepCollectionEquality().equals(other.whenToUse, whenToUse)&&const DeepCollectionEquality().equals(other.examples, examples)&&const DeepCollectionEquality().equals(other.commonPhrases, commonPhrases)&&const DeepCollectionEquality().equals(other.synonyms, synonyms)&&const DeepCollectionEquality().equals(other.antonyms, antonyms)&&(identical(other.memoryTip, memoryTip) || other.memoryTip == memoryTip));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,easyMeaning,const DeepCollectionEquality().hash(whenToUse),const DeepCollectionEquality().hash(examples),const DeepCollectionEquality().hash(commonPhrases),const DeepCollectionEquality().hash(synonyms),const DeepCollectionEquality().hash(antonyms),memoryTip,phonetic,audioUs);
+int get hashCode => Object.hash(runtimeType,easyMeaning,const DeepCollectionEquality().hash(whenToUse),const DeepCollectionEquality().hash(examples),const DeepCollectionEquality().hash(commonPhrases),const DeepCollectionEquality().hash(synonyms),const DeepCollectionEquality().hash(antonyms),memoryTip);
 
 @override
 String toString() {
-  return 'FlashcardAiSupportModel(easyMeaning: $easyMeaning, whenToUse: $whenToUse, examples: $examples, commonPhrases: $commonPhrases, synonyms: $synonyms, antonyms: $antonyms, memoryTip: $memoryTip, phonetic: $phonetic, audioUs: $audioUs)';
+  return 'FlashcardAiSupportModel(easyMeaning: $easyMeaning, whenToUse: $whenToUse, examples: $examples, commonPhrases: $commonPhrases, synonyms: $synonyms, antonyms: $antonyms, memoryTip: $memoryTip)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $FlashcardAiSupportModelCopyWith<$Res>  {
   factory $FlashcardAiSupportModelCopyWith(FlashcardAiSupportModel value, $Res Function(FlashcardAiSupportModel) _then) = _$FlashcardAiSupportModelCopyWithImpl;
 @useResult
 $Res call({
- String easyMeaning, List<String> whenToUse, List<ExampleItemModel> examples, List<String> commonPhrases, List<String> synonyms, List<String>? antonyms, String? memoryTip, String? phonetic, String? audioUs
+ String easyMeaning, List<String> whenToUse, List<ExampleItemModel> examples, List<String> commonPhrases, List<String> synonyms, List<String>? antonyms, String? memoryTip
 });
 
 
@@ -62,7 +62,7 @@ class _$FlashcardAiSupportModelCopyWithImpl<$Res>
 
 /// Create a copy of FlashcardAiSupportModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? easyMeaning = null,Object? whenToUse = null,Object? examples = null,Object? commonPhrases = null,Object? synonyms = null,Object? antonyms = freezed,Object? memoryTip = freezed,Object? phonetic = freezed,Object? audioUs = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? easyMeaning = null,Object? whenToUse = null,Object? examples = null,Object? commonPhrases = null,Object? synonyms = null,Object? antonyms = freezed,Object? memoryTip = freezed,}) {
   return _then(_self.copyWith(
 easyMeaning: null == easyMeaning ? _self.easyMeaning : easyMeaning // ignore: cast_nullable_to_non_nullable
 as String,whenToUse: null == whenToUse ? _self.whenToUse : whenToUse // ignore: cast_nullable_to_non_nullable
@@ -71,8 +71,6 @@ as List<ExampleItemModel>,commonPhrases: null == commonPhrases ? _self.commonPhr
 as List<String>,synonyms: null == synonyms ? _self.synonyms : synonyms // ignore: cast_nullable_to_non_nullable
 as List<String>,antonyms: freezed == antonyms ? _self.antonyms : antonyms // ignore: cast_nullable_to_non_nullable
 as List<String>?,memoryTip: freezed == memoryTip ? _self.memoryTip : memoryTip // ignore: cast_nullable_to_non_nullable
-as String?,phonetic: freezed == phonetic ? _self.phonetic : phonetic // ignore: cast_nullable_to_non_nullable
-as String?,audioUs: freezed == audioUs ? _self.audioUs : audioUs // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -158,10 +156,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String easyMeaning,  List<String> whenToUse,  List<ExampleItemModel> examples,  List<String> commonPhrases,  List<String> synonyms,  List<String>? antonyms,  String? memoryTip,  String? phonetic,  String? audioUs)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String easyMeaning,  List<String> whenToUse,  List<ExampleItemModel> examples,  List<String> commonPhrases,  List<String> synonyms,  List<String>? antonyms,  String? memoryTip)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _FlashcardAiSupportModel() when $default != null:
-return $default(_that.easyMeaning,_that.whenToUse,_that.examples,_that.commonPhrases,_that.synonyms,_that.antonyms,_that.memoryTip,_that.phonetic,_that.audioUs);case _:
+return $default(_that.easyMeaning,_that.whenToUse,_that.examples,_that.commonPhrases,_that.synonyms,_that.antonyms,_that.memoryTip);case _:
   return orElse();
 
 }
@@ -179,10 +177,10 @@ return $default(_that.easyMeaning,_that.whenToUse,_that.examples,_that.commonPhr
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String easyMeaning,  List<String> whenToUse,  List<ExampleItemModel> examples,  List<String> commonPhrases,  List<String> synonyms,  List<String>? antonyms,  String? memoryTip,  String? phonetic,  String? audioUs)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String easyMeaning,  List<String> whenToUse,  List<ExampleItemModel> examples,  List<String> commonPhrases,  List<String> synonyms,  List<String>? antonyms,  String? memoryTip)  $default,) {final _that = this;
 switch (_that) {
 case _FlashcardAiSupportModel():
-return $default(_that.easyMeaning,_that.whenToUse,_that.examples,_that.commonPhrases,_that.synonyms,_that.antonyms,_that.memoryTip,_that.phonetic,_that.audioUs);case _:
+return $default(_that.easyMeaning,_that.whenToUse,_that.examples,_that.commonPhrases,_that.synonyms,_that.antonyms,_that.memoryTip);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -199,10 +197,10 @@ return $default(_that.easyMeaning,_that.whenToUse,_that.examples,_that.commonPhr
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String easyMeaning,  List<String> whenToUse,  List<ExampleItemModel> examples,  List<String> commonPhrases,  List<String> synonyms,  List<String>? antonyms,  String? memoryTip,  String? phonetic,  String? audioUs)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String easyMeaning,  List<String> whenToUse,  List<ExampleItemModel> examples,  List<String> commonPhrases,  List<String> synonyms,  List<String>? antonyms,  String? memoryTip)?  $default,) {final _that = this;
 switch (_that) {
 case _FlashcardAiSupportModel() when $default != null:
-return $default(_that.easyMeaning,_that.whenToUse,_that.examples,_that.commonPhrases,_that.synonyms,_that.antonyms,_that.memoryTip,_that.phonetic,_that.audioUs);case _:
+return $default(_that.easyMeaning,_that.whenToUse,_that.examples,_that.commonPhrases,_that.synonyms,_that.antonyms,_that.memoryTip);case _:
   return null;
 
 }
@@ -214,7 +212,7 @@ return $default(_that.easyMeaning,_that.whenToUse,_that.examples,_that.commonPhr
 
 
 class _FlashcardAiSupportModel implements FlashcardAiSupportModel {
-  const _FlashcardAiSupportModel({required this.easyMeaning, required final  List<String> whenToUse, required final  List<ExampleItemModel> examples, required final  List<String> commonPhrases, required final  List<String> synonyms, final  List<String>? antonyms = const [], this.memoryTip = '', this.phonetic = '', this.audioUs = ''}): _whenToUse = whenToUse,_examples = examples,_commonPhrases = commonPhrases,_synonyms = synonyms,_antonyms = antonyms;
+  const _FlashcardAiSupportModel({required this.easyMeaning, required final  List<String> whenToUse, required final  List<ExampleItemModel> examples, required final  List<String> commonPhrases, required final  List<String> synonyms, final  List<String>? antonyms = const [], this.memoryTip = ''}): _whenToUse = whenToUse,_examples = examples,_commonPhrases = commonPhrases,_synonyms = synonyms,_antonyms = antonyms;
   
 
 @override final  String easyMeaning;
@@ -256,8 +254,6 @@ class _FlashcardAiSupportModel implements FlashcardAiSupportModel {
 }
 
 @override@JsonKey() final  String? memoryTip;
-@override@JsonKey() final  String? phonetic;
-@override@JsonKey() final  String? audioUs;
 
 /// Create a copy of FlashcardAiSupportModel
 /// with the given fields replaced by the non-null parameter values.
@@ -269,16 +265,16 @@ _$FlashcardAiSupportModelCopyWith<_FlashcardAiSupportModel> get copyWith => __$F
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FlashcardAiSupportModel&&(identical(other.easyMeaning, easyMeaning) || other.easyMeaning == easyMeaning)&&const DeepCollectionEquality().equals(other._whenToUse, _whenToUse)&&const DeepCollectionEquality().equals(other._examples, _examples)&&const DeepCollectionEquality().equals(other._commonPhrases, _commonPhrases)&&const DeepCollectionEquality().equals(other._synonyms, _synonyms)&&const DeepCollectionEquality().equals(other._antonyms, _antonyms)&&(identical(other.memoryTip, memoryTip) || other.memoryTip == memoryTip)&&(identical(other.phonetic, phonetic) || other.phonetic == phonetic)&&(identical(other.audioUs, audioUs) || other.audioUs == audioUs));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FlashcardAiSupportModel&&(identical(other.easyMeaning, easyMeaning) || other.easyMeaning == easyMeaning)&&const DeepCollectionEquality().equals(other._whenToUse, _whenToUse)&&const DeepCollectionEquality().equals(other._examples, _examples)&&const DeepCollectionEquality().equals(other._commonPhrases, _commonPhrases)&&const DeepCollectionEquality().equals(other._synonyms, _synonyms)&&const DeepCollectionEquality().equals(other._antonyms, _antonyms)&&(identical(other.memoryTip, memoryTip) || other.memoryTip == memoryTip));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,easyMeaning,const DeepCollectionEquality().hash(_whenToUse),const DeepCollectionEquality().hash(_examples),const DeepCollectionEquality().hash(_commonPhrases),const DeepCollectionEquality().hash(_synonyms),const DeepCollectionEquality().hash(_antonyms),memoryTip,phonetic,audioUs);
+int get hashCode => Object.hash(runtimeType,easyMeaning,const DeepCollectionEquality().hash(_whenToUse),const DeepCollectionEquality().hash(_examples),const DeepCollectionEquality().hash(_commonPhrases),const DeepCollectionEquality().hash(_synonyms),const DeepCollectionEquality().hash(_antonyms),memoryTip);
 
 @override
 String toString() {
-  return 'FlashcardAiSupportModel(easyMeaning: $easyMeaning, whenToUse: $whenToUse, examples: $examples, commonPhrases: $commonPhrases, synonyms: $synonyms, antonyms: $antonyms, memoryTip: $memoryTip, phonetic: $phonetic, audioUs: $audioUs)';
+  return 'FlashcardAiSupportModel(easyMeaning: $easyMeaning, whenToUse: $whenToUse, examples: $examples, commonPhrases: $commonPhrases, synonyms: $synonyms, antonyms: $antonyms, memoryTip: $memoryTip)';
 }
 
 
@@ -289,7 +285,7 @@ abstract mixin class _$FlashcardAiSupportModelCopyWith<$Res> implements $Flashca
   factory _$FlashcardAiSupportModelCopyWith(_FlashcardAiSupportModel value, $Res Function(_FlashcardAiSupportModel) _then) = __$FlashcardAiSupportModelCopyWithImpl;
 @override @useResult
 $Res call({
- String easyMeaning, List<String> whenToUse, List<ExampleItemModel> examples, List<String> commonPhrases, List<String> synonyms, List<String>? antonyms, String? memoryTip, String? phonetic, String? audioUs
+ String easyMeaning, List<String> whenToUse, List<ExampleItemModel> examples, List<String> commonPhrases, List<String> synonyms, List<String>? antonyms, String? memoryTip
 });
 
 
@@ -306,7 +302,7 @@ class __$FlashcardAiSupportModelCopyWithImpl<$Res>
 
 /// Create a copy of FlashcardAiSupportModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? easyMeaning = null,Object? whenToUse = null,Object? examples = null,Object? commonPhrases = null,Object? synonyms = null,Object? antonyms = freezed,Object? memoryTip = freezed,Object? phonetic = freezed,Object? audioUs = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? easyMeaning = null,Object? whenToUse = null,Object? examples = null,Object? commonPhrases = null,Object? synonyms = null,Object? antonyms = freezed,Object? memoryTip = freezed,}) {
   return _then(_FlashcardAiSupportModel(
 easyMeaning: null == easyMeaning ? _self.easyMeaning : easyMeaning // ignore: cast_nullable_to_non_nullable
 as String,whenToUse: null == whenToUse ? _self._whenToUse : whenToUse // ignore: cast_nullable_to_non_nullable
@@ -315,8 +311,6 @@ as List<ExampleItemModel>,commonPhrases: null == commonPhrases ? _self._commonPh
 as List<String>,synonyms: null == synonyms ? _self._synonyms : synonyms // ignore: cast_nullable_to_non_nullable
 as List<String>,antonyms: freezed == antonyms ? _self._antonyms : antonyms // ignore: cast_nullable_to_non_nullable
 as List<String>?,memoryTip: freezed == memoryTip ? _self.memoryTip : memoryTip // ignore: cast_nullable_to_non_nullable
-as String?,phonetic: freezed == phonetic ? _self.phonetic : phonetic // ignore: cast_nullable_to_non_nullable
-as String?,audioUs: freezed == audioUs ? _self.audioUs : audioUs // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

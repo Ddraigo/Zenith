@@ -318,57 +318,57 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
     );
   }
 
-  Widget _streakView(ColorScheme color) {
-    return Container(
-      padding: EdgeInsets.all(16.h),
-      decoration: BoxDecoration(
-        color: color.onPrimary,
-        borderRadius: BorderRadius.circular(32.r),
-        gradient: RadialGradient(
-          center: Alignment.center, // Tâm loang màu ở giữa
-          radius: 0.7, // Độ rộng của vùng loang
-          colors: [
-            Colors.amber.shade50, // Màu ở tâm (nhạt và trong suốt)
-            color.onPrimary, // Mờ dần về phía cạnh
-          ],
-          stops: const [0.0, 1.0], // 0.0 là tại tâm, 1.0 là tại rìa radius
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 20,
-            offset: Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Column(
-        spacing: 4.h,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'Chuỗi hiện tại',
-            style: MyTextStyle.poppinsLarge600.copyWith(
-              color: color.primary,
-              fontSize: 22.sp,
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            spacing: 5.w,
-            children: [
-              Text('5', style: MyTextStyle.poppinsHeading2),
-              SvgPicture.asset(MyIcons.streak, height: 40.h, width: 40.w),
-            ],
-          ),
-          Text(
-            'Day streak',
-            style: MyTextStyle.poppinsLarge.copyWith(
-              color: color.outline.withValues(alpha: 0.5),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _streakView(ColorScheme color) {
+  //   return Container(
+  //     padding: EdgeInsets.all(16.h),
+  //     decoration: BoxDecoration(
+  //       color: color.onPrimary,
+  //       borderRadius: BorderRadius.circular(32.r),
+  //       gradient: RadialGradient(
+  //         center: Alignment.center, // Tâm loang màu ở giữa
+  //         radius: 0.7, // Độ rộng của vùng loang
+  //         colors: [
+  //           Colors.amber.shade50, // Màu ở tâm (nhạt và trong suốt)
+  //           color.onPrimary, // Mờ dần về phía cạnh
+  //         ],
+  //         stops: const [0.0, 1.0], // 0.0 là tại tâm, 1.0 là tại rìa radius
+  //       ),
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: Colors.black.withValues(alpha: 0.05),
+  //           blurRadius: 20,
+  //           offset: Offset(0, 10),
+  //         ),
+  //       ],
+  //     ),
+  //     child: Column(
+  //       spacing: 4.h,
+  //       mainAxisAlignment: MainAxisAlignment.center,
+  //       children: [
+  //         Text(
+  //           'Chuỗi hiện tại',
+  //           style: MyTextStyle.poppinsLarge600.copyWith(
+  //             color: color.primary,
+  //             fontSize: 22.sp,
+  //           ),
+  //         ),
+  //         Row(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           crossAxisAlignment: CrossAxisAlignment.end,
+  //           spacing: 5.w,
+  //           children: [
+  //             Text('5', style: MyTextStyle.poppinsHeading2),
+  //             SvgPicture.asset(MyIcons.streak, height: 40.h, width: 40.w),
+  //           ],
+  //         ),
+  //         Text(
+  //           'Day streak',
+  //           style: MyTextStyle.poppinsLarge.copyWith(
+  //             color: color.outline.withValues(alpha: 0.5),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 }
