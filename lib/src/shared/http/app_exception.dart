@@ -17,4 +17,6 @@ class AppException with _$AppException {
   const factory AppException.badRequest(String message) = _AppExceptionBadRequest;
 
   const factory AppException.server(String message) = _AppExceptionServer; 
+
+  const factory AppException.permissionDenied(String message) = _AppExceptionPermissionDenied;
 }

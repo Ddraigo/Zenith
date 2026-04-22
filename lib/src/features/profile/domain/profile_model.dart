@@ -9,7 +9,7 @@ abstract class ProfileModel with _$ProfileModel {
     required String userId,
     required String userName,
     String? avatarUrl,
-    String? gender,
+    required String gender,
     required DateTime dayOfBirth,
   }) = _ProfileModel;
 
@@ -19,9 +19,10 @@ abstract class ProfileModel with _$ProfileModel {
   factory ProfileModel.create({
     required String userId,
     required String userName,
-    String? gender,
+    required String gender,
     required DateTime dayOfBirth,
     String? avatarUrl,
+
   }) {
     if(userId.trim().isEmpty){
       throw AppException.errorWithMessage('$userId is null or empty');

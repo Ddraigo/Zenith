@@ -49,13 +49,21 @@ class Validator {
     return true;
   }
 
-  static bool isValidValue(String value) {
-    if (value.trim().isEmpty) {
-      return false;
-    }
+  static bool isValidValue(String? value) {
     if (value == null) {
       return false;
     }
+    if (value.trim().isEmpty) {
+      return false;
+    }
     return true;
+  }
+
+   static bool isQuotaMessage(String msg) {
+    final lower = msg.toLowerCase();
+    return lower.contains('quota') ||
+        lower.contains('resource_exhausted') ||
+        lower.contains('429') ||
+        lower.contains('rate limit');
   }
 }

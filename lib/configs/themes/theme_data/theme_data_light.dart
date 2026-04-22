@@ -178,7 +178,7 @@ ThemeData getLightTheme() {
 
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: lightColorScheme.outline.withOpacity(0.08),
+      fillColor: lightColorScheme.outline.withValues(alpha: 0.08),
       contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 16.h),
       hintStyle: MyTextStyle.poppinsMedium400.copyWith(
         color: lightColorScheme.outlineVariant,
@@ -187,7 +187,7 @@ ThemeData getLightTheme() {
         color: lightColorScheme.onPrimaryFixedVariant,
       ),
       errorStyle: MyTextStyle.poppinsMedium400.copyWith(
-        color: lightColorScheme.error.withOpacity(0.5),
+        color: lightColorScheme.error.withValues(alpha: 0.5),
         fontWeight: FontWeight.w600
       ),
       prefixIconColor: lightColorScheme.outlineVariant,
@@ -198,7 +198,7 @@ ThemeData getLightTheme() {
 
       focusedBorder: defaultInputBorder.copyWith(
         borderSide: BorderSide(
-          color: lightColorScheme.primary.withOpacity(0.6),
+          color: lightColorScheme.primary.withValues(alpha: 0.6),
           width: 2,
         ),
       ),
@@ -206,7 +206,7 @@ ThemeData getLightTheme() {
       errorBorder: OutlineInputBorder(
         borderRadius: radius,
         borderSide:  BorderSide(
-          color: lightColorScheme.error.withOpacity(0.5),
+          color: lightColorScheme.error.withValues( alpha: 0.5),
           width: 1,
         ),
       ),
@@ -214,7 +214,7 @@ ThemeData getLightTheme() {
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: radius,
         borderSide: BorderSide(
-          color: lightColorScheme.error.withOpacity(0.5),
+          color: lightColorScheme.error.withValues(alpha: 0.5),
           width: 2,
         ),
       ),

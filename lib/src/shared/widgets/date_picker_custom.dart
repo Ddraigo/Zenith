@@ -7,12 +7,13 @@ class DatePickerCustom extends StatefulWidget {
   const DatePickerCustom({
     super.key,
     required this.hintText,
-    this.icon = MyIcons.userIcon,
+    this.icon = MyIcons.calendar,
     this.initialDate,
     this.firstDate,
     this.lastDate,
     this.errorText,
     this.onChanged,
+    this.isEnabled = true,
   });
 
   final String hintText;
@@ -22,6 +23,7 @@ class DatePickerCustom extends StatefulWidget {
   final DateTime? lastDate;
   final String? errorText;
   final ValueChanged<DateTime>? onChanged;
+  final bool isEnabled;
 
   @override
   State<DatePickerCustom> createState() => _DatePickerCustomState();
@@ -87,8 +89,9 @@ class _DatePickerCustomState extends State<DatePickerCustom> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: _selectDate,
+      onTap: widget.isEnabled ? _selectDate : null,
       behavior: HitTestBehavior.opaque,
+      
       child: AbsorbPointer(
         child: TextFieldCustom(
           icon: widget.icon,
@@ -96,6 +99,7 @@ class _DatePickerCustomState extends State<DatePickerCustom> {
           controller: _controller,
           focusNode: _focusNode,
           errorText: widget.errorText,
+          isEnabled: widget.isEnabled,
         ),
       ),
     );

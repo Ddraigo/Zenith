@@ -8,3 +8,10 @@ final currentUserIdProvider = Provider<String>((ref){
   if(user == null) throw const AppException.unauthorized();
   return user.id;
 });
+
+final userEmailProvider = Provider<String>((ref){
+  final client = ref.read(supabaseClientProvider);
+  final userEmail = client.auth.currentUser?.email;
+  if(userEmail == null || userEmail.isEmpty) throw const AppException.errorWithMessage('Không tìm thấy email người dùng');
+  return userEmail;
+});

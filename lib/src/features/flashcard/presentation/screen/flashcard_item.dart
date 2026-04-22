@@ -156,7 +156,10 @@ class _FlashcardItemState extends State<FlashcardItem>
                         maxChildSize: 0.95,
                         expand: false,
                         builder: (context, scrollController){
-                          return AiSupportBottomSheet(flashcard: widget.flashcard, controller: scrollController,);
+                          return AiSupportBottomSheet(
+                            key: ValueKey(widget.flashcard.id),
+                            flashcard: widget.flashcard, 
+                            controller: scrollController,);
                         }
                       );
                     }

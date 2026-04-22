@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProfileDTO {
 
-@JsonKey(name: 'id') String get userId;@JsonKey(name: 'user_name') String get userName;@JsonKey(name: 'avatar_url') String? get avatarUrl;@JsonKey(name: 'gender') String get gender;@JsonKey(name: 'birthday') DateTime get dayOfBirth;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt;
+@JsonKey(name: 'id') String get userId;@JsonKey(name: 'user_name') String get userName;@JsonKey(name: 'avatar_url') String? get avatarUrl;@JsonKey(name: 'gender') String get gender;@JsonKey(name: 'birthday') DateTime get dayOfBirth;@JsonKey(name: 'created_at') DateTime? get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt;
 /// Create a copy of ProfileDTO
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $ProfileDTOCopyWith<$Res>  {
   factory $ProfileDTOCopyWith(ProfileDTO value, $Res Function(ProfileDTO) _then) = _$ProfileDTOCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'id') String userId,@JsonKey(name: 'user_name') String userName,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'gender') String gender,@JsonKey(name: 'birthday') DateTime dayOfBirth,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt
+@JsonKey(name: 'id') String userId,@JsonKey(name: 'user_name') String userName,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'gender') String gender,@JsonKey(name: 'birthday') DateTime dayOfBirth,@JsonKey(name: 'created_at') DateTime? createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt
 });
 
 
@@ -65,15 +65,15 @@ class _$ProfileDTOCopyWithImpl<$Res>
 
 /// Create a copy of ProfileDTO
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? userName = null,Object? avatarUrl = freezed,Object? gender = null,Object? dayOfBirth = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? userName = null,Object? avatarUrl = freezed,Object? gender = null,Object? dayOfBirth = null,Object? createdAt = freezed,Object? updatedAt = null,}) {
   return _then(_self.copyWith(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,userName: null == userName ? _self.userName : userName // ignore: cast_nullable_to_non_nullable
 as String,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
 as String?,gender: null == gender ? _self.gender : gender // ignore: cast_nullable_to_non_nullable
 as String,dayOfBirth: null == dayOfBirth ? _self.dayOfBirth : dayOfBirth // ignore: cast_nullable_to_non_nullable
-as DateTime,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,
   ));
 }
@@ -159,7 +159,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'id')  String userId, @JsonKey(name: 'user_name')  String userName, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'gender')  String gender, @JsonKey(name: 'birthday')  DateTime dayOfBirth, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'id')  String userId, @JsonKey(name: 'user_name')  String userName, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'gender')  String gender, @JsonKey(name: 'birthday')  DateTime dayOfBirth, @JsonKey(name: 'created_at')  DateTime? createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProfileDTO() when $default != null:
 return $default(_that.userId,_that.userName,_that.avatarUrl,_that.gender,_that.dayOfBirth,_that.createdAt,_that.updatedAt);case _:
@@ -180,7 +180,7 @@ return $default(_that.userId,_that.userName,_that.avatarUrl,_that.gender,_that.d
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'id')  String userId, @JsonKey(name: 'user_name')  String userName, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'gender')  String gender, @JsonKey(name: 'birthday')  DateTime dayOfBirth, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'id')  String userId, @JsonKey(name: 'user_name')  String userName, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'gender')  String gender, @JsonKey(name: 'birthday')  DateTime dayOfBirth, @JsonKey(name: 'created_at')  DateTime? createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _ProfileDTO():
 return $default(_that.userId,_that.userName,_that.avatarUrl,_that.gender,_that.dayOfBirth,_that.createdAt,_that.updatedAt);case _:
@@ -200,7 +200,7 @@ return $default(_that.userId,_that.userName,_that.avatarUrl,_that.gender,_that.d
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'id')  String userId, @JsonKey(name: 'user_name')  String userName, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'gender')  String gender, @JsonKey(name: 'birthday')  DateTime dayOfBirth, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'id')  String userId, @JsonKey(name: 'user_name')  String userName, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'gender')  String gender, @JsonKey(name: 'birthday')  DateTime dayOfBirth, @JsonKey(name: 'created_at')  DateTime? createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _ProfileDTO() when $default != null:
 return $default(_that.userId,_that.userName,_that.avatarUrl,_that.gender,_that.dayOfBirth,_that.createdAt,_that.updatedAt);case _:
@@ -215,7 +215,7 @@ return $default(_that.userId,_that.userName,_that.avatarUrl,_that.gender,_that.d
 @JsonSerializable()
 
 class _ProfileDTO implements ProfileDTO {
-  const _ProfileDTO({@JsonKey(name: 'id') required this.userId, @JsonKey(name: 'user_name') required this.userName, @JsonKey(name: 'avatar_url') this.avatarUrl, @JsonKey(name: 'gender') required this.gender, @JsonKey(name: 'birthday') required this.dayOfBirth, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt});
+  const _ProfileDTO({@JsonKey(name: 'id') required this.userId, @JsonKey(name: 'user_name') required this.userName, @JsonKey(name: 'avatar_url') this.avatarUrl, @JsonKey(name: 'gender') required this.gender, @JsonKey(name: 'birthday') required this.dayOfBirth, @JsonKey(name: 'created_at') this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt});
   factory _ProfileDTO.fromJson(Map<String, dynamic> json) => _$ProfileDTOFromJson(json);
 
 @override@JsonKey(name: 'id') final  String userId;
@@ -223,7 +223,7 @@ class _ProfileDTO implements ProfileDTO {
 @override@JsonKey(name: 'avatar_url') final  String? avatarUrl;
 @override@JsonKey(name: 'gender') final  String gender;
 @override@JsonKey(name: 'birthday') final  DateTime dayOfBirth;
-@override@JsonKey(name: 'created_at') final  DateTime createdAt;
+@override@JsonKey(name: 'created_at') final  DateTime? createdAt;
 @override@JsonKey(name: 'updated_at') final  DateTime updatedAt;
 
 /// Create a copy of ProfileDTO
@@ -259,7 +259,7 @@ abstract mixin class _$ProfileDTOCopyWith<$Res> implements $ProfileDTOCopyWith<$
   factory _$ProfileDTOCopyWith(_ProfileDTO value, $Res Function(_ProfileDTO) _then) = __$ProfileDTOCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'id') String userId,@JsonKey(name: 'user_name') String userName,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'gender') String gender,@JsonKey(name: 'birthday') DateTime dayOfBirth,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt
+@JsonKey(name: 'id') String userId,@JsonKey(name: 'user_name') String userName,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'gender') String gender,@JsonKey(name: 'birthday') DateTime dayOfBirth,@JsonKey(name: 'created_at') DateTime? createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt
 });
 
 
@@ -276,15 +276,15 @@ class __$ProfileDTOCopyWithImpl<$Res>
 
 /// Create a copy of ProfileDTO
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? userName = null,Object? avatarUrl = freezed,Object? gender = null,Object? dayOfBirth = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? userName = null,Object? avatarUrl = freezed,Object? gender = null,Object? dayOfBirth = null,Object? createdAt = freezed,Object? updatedAt = null,}) {
   return _then(_ProfileDTO(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,userName: null == userName ? _self.userName : userName // ignore: cast_nullable_to_non_nullable
 as String,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
 as String?,gender: null == gender ? _self.gender : gender // ignore: cast_nullable_to_non_nullable
 as String,dayOfBirth: null == dayOfBirth ? _self.dayOfBirth : dayOfBirth // ignore: cast_nullable_to_non_nullable
-as DateTime,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,
   ));
 }

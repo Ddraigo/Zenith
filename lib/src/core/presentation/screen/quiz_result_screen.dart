@@ -141,7 +141,7 @@ class QuizResultScreen extends ConsumerWidget {
                                       Text(
                                         'Đáp án',
                                         style: MyTextStyle.poppinsMedium.copyWith(
-                                          color: color.outline.withOpacity(0.7),
+                                          color: color.outline.withValues(alpha: 0.7),
                                         ),
                                       ),
                                       Text(
@@ -160,7 +160,7 @@ class QuizResultScreen extends ConsumerWidget {
                                       Text(
                                         'Trả lời',
                                         style: MyTextStyle.poppinsMedium.copyWith(
-                                          color: color.outline.withOpacity(0.7),
+                                          color: color.outline.withValues(alpha: 0.7),
                                         ),
                                       ),
                                       Text(
@@ -168,7 +168,7 @@ class QuizResultScreen extends ConsumerWidget {
                                         style: MyTextStyle.poppinsLarge600.copyWith(
                                           color: item.isCorrect
                                               ? AppColors.gradientDark
-                                              : color.error.withOpacity(0.7),
+                                              : color.error.withValues(alpha: 0.7),
                                         ),
                                       ),
                                     ],
@@ -217,7 +217,7 @@ class QuizResultScreen extends ConsumerWidget {
                   child: CircularProgressIndicator(
                     strokeCap: StrokeCap.round,
                     strokeWidth: 10,
-                    backgroundColor: color.outline.withOpacity(0.4),
+                    backgroundColor: color.outline.withValues(alpha: 0.4),
                     value: ((quizAttemp.score ?? 0.0) / 100).clamp(0.0, 1.0),
                     valueColor: AlwaysStoppedAnimation<Color>(color.primary),
                   ),
@@ -236,7 +236,7 @@ class QuizResultScreen extends ConsumerWidget {
                     Text(
                       "${quizAttemp.correctAnswers ?? 0} / ${quizAttemp.totalQuestions}",
                       style: MyTextStyle.poppinsMedium600.copyWith(
-                        color: color.outline.withOpacity(0.7),
+                        color: color.outline.withValues(alpha: 0.7),
                       ),
                     ),
                   ],
@@ -256,7 +256,7 @@ class QuizResultScreen extends ConsumerWidget {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20.r),
-                      color: AppColors.primary300.withOpacity(0.3),
+                      color: AppColors.primary300.withValues(alpha: 0.3),
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -279,7 +279,7 @@ class QuizResultScreen extends ConsumerWidget {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20.r),
-                      color: color.error.withOpacity(0.1),
+                      color: color.error.withValues(alpha: 0.1),
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,

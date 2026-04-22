@@ -11,6 +11,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../shared/http/app_exception.dart';
+import '../../../../shared/utils/helper_function.dart';
+import '../../../../shared/widgets/retry_widget.dart';
 import '../../../home/presentation/home_screen.dart';
 
 class QuizAttempScreen extends ConsumerStatefulWidget {
@@ -101,11 +104,16 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
                     child: Column(
                       spacing: 16.h,
                       children: [
-                        SizedBox(height: 8.h,),
+                        SizedBox(height: 8.h),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Tiến độ', style: MyTextStyle.poppinsMedium600.copyWith(color: color.outline.withValues(alpha: 0.7))),
+                            Text(
+                              'Tiến độ',
+                              style: MyTextStyle.poppinsMedium600.copyWith(
+                                color: color.outline.withValues(alpha: 0.7),
+                              ),
+                            ),
                             Text(
                               '$answeredCount/${quizes.questions.length}',
                               style: MyTextStyle.poppinsMedium600.copyWith(
@@ -117,12 +125,11 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
                         LinearProgressIndicator(
                           minHeight: 16.h,
                           borderRadius: BorderRadius.circular(10.r),
-                          backgroundColor: color.outline.withValues(alpha:  0.4),
+                          backgroundColor: color.outline.withValues(alpha: 0.4),
                           value: progressValue,
                           valueColor: AlwaysStoppedAnimation<Color>(
                             color.primary,
                           ),
-                          
                         ),
                         Expanded(
                           child: CardSwiper(
@@ -135,7 +142,7 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
                               quizes.questions.length,
                             ),
                             backCardOffset: const Offset(0, 20),
-                    
+
                             cardBuilder:
                                 (
                                   context,
@@ -153,17 +160,19 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
                                 }
                                 _isError = false;
                               });
-                    
+
                               userAnswer.clear();
                               _isError = false;
                               return true;
                             },
                           ),
                         ),
-                        Expanded(child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 16.h),
-                          child: _userInput(color),
-                        )),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16.h),
+                            child: _userInput(color),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -204,7 +213,21 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
                 ],
               );
             },
-            error: (e, _) => Center(child: Text('Lỗi $e')),
+            error: (error, _) {
+              final msg = error is AppException
+                  ? MyHelper.getErrorMessage(error)
+                  : 'Đã xảy ra lỗi';
+              return RetryWidget(
+                msg: msg,
+                onPressed: () => ref.refresh(
+                  quizSessionProvider(
+                    widget.arg.type,
+                    widget.arg.topicId,
+                    widget.arg.assignedDate,
+                  ),
+                ),
+              );
+            },
             loading: () => Center(child: CircularProgressIndicator()),
           ),
         ),
@@ -256,10 +279,10 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
     });
 
     result.fold(
-      ifLeft: (e) {
+      ifLeft: (error) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Nộp bài thất bại')));
+        ).showSnackBar(SnackBar(content: Text(MyHelper.getErrorMessage(error))));
       },
       ifRight: (attempt) {
         ScaffoldMessenger.of(
@@ -273,7 +296,7 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
     );
   }
 
-  TextFormField _userInput(ColorScheme color) {
+  Widget _userInput(ColorScheme color) {
     return TextFormField(
       controller: userAnswer,
       focusNode: _answerFocusNode,

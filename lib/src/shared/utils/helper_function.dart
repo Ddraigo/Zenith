@@ -15,6 +15,7 @@ class MyHelper{
       unknown: () => 'Lỗi không xác định',
       badRequest: (msg) => msg,
       server: (msg) => msg,
+      permissionDenied: (msg) => msg,
     );
   }
 }

@@ -1,12 +1,19 @@
-import 'package:app_demo/configs/themes/text_style.dart';
-import 'package:app_demo/src/features/ai_support/domain/flashcard_ai_support_model.dart';
+import 'dart:async';
+
+import 'package:app_demo/src/features/ai_support/domain/ai_support_result_model.dart';
 import 'package:app_demo/src/features/ai_support/presentation/controller/ai_support_notifier.dart';
+import 'package:app_demo/src/features/ai_support/presentation/controller/audio_player_provider.dart';
 import 'package:app_demo/src/features/flashcard/domain/flashcard_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class AiSupportBottomSheet extends ConsumerWidget {
+import '../../../../shared/http/app_exception.dart';
+import '../../../../shared/utils/helper_function.dart';
+import '../../../../shared/widgets/retry_widget.dart';
+import 'componet_ai_content.dart';
+
+class AiSupportBottomSheet extends ConsumerStatefulWidget {
   const AiSupportBottomSheet({
     super.key,
     required this.flashcard,
@@ -16,421 +23,161 @@ class AiSupportBottomSheet extends ConsumerWidget {
   final ScrollController? controller;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AiSupportBottomSheet> createState() =>
+      _AiSupportBottomSheetState();
+}
+
+class _AiSupportBottomSheetState extends ConsumerState<AiSupportBottomSheet> {
+  ProviderSubscription<AsyncValue<AISupportResultModel>>? _aiSupportSub;
+  Timer? _pollTimer;
+  String get _flashcardId => widget.flashcard.id ?? '';
+
+  @override
+  void initState() {
+    super.initState();
+    _bindAiSupportListener();
+  }
+
+  @override
+  void didUpdateWidget(covariant AiSupportBottomSheet oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.flashcard.id != widget.flashcard.id) {
+      _cancelPolling();
+      _aiSupportSub?.close();
+      _bindAiSupportListener();
+    }
+  }
+
+  @override
+  void dispose() {
+    _cancelPolling();
+    _aiSupportSub?.close();
+    super.dispose();
+  }
+
+  void _bindAiSupportListener() {
+    _aiSupportSub = ref.listenManual(aISupportProvider(_flashcardId), (
+      prev,
+      next,
+    ) {
+      next.whenData((data) {
+        final prevSource = prev?.asData?.value.source;
+        final nextSource = data.source;
+        if (nextSource == 'quota_exceeded') {
+          _cancelPolling();
+          ref.read(aiQuotaBlockedProvider.notifier).state = true;
+          return;
+        }
+        if (nextSource == 'pending' && prevSource != 'pending') {
+          _schedulePolling();
+          return;
+        }
+        _cancelPolling();
+      });
+    });
+  }
+
+  void _cancelPolling() {
+    _pollTimer?.cancel();
+    _pollTimer = null;
+  }
+
+  void _schedulePolling() {
+    if (ref.read(aiQuotaBlockedProvider)) return;
+    _cancelPolling();
+    _pollTimer = Timer(const Duration(seconds: 2), () {
+      if (!mounted || ref.read(aiQuotaBlockedProvider)) return;
+      ref.invalidate(aISupportProvider(_flashcardId));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
 
-    final aiSupportAsycn = ref.watch(aISupportProvider(flashcard.id ?? ''));
+    final aiSupportAsycn = ref.watch(aISupportProvider(_flashcardId));
 
     return SafeArea(
       child: SingleChildScrollView(
-        controller: controller,
+        controller: widget.controller,
         padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
         child: aiSupportAsycn.when(
           data: (aiSupportData) {
+            if (aiSupportData.source == 'quota_exceeded') {
+              _cancelPolling();
+              return RetryWidget(
+                msg: 'Hiện đã hết lượt gọi AI, vui lòng thử lại sau',
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'AI đang tạm hết quota, vui lòng thử lại sau',
+                      ),
+                    ),
+                  );
+                },
+              );
+            }
+
             final data = aiSupportData.data;
+            final player = ref.watch(audioPlayerProvider);
             return Column(
               spacing: 16.h,
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
 
               children: [
-                _word(color),
+                word(color, widget.flashcard),
                 if (aiSupportData.phonetic!.isNotEmpty)
-                  _audioButton(color, aiSupportData.phonetic ?? 'N/A'),
+                  audioButton(
+                    color,
+                    aiSupportData.phonetic ?? 'N/A',
+                    onPressed: () async {
+                      if (aiSupportData.audioUs!.isEmpty) return;
+                      await player.setUrl(aiSupportData.audioUs ?? '');
+                      player.play();
+                    },
+                  ),
                 if (data.easyMeaning.isNotEmpty)
-                  _wordMeaning(color, data.easyMeaning),
-                if (data.whenToUse.isNotEmpty) _whenToUse(color, data),
-                if (data.examples.isNotEmpty) _exmaple(data.examples, color),
+                  wordMeaning(color, data.easyMeaning),
+                if (data.whenToUse.isNotEmpty) whenToUse(color, data),
+                if (data.examples.isNotEmpty) exmaple(data.examples, color),
                 if (data.commonPhrases.isNotEmpty)
-                  _commonPhrases(color, data.commonPhrases),
-                if (data.synonyms.isNotEmpty) _synonyms(color, data.synonyms),
+                  commonPhrases(color, data.commonPhrases),
+                if (data.synonyms.isNotEmpty) synonyms(color, data.synonyms),
                 if (data.antonyms != null && data.antonyms!.isNotEmpty)
-                  _antonyms(data, color),
+                  antonyms(data, color),
                 if (data.memoryTip != null && data.memoryTip!.isNotEmpty)
-                  _menoryTip(color, data.memoryTip ?? 'N/A'),
+                  menoryTip(color, data.memoryTip ?? 'N/A'),
                 SizedBox(height: 2.h),
               ],
             );
           },
-          error: (e, _) => Center(child: Text('Lỗi: $e')),
+          error: (error, _) {
+            final msg = error is AppException
+                ? MyHelper.getErrorMessage(error)
+                : 'Đã xảy ra lỗi';
+
+            return RetryWidget(
+              msg: msg,
+              onPressed: ref.read(aiQuotaBlockedProvider)
+                  ? () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Hiện đã hết lượt gọi AI, vui lòng thử lại sau',
+                          ),
+                        ),
+                      );
+                    }
+                  : () => ref
+                        .read(aISupportProvider(_flashcardId).notifier)
+                        .refresh(_flashcardId),
+            );
+          },
           loading: () => Center(child: CircularProgressIndicator()),
         ),
       ),
-    );
-  }
-
-  Column _commonPhrases(ColorScheme color, List<String> commonPhrases) {
-    return Column(
-      children: [
-        Row(
-          spacing: 8.w,
-          children: [
-            Container(
-              padding: EdgeInsets.all(4.r),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: color.primary,
-              ),
-              child: Icon(Icons.fact_check_outlined, color: color.onPrimary),
-            ),
-            Expanded(
-              child: Text("Cụm từ hay gặp", style: MyTextStyle.poppinsLarge600),
-            ),
-          ],
-        ),
-        SizedBox(height: 8.h),
-        Wrap(
-          spacing: 4.h,
-          runSpacing: 4.h,
-          children: commonPhrases.map((item) {
-            return Container(
-              margin: EdgeInsets.all(8.h),
-              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-              decoration: BoxDecoration(
-                color: Colors.deepOrange.shade100.withValues(alpha: 0.5),
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              child: Text(
-                item,
-                textAlign: TextAlign.center,
-                style: MyTextStyle.poppinsMedium400.copyWith(
-                  color: color.primary,
-                ),
-              ),
-            );
-          }).toList(),
-        ),
-      ],
-    );
-  }
-
-  Widget _exmaple(List<ExampleItemModel> examples, ColorScheme color) {
-    return Column(
-      spacing: 8.h,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Ví dụ thực tế', style: MyTextStyle.poppinsLarge600),
-        Wrap(
-          spacing: 8.w,
-          runSpacing: 8.h,
-          children: examples.map((item) {
-            return Container(
-              margin: EdgeInsets.symmetric(vertical: 4.h),
-              padding: EdgeInsets.only(right: 8.h),
-              decoration: BoxDecoration(
-                color: Colors.purple.shade100.withValues(alpha: 0.4),
-                borderRadius: BorderRadius.circular(20.r),
-              ),
-              child: Container(
-                margin: EdgeInsets.fromLTRB(0, 4.h, 0, 4.h),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12.r),
-                  child: IntrinsicHeight(
-                    child: Row(
-                      spacing: 8.w,
-                      children: [
-                        Container(width: 5.w, color: color.primary),
-                        Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              top: 8.h,
-                              bottom: 8.h,
-                              left: 8.w,
-                            ),
-                            child: Text.rich(
-                              TextSpan(
-                                style: MyTextStyle.poppinsMedium400,
-                                children: [
-                                  TextSpan(
-                                    text: '"${item.en}"',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  TextSpan(text: '\n${item.vi}'),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            );
-          }).toList(),
-        ),
-      ],
-    );
-  }
-
-  Column _synonyms(ColorScheme color, List<String> synonyms) {
-    return Column(
-      children: [
-        Row(
-          spacing: 8.w,
-          children: [
-            Container(
-              padding: EdgeInsets.all(4.r),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: color.primary,
-              ),
-              child: Icon(Icons.change_circle_outlined, color: color.onPrimary),
-            ),
-            Expanded(
-              child: Text("Từ đồng nghĩa", style: MyTextStyle.poppinsLarge600),
-            ),
-          ],
-        ),
-        SizedBox(height: 8.h),
-        Wrap(
-          spacing: 4.h,
-          runSpacing: 4.h,
-          children: synonyms.map((item) {
-            return Container(
-              margin: EdgeInsets.all(8.h),
-              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-              decoration: BoxDecoration(
-                color: Colors.purple.shade100.withValues(alpha: 0.5),
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              child: Text(
-                item,
-                textAlign: TextAlign.center,
-                style: MyTextStyle.poppinsMedium400.copyWith(
-                  color: color.primary,
-                ),
-              ),
-            );
-          }).toList(),
-        ),
-      ],
-    );
-  }
-
-  Widget _whenToUse(ColorScheme color, FlashcardAiSupportModel data) {
-    return Column(
-      children: [
-        Row(
-          spacing: 8.w,
-          children: [
-            Container(
-              padding: EdgeInsets.all(4.h),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: color.primary,
-              ),
-              child: Icon(
-                Icons.check_circle_outline_outlined,
-                color: color.onPrimary,
-              ),
-            ),
-            Expanded(
-              child: Text('Khi nào dùng', style: MyTextStyle.poppinsLarge600),
-            ),
-          ],
-        ),
-        SizedBox(height: 8.h),
-        Wrap(
-          children: data.whenToUse.map((item) {
-            return Container(
-              margin: EdgeInsets.symmetric(vertical: 8.h),
-              padding: EdgeInsets.all(10.r),
-              decoration: BoxDecoration(
-                color: Colors.blue.shade50,
-                borderRadius: BorderRadius.circular(20.r),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 8.w,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: 8.h),
-                    child: Container(
-                      height: 5.h,
-                      width: 5.h,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.blue,
-                      ),
-                    ),
-                  ),
-                  Expanded(child: Text(item, style: MyTextStyle.poppinsMedium)),
-                ],
-              ),
-            );
-          }).toList(),
-        ),
-      ],
-    );
-  }
-
-  Widget _antonyms(FlashcardAiSupportModel data, ColorScheme color) {
-    return Column(
-      children: [
-        Row(
-          spacing: 8.w,
-          children: [
-            Container(
-              padding: EdgeInsets.all(4.r),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: color.primary,
-              ),
-              child: Icon(Icons.book_outlined, color: color.onPrimary),
-            ),
-            Expanded(
-              child: Text("Từ trái nghĩa", style: MyTextStyle.poppinsLarge600),
-            ),
-          ],
-        ),
-        SizedBox(height: 8.h),
-        Wrap(
-          spacing: 4.h,
-          runSpacing: 4.h,
-          children: data.antonyms!.map((item) {
-            return Container(
-              margin: EdgeInsets.all(8.h),
-              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-              decoration: BoxDecoration(
-                color: Colors.purple.shade100,
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              child: Text(
-                item,
-                textAlign: TextAlign.center,
-                style: MyTextStyle.poppinsMedium400.copyWith(
-                  color: color.primary,
-                ),
-              ),
-            );
-          }).toList(),
-        ),
-      ],
-    );
-  }
-
-  Widget _menoryTip(ColorScheme color, String memoryTip) {
-    return Column(
-      spacing: 8.h,
-      children: [
-        Row(
-          spacing: 8.w,
-          children: [
-            Container(
-              padding: EdgeInsets.all(4.r),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: color.primary,
-              ),
-              child: Icon(
-                Icons.tips_and_updates_outlined,
-                color: color.onPrimary,
-              ),
-            ),
-            Expanded(
-              child: Text(" Mẹo dễ nhớ", style: MyTextStyle.poppinsLarge600),
-            ),
-          ],
-        ),
-        Container(
-          padding: EdgeInsets.all(8.r),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12.r),
-            color: Colors.yellow.shade100.withValues(alpha: 0.5),
-            border: Border.fromBorderSide(
-              BorderSide(width: 1.w, color: Colors.yellow.shade100),
-            ),
-          ),
-          child: Text(memoryTip, style: MyTextStyle.poppinsMedium400),
-        ),
-      ],
-    );
-  }
-
-  Widget _wordMeaning(ColorScheme color, String meaning) {
-    return Column(
-      spacing: 8.h,
-      children: [
-        Row(
-          spacing: 8.w,
-          children: [
-            Container(
-              padding: EdgeInsets.all(4.r),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: color.primary,
-              ),
-              child: Icon(
-                Icons.contact_support_outlined,
-                color: color.onPrimary,
-              ),
-            ),
-            Expanded(
-              child: Text('Nghĩa dễ hiểu', style: MyTextStyle.poppinsLarge600),
-            ),
-          ],
-        ),
-
-        Container(
-          padding: EdgeInsets.all(10.r),
-          decoration: BoxDecoration(
-            color: Colors.pink.shade50,
-            borderRadius: BorderRadius.circular(20.r),
-          ),
-          child: Text(meaning, style: MyTextStyle.poppinsMedium),
-        ),
-      ],
-    );
-  }
-
-  Widget _audioButton(ColorScheme color, String phonetic) {
-    return ElevatedButton.icon(
-      onPressed: () {},
-      style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
-        backgroundColor: Colors.grey.shade200,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.r),
-        ),
-      ),
-      icon: Icon(Icons.volume_up_outlined, color: color.primary),
-      label: Text(
-        phonetic,
-        style: MyTextStyle.poppinsMedium600.copyWith(height: 1),
-      ),
-    );
-  }
-
-  Widget _word(ColorScheme color) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      spacing: 10.w,
-      children: [
-        Text(
-          flashcard.word,
-          style: MyTextStyle.poppinsHeading2.copyWith(color: color.primary),
-        ),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-          decoration: BoxDecoration(
-            color: Colors.green.shade100,
-            borderRadius: BorderRadius.circular(20.r),
-            border: Border.all(
-              color: Colors.green.shade300.withValues(alpha: 0.8),
-              width: 1,
-            ),
-          ),
-          child: Text(
-            flashcard.partOfSpeech ?? 'N/A',
-            style: MyTextStyle.poppinsMedium.copyWith(
-              color: color.inverseSurface,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProfileModel {
 
- String get userId; String get userName; String? get avatarUrl; String? get gender; DateTime get dayOfBirth;
+ String get userId; String get userName; String? get avatarUrl; String get gender; DateTime get dayOfBirth;
 /// Create a copy of ProfileModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $ProfileModelCopyWith<$Res>  {
   factory $ProfileModelCopyWith(ProfileModel value, $Res Function(ProfileModel) _then) = _$ProfileModelCopyWithImpl;
 @useResult
 $Res call({
- String userId, String userName, String? avatarUrl, String? gender, DateTime dayOfBirth
+ String userId, String userName, String? avatarUrl, String gender, DateTime dayOfBirth
 });
 
 
@@ -65,13 +65,13 @@ class _$ProfileModelCopyWithImpl<$Res>
 
 /// Create a copy of ProfileModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? userName = null,Object? avatarUrl = freezed,Object? gender = freezed,Object? dayOfBirth = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? userName = null,Object? avatarUrl = freezed,Object? gender = null,Object? dayOfBirth = null,}) {
   return _then(_self.copyWith(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,userName: null == userName ? _self.userName : userName // ignore: cast_nullable_to_non_nullable
 as String,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
-as String?,gender: freezed == gender ? _self.gender : gender // ignore: cast_nullable_to_non_nullable
-as String?,dayOfBirth: null == dayOfBirth ? _self.dayOfBirth : dayOfBirth // ignore: cast_nullable_to_non_nullable
+as String?,gender: null == gender ? _self.gender : gender // ignore: cast_nullable_to_non_nullable
+as String,dayOfBirth: null == dayOfBirth ? _self.dayOfBirth : dayOfBirth // ignore: cast_nullable_to_non_nullable
 as DateTime,
   ));
 }
@@ -157,7 +157,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String userId,  String userName,  String? avatarUrl,  String? gender,  DateTime dayOfBirth)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String userId,  String userName,  String? avatarUrl,  String gender,  DateTime dayOfBirth)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProfileModel() when $default != null:
 return $default(_that.userId,_that.userName,_that.avatarUrl,_that.gender,_that.dayOfBirth);case _:
@@ -178,7 +178,7 @@ return $default(_that.userId,_that.userName,_that.avatarUrl,_that.gender,_that.d
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String userId,  String userName,  String? avatarUrl,  String? gender,  DateTime dayOfBirth)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String userId,  String userName,  String? avatarUrl,  String gender,  DateTime dayOfBirth)  $default,) {final _that = this;
 switch (_that) {
 case _ProfileModel():
 return $default(_that.userId,_that.userName,_that.avatarUrl,_that.gender,_that.dayOfBirth);case _:
@@ -198,7 +198,7 @@ return $default(_that.userId,_that.userName,_that.avatarUrl,_that.gender,_that.d
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String userId,  String userName,  String? avatarUrl,  String? gender,  DateTime dayOfBirth)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String userId,  String userName,  String? avatarUrl,  String gender,  DateTime dayOfBirth)?  $default,) {final _that = this;
 switch (_that) {
 case _ProfileModel() when $default != null:
 return $default(_that.userId,_that.userName,_that.avatarUrl,_that.gender,_that.dayOfBirth);case _:
@@ -213,13 +213,13 @@ return $default(_that.userId,_that.userName,_that.avatarUrl,_that.gender,_that.d
 @JsonSerializable()
 
 class _ProfileModel implements ProfileModel {
-  const _ProfileModel({required this.userId, required this.userName, this.avatarUrl, this.gender, required this.dayOfBirth});
+  const _ProfileModel({required this.userId, required this.userName, this.avatarUrl, required this.gender, required this.dayOfBirth});
   factory _ProfileModel.fromJson(Map<String, dynamic> json) => _$ProfileModelFromJson(json);
 
 @override final  String userId;
 @override final  String userName;
 @override final  String? avatarUrl;
-@override final  String? gender;
+@override final  String gender;
 @override final  DateTime dayOfBirth;
 
 /// Create a copy of ProfileModel
@@ -255,7 +255,7 @@ abstract mixin class _$ProfileModelCopyWith<$Res> implements $ProfileModelCopyWi
   factory _$ProfileModelCopyWith(_ProfileModel value, $Res Function(_ProfileModel) _then) = __$ProfileModelCopyWithImpl;
 @override @useResult
 $Res call({
- String userId, String userName, String? avatarUrl, String? gender, DateTime dayOfBirth
+ String userId, String userName, String? avatarUrl, String gender, DateTime dayOfBirth
 });
 
 
@@ -272,13 +272,13 @@ class __$ProfileModelCopyWithImpl<$Res>
 
 /// Create a copy of ProfileModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? userName = null,Object? avatarUrl = freezed,Object? gender = freezed,Object? dayOfBirth = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? userName = null,Object? avatarUrl = freezed,Object? gender = null,Object? dayOfBirth = null,}) {
   return _then(_ProfileModel(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,userName: null == userName ? _self.userName : userName // ignore: cast_nullable_to_non_nullable
 as String,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
-as String?,gender: freezed == gender ? _self.gender : gender // ignore: cast_nullable_to_non_nullable
-as String?,dayOfBirth: null == dayOfBirth ? _self.dayOfBirth : dayOfBirth // ignore: cast_nullable_to_non_nullable
+as String?,gender: null == gender ? _self.gender : gender // ignore: cast_nullable_to_non_nullable
+as String,dayOfBirth: null == dayOfBirth ? _self.dayOfBirth : dayOfBirth // ignore: cast_nullable_to_non_nullable
 as DateTime,
   ));
 }

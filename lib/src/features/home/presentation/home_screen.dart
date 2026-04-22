@@ -1,3 +1,4 @@
+import 'package:app_demo/configs/routes/app_router.dart';
 import 'package:app_demo/src/shared/constants/images_constants.dart';
 import 'package:app_demo/src/shared/widgets/bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
+import '../../../shared/widgets/my_avatar.dart';
 import '../../flashcard/presentation/screen/flashcard_screen.dart';
 import '../../statistics/presentation/screen/statistics_screen.dart';
 import '../../topic/presentation/screen/topic_srceen.dart';
@@ -22,13 +25,16 @@ class HomeScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: color.onPrimary,
-        toolbarHeight: 70.h,
+        toolbarHeight: 80.h,
         titleSpacing: 0,
         elevation: 1,
+        leadingWidth: 70.w,
         leading: Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            
+          margin: EdgeInsets.only(left: 16.w),
+          child: MyAvatar(
+            userAvatar: '', 
+            size: 40.r,
+            onTap: () => context.push(AppRouter.profilePath),
           ),
         ),
         actions: [
@@ -60,3 +66,4 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 }
+

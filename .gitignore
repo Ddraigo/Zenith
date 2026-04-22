@@ -55,3 +55,4 @@ app.*.map.json
 lib/firebase_options.dart
 google-services.json
 web/firebase-messaging-sw.js
+README*.md

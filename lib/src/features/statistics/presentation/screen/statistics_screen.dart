@@ -116,7 +116,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
               error: (error, _) {
                 final msg = error is AppException
                     ? MyHelper.getErrorMessage(error)
-                    : 'Đã xảy ra lỗi: $error';
+                    : 'Đã xảy ra lỗi';
                 return Center(child: Text(msg));
               },
               loading: () => const Center(child: CircularProgressIndicator()),

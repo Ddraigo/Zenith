@@ -163,8 +163,9 @@ class QuizScreen extends ConsumerWidget {
                     assignedDate: todayProgress.assignedDate,
                   );
                   if (todayProgress.userId.isNotEmpty &&
-                      todayProgress.topicId != 0)
+                      todayProgress.topicId != 0) {
                     context.push(AppRouter.quizAttempPath, extra: args);
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(

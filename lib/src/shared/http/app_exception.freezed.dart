@@ -55,7 +55,7 @@ extension AppExceptionPatterns on AppException {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AppExceptionConnectivity value)?  connectivity,TResult Function( AppExceptionUnauthorized value)?  unauthorized,TResult Function( _AppExceptionErrorMessage value)?  errorWithMessage,TResult Function( _AppExceptionErrorUnknown value)?  unknown,TResult Function( _AppExceptionBadRequest value)?  badRequest,TResult Function( _AppExceptionServer value)?  server,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AppExceptionConnectivity value)?  connectivity,TResult Function( AppExceptionUnauthorized value)?  unauthorized,TResult Function( _AppExceptionErrorMessage value)?  errorWithMessage,TResult Function( _AppExceptionErrorUnknown value)?  unknown,TResult Function( _AppExceptionBadRequest value)?  badRequest,TResult Function( _AppExceptionServer value)?  server,TResult Function( _AppExceptionPermissionDenied value)?  permissionDenied,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case AppExceptionConnectivity() when connectivity != null:
@@ -64,7 +64,8 @@ return unauthorized(_that);case _AppExceptionErrorMessage() when errorWithMessag
 return errorWithMessage(_that);case _AppExceptionErrorUnknown() when unknown != null:
 return unknown(_that);case _AppExceptionBadRequest() when badRequest != null:
 return badRequest(_that);case _AppExceptionServer() when server != null:
-return server(_that);case _:
+return server(_that);case _AppExceptionPermissionDenied() when permissionDenied != null:
+return permissionDenied(_that);case _:
   return orElse();
 
 }
@@ -82,7 +83,7 @@ return server(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AppExceptionConnectivity value)  connectivity,required TResult Function( AppExceptionUnauthorized value)  unauthorized,required TResult Function( _AppExceptionErrorMessage value)  errorWithMessage,required TResult Function( _AppExceptionErrorUnknown value)  unknown,required TResult Function( _AppExceptionBadRequest value)  badRequest,required TResult Function( _AppExceptionServer value)  server,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AppExceptionConnectivity value)  connectivity,required TResult Function( AppExceptionUnauthorized value)  unauthorized,required TResult Function( _AppExceptionErrorMessage value)  errorWithMessage,required TResult Function( _AppExceptionErrorUnknown value)  unknown,required TResult Function( _AppExceptionBadRequest value)  badRequest,required TResult Function( _AppExceptionServer value)  server,required TResult Function( _AppExceptionPermissionDenied value)  permissionDenied,}){
 final _that = this;
 switch (_that) {
 case AppExceptionConnectivity():
@@ -91,7 +92,8 @@ return unauthorized(_that);case _AppExceptionErrorMessage():
 return errorWithMessage(_that);case _AppExceptionErrorUnknown():
 return unknown(_that);case _AppExceptionBadRequest():
 return badRequest(_that);case _AppExceptionServer():
-return server(_that);case _:
+return server(_that);case _AppExceptionPermissionDenied():
+return permissionDenied(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -108,7 +110,7 @@ return server(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AppExceptionConnectivity value)?  connectivity,TResult? Function( AppExceptionUnauthorized value)?  unauthorized,TResult? Function( _AppExceptionErrorMessage value)?  errorWithMessage,TResult? Function( _AppExceptionErrorUnknown value)?  unknown,TResult? Function( _AppExceptionBadRequest value)?  badRequest,TResult? Function( _AppExceptionServer value)?  server,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AppExceptionConnectivity value)?  connectivity,TResult? Function( AppExceptionUnauthorized value)?  unauthorized,TResult? Function( _AppExceptionErrorMessage value)?  errorWithMessage,TResult? Function( _AppExceptionErrorUnknown value)?  unknown,TResult? Function( _AppExceptionBadRequest value)?  badRequest,TResult? Function( _AppExceptionServer value)?  server,TResult? Function( _AppExceptionPermissionDenied value)?  permissionDenied,}){
 final _that = this;
 switch (_that) {
 case AppExceptionConnectivity() when connectivity != null:
@@ -117,7 +119,8 @@ return unauthorized(_that);case _AppExceptionErrorMessage() when errorWithMessag
 return errorWithMessage(_that);case _AppExceptionErrorUnknown() when unknown != null:
 return unknown(_that);case _AppExceptionBadRequest() when badRequest != null:
 return badRequest(_that);case _AppExceptionServer() when server != null:
-return server(_that);case _:
+return server(_that);case _AppExceptionPermissionDenied() when permissionDenied != null:
+return permissionDenied(_that);case _:
   return null;
 
 }
@@ -134,7 +137,7 @@ return server(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  connectivity,TResult Function()?  unauthorized,TResult Function( String message)?  errorWithMessage,TResult Function()?  unknown,TResult Function( String message)?  badRequest,TResult Function( String message)?  server,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  connectivity,TResult Function()?  unauthorized,TResult Function( String message)?  errorWithMessage,TResult Function()?  unknown,TResult Function( String message)?  badRequest,TResult Function( String message)?  server,TResult Function( String message)?  permissionDenied,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case AppExceptionConnectivity() when connectivity != null:
 return connectivity();case AppExceptionUnauthorized() when unauthorized != null:
@@ -142,7 +145,8 @@ return unauthorized();case _AppExceptionErrorMessage() when errorWithMessage != 
 return errorWithMessage(_that.message);case _AppExceptionErrorUnknown() when unknown != null:
 return unknown();case _AppExceptionBadRequest() when badRequest != null:
 return badRequest(_that.message);case _AppExceptionServer() when server != null:
-return server(_that.message);case _:
+return server(_that.message);case _AppExceptionPermissionDenied() when permissionDenied != null:
+return permissionDenied(_that.message);case _:
   return orElse();
 
 }
@@ -160,7 +164,7 @@ return server(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  connectivity,required TResult Function()  unauthorized,required TResult Function( String message)  errorWithMessage,required TResult Function()  unknown,required TResult Function( String message)  badRequest,required TResult Function( String message)  server,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  connectivity,required TResult Function()  unauthorized,required TResult Function( String message)  errorWithMessage,required TResult Function()  unknown,required TResult Function( String message)  badRequest,required TResult Function( String message)  server,required TResult Function( String message)  permissionDenied,}) {final _that = this;
 switch (_that) {
 case AppExceptionConnectivity():
 return connectivity();case AppExceptionUnauthorized():
@@ -168,7 +172,8 @@ return unauthorized();case _AppExceptionErrorMessage():
 return errorWithMessage(_that.message);case _AppExceptionErrorUnknown():
 return unknown();case _AppExceptionBadRequest():
 return badRequest(_that.message);case _AppExceptionServer():
-return server(_that.message);case _:
+return server(_that.message);case _AppExceptionPermissionDenied():
+return permissionDenied(_that.message);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -185,7 +190,7 @@ return server(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  connectivity,TResult? Function()?  unauthorized,TResult? Function( String message)?  errorWithMessage,TResult? Function()?  unknown,TResult? Function( String message)?  badRequest,TResult? Function( String message)?  server,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  connectivity,TResult? Function()?  unauthorized,TResult? Function( String message)?  errorWithMessage,TResult? Function()?  unknown,TResult? Function( String message)?  badRequest,TResult? Function( String message)?  server,TResult? Function( String message)?  permissionDenied,}) {final _that = this;
 switch (_that) {
 case AppExceptionConnectivity() when connectivity != null:
 return connectivity();case AppExceptionUnauthorized() when unauthorized != null:
@@ -193,7 +198,8 @@ return unauthorized();case _AppExceptionErrorMessage() when errorWithMessage != 
 return errorWithMessage(_that.message);case _AppExceptionErrorUnknown() when unknown != null:
 return unknown();case _AppExceptionBadRequest() when badRequest != null:
 return badRequest(_that.message);case _AppExceptionServer() when server != null:
-return server(_that.message);case _:
+return server(_that.message);case _AppExceptionPermissionDenied() when permissionDenied != null:
+return permissionDenied(_that.message);case _:
   return null;
 
 }
@@ -487,6 +493,72 @@ class __$AppExceptionServerCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
   return _then(_AppExceptionServer(
+null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _AppExceptionPermissionDenied implements AppException {
+  const _AppExceptionPermissionDenied(this.message);
+  
+
+ final  String message;
+
+/// Create a copy of AppException
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AppExceptionPermissionDeniedCopyWith<_AppExceptionPermissionDenied> get copyWith => __$AppExceptionPermissionDeniedCopyWithImpl<_AppExceptionPermissionDenied>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppExceptionPermissionDenied&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'AppException.permissionDenied(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AppExceptionPermissionDeniedCopyWith<$Res> implements $AppExceptionCopyWith<$Res> {
+  factory _$AppExceptionPermissionDeniedCopyWith(_AppExceptionPermissionDenied value, $Res Function(_AppExceptionPermissionDenied) _then) = __$AppExceptionPermissionDeniedCopyWithImpl;
+@useResult
+$Res call({
+ String message
+});
+
+
+
+
+}
+/// @nodoc
+class __$AppExceptionPermissionDeniedCopyWithImpl<$Res>
+    implements _$AppExceptionPermissionDeniedCopyWith<$Res> {
+  __$AppExceptionPermissionDeniedCopyWithImpl(this._self, this._then);
+
+  final _AppExceptionPermissionDenied _self;
+  final $Res Function(_AppExceptionPermissionDenied) _then;
+
+/// Create a copy of AppException
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(_AppExceptionPermissionDenied(
 null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,
   ));

@@ -1,4 +1,3 @@
-
 import 'dart:developer' as developer;
 
 import 'package:app_demo/src/core/service/device_service.dart';
@@ -32,9 +31,9 @@ class AuthService {
       }
 
       await _tokenService.saveToken(Token(token: session.accessToken));
-      
+
       final userId = _client.auth.currentUser?.id;
-      if(userId == null){
+      if (userId == null) {
         throw const AppException.errorWithMessage('User id null');
       }
 
@@ -54,7 +53,12 @@ class AuthService {
       }
     } on AppException {
       rethrow;
-    } catch (_) {
+    } catch (e, st) {
+      developer.log(
+        'AuthService: login unexpected error',
+        error: e,
+        stackTrace: st,
+      );
       throw const AppException.unknown();
     }
   }
@@ -86,13 +90,13 @@ class AuthService {
       if (token != null) {
         await _tokenService.saveToken(Token(token: token));
       }
-      
+
       final vapidKey = dotenv.env['FCM_VAPID_KEY'];
       try {
         await _userDevice.setupFcmToken(
           userId: user.id,
           vapidKey: vapidKey,
-          subscribeToRefresh: false, 
+          subscribeToRefresh: false,
         );
       } catch (e) {
         developer.log(
@@ -101,8 +105,15 @@ class AuthService {
           stackTrace: StackTrace.current,
         );
       }
-    } catch (e) {
-      throw AppException.errorWithMessage(e.toString());
+    } on AppException {
+      rethrow;
+    } catch (e, st) {
+      developer.log(
+        'AuthService: signUp unexpected error',
+        error: e,
+        stackTrace: st,
+      );
+      throw const AppException.unknown();
     }
   }
 

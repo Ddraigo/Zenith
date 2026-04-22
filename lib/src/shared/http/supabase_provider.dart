@@ -1,5 +1,7 @@
 
 
+import 'dart:developer' as developer;
+
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -48,7 +50,22 @@ class SupabaseErrorHandle {
     }
 
     if(error is PostgrestException){
-      return AppException.errorWithMessage(error.message);
+
+      if(error.code == '42501' ){
+        return AppException.permissionDenied('Không có quyền truy cập');
+      }
+      if(error.code == '23505' || error.code == '23514'){
+        return AppException.errorWithMessage('Dữ liệu không hợp lệ');
+      }
+      if(error.code == '23502'){
+        return AppException.errorWithMessage('Thiếu thông tin bắt buộc');
+      }
+      if(error.code == 'PGRST116'){
+        return AppException.errorWithMessage('Không tìm thấy dữ liệu');
+      }
+      developer.log('PostgrestException: code=${error.code}, message=${error.message}', error: error);
+
+      return AppException.errorWithMessage('Xảy ra lỗi, vui lòng thử lại');
     }
 
     return const AppException.unknown();

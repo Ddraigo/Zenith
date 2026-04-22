@@ -13,7 +13,8 @@ class TextFieldCustom extends StatelessWidget {
     this.onChanged,
     required this.controller,
     required this.focusNode,
-    this.errorText,
+    this.errorText, 
+    this.isEnabled = true,
   });
 
   final String icon;
@@ -24,6 +25,7 @@ class TextFieldCustom extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final TextEditingController controller;
   final String? errorText;
+  final bool isEnabled;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +57,7 @@ class TextFieldCustom extends StatelessWidget {
         return TextField(
           controller: controller,
           focusNode: focusNode,
-          
+          enabled: isEnabled,
           obscureText: obscureText,
           onChanged: onChanged,
           style: MyTextStyle.poppinsMedium400,

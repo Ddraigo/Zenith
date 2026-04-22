@@ -23,7 +23,7 @@ abstract class ProfileDTO with _$ProfileDTO{
     required DateTime dayOfBirth,
 
     @JsonKey(name: 'created_at')
-    required DateTime createdAt,
+    DateTime? createdAt,
 
     @JsonKey(name: 'updated_at')
     required DateTime updatedAt,

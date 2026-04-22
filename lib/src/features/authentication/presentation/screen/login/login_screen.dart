@@ -11,6 +11,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../../shared/utils/helper_function.dart';
+
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
@@ -45,19 +47,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           });
         }, 
         loading: (){},
-        error: (error, stack) {
-          final message = (error is AppException) 
-            ? error.when(
-                connectivity: () => 'Lỗi kết nối. Vui lòng kiểm tra internet.',
-                unauthorized: () => 'Không được phép truy cập.',
-                errorWithMessage: (msg) => msg,
-                unknown: () => 'Có lỗi xảy ra. Vui lòng thử lại.',
-                badRequest: (msg) => msg, 
-                server: (msg) => msg, 
-              )
-            : error.toString();
-          
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+        error: (error, _) {
+              final msg = error is AppException
+                  ? MyHelper.getErrorMessage(error)
+                  : 'Đã xảy ra lỗi';
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
         },
       );
     });

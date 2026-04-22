@@ -12,6 +12,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../../configs/routes/app_router.dart';
+import '../../../../../shared/utils/helper_function.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
@@ -29,7 +30,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
   final _rePasswordFocusNode = FocusNode();
-  
+  late final ProviderSubscription<AsyncValue<void>> _signUpSubscription;
 
   DateTime? _selectedDate;
   Gender _selectedGender = Gender.none;
@@ -39,7 +40,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   void initState() {
     isSubmit = false;
     super.initState();
-    ref.listenManual<AsyncValue<void>>(signUpProvider, (prev, next) {
+    _signUpSubscription = ref.listenManual<AsyncValue<void>>(signUpProvider, (prev, next) {
       next.when(
         data: (_) {
           ScaffoldMessenger.of(
@@ -51,19 +52,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           });
         },
         loading: () {},
-        error: (error, stack) {
-          final message = (error is AppException) 
-            ? error.when(
-                connectivity: () => 'Lỗi kết nối. Vui lòng kiểm tra internet.',
-                unauthorized: () => 'Không được phép truy cập.',
-                errorWithMessage: (msg) => msg,
-                unknown: () => 'Có lỗi xảy ra. Vui lòng thử lại.',
-                badRequest: (msg) => msg, 
-                server: (msg) => msg, 
-              )
-            : error.toString();
-          
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+        error: (error, _) {
+              final msg = error is AppException
+                  ? MyHelper.getErrorMessage(error)
+                  : 'Đã xảy ra lỗi';
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
         },
       );
     });
@@ -71,6 +64,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
   @override
   void dispose() {
+    _signUpSubscription.close();
     _fullNameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
@@ -100,7 +94,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   Widget build(BuildContext context) {
     final asyncState = ref.watch(signUpProvider);
     final colorScheme = Theme.of(context).colorScheme;
-    
 
     return Scaffold(
       body: SafeArea(
@@ -168,25 +161,30 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           hintText: 'Họ và tên',
           focusNode: _fullNameFocusNode,
           controller: _fullNameController,
-          errorText: isSubmit ? notifier.validateUsername(_fullNameController.text) : null,
+          errorText: isSubmit
+              ? notifier.validateUsername(_fullNameController.text)
+              : null,
         ),
         DatePickerCustom(
           initialDate: _selectedDate,
           hintText: 'Ngày sinh',
           onChanged: (date) => setState(() => _selectedDate = date),
-          errorText: isSubmit ? notifier.validateDayOfBirth(_selectedDate ) : null,
+          errorText: isSubmit
+              ? notifier.validateDayOfBirth(_selectedDate)
+              : null,
         ),
         DropdownButtonFormField<Gender?>(
           value: _selectedGender == Gender.none ? null : _selectedGender,
           decoration: const InputDecoration(hintText: 'Giới tính'),
           items: Gender.values
-              .where((g) => g != Gender.none)
               .map(
                 (g) => DropdownMenuItem<Gender?>(
                   value: g,
-                  child: Text(
-                      g == Gender.male ? 'Nam' : 'Nữ'
-                    ),
+                  child: Text(switch (g) {
+                    Gender.none => 'Khác',
+                    Gender.male => 'Nam',
+                    Gender.female => 'Nữ',
+                  }),
                 ),
               )
               .toList(),
@@ -199,7 +197,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           hintText: 'Địa chỉ Email',
           focusNode: _emailFocusNode,
           controller: _emailController,
-          errorText: isSubmit ? notifier.validateEmail(_emailController.text) : null
+          errorText: isSubmit
+              ? notifier.validateEmail(_emailController.text)
+              : null,
         ),
         TextFieldCustom(
           icon: MyIcons.lockIcon,
@@ -207,7 +207,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           focusNode: _passwordFocusNode,
           obscureText: true,
           controller: _passwordController,
-          errorText: isSubmit ? notifier.validatePassword(_passwordController.text) : null,
+          errorText: isSubmit
+              ? notifier.validatePassword(_passwordController.text)
+              : null,
         ),
         TextFieldCustom(
           icon: MyIcons.lockIcon,
@@ -215,7 +217,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           focusNode: _rePasswordFocusNode,
           obscureText: true,
           controller: _rePasswordController,
-          errorText: isSubmit ? notifier.validateConfirmPassword(_passwordController.text, _rePasswordController.text) : null,
+          errorText: isSubmit
+              ? notifier.validateConfirmPassword(
+                  _passwordController.text,
+                  _rePasswordController.text,
+                )
+              : null,
         ),
         asyncState.when(
           data: (_) {

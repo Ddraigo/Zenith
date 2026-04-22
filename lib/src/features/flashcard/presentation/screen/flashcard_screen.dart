@@ -9,6 +9,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../../shared/http/app_exception.dart';
+import '../../../../shared/utils/helper_function.dart';
+
 class FlashcardScreen extends ConsumerWidget {
   const FlashcardScreen({super.key});
 
@@ -77,7 +80,12 @@ class FlashcardScreen extends ConsumerWidget {
           ),
         );
       },
-      error: (e, _) => Center(child: Text('Lỗi: $e')),
+      error: (error, _) {
+        final msg = error is AppException
+            ? MyHelper.getErrorMessage(error)
+            : 'Đã xảy ra lỗi';
+        return Center(child: Text(msg));
+      },
       loading: () => const Center(child: CircularProgressIndicator()),
     );
   }

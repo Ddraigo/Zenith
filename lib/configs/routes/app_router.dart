@@ -59,9 +59,9 @@ final GoRouter appRouter = GoRouter(
       path: AppRouter.quizAttempPath,
       builder: (context, state){
         final extra = state.extra ;
-        if(extra is! QuizAttemptArgs){
-          print('Thiếu dữ liệu trong QuizAttemptArgs');
-        }
+        // if(extra is! QuizAttemptArgs){
+        //   print('Thiếu dữ liệu trong QuizAttemptArgs');
+        // }
         return QuizAttempScreen(arg: extra as QuizAttemptArgs);
       } 
     ),
