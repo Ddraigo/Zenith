@@ -8,23 +8,13 @@ part of 'shared_flashcard_notifier.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Resolve topicId thực tế từ selectedTopicId
-/// - Nếu selectedTopicId > 0 → trả về nó
-/// - Nếu selectedTopicId = 0 → lấy từ daily hoặc topic random
 
 @ProviderFor(streakDay)
 final streakDayProvider = StreakDayProvider._();
 
-/// Resolve topicId thực tế từ selectedTopicId
-/// - Nếu selectedTopicId > 0 → trả về nó
-/// - Nếu selectedTopicId = 0 → lấy từ daily hoặc topic random
-
 final class StreakDayProvider
     extends $FunctionalProvider<AsyncValue<int>, int, FutureOr<int>>
     with $FutureModifier<int>, $FutureProvider<int> {
-  /// Resolve topicId thực tế từ selectedTopicId
-  /// - Nếu selectedTopicId > 0 → trả về nó
-  /// - Nếu selectedTopicId = 0 → lấy từ daily hoặc topic random
   StreakDayProvider._()
     : super(
         from: null,

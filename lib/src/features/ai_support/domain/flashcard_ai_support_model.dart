@@ -10,9 +10,9 @@ abstract class FlashcardAiSupportModel with _$FlashcardAiSupportModel{
         required List<String> commonPhrases,
         required List<String> synonyms,
         @Default([])
-        List<String>? antonyms,
+        List<String> antonyms,
         @Default('')
-        String? memoryTip,
+        String memoryTip,
   }) = _FlashcardAiSupportModel;
 }
 
@@ -20,8 +20,8 @@ abstract class FlashcardAiSupportModel with _$FlashcardAiSupportModel{
 abstract class ExampleItemModel with _$ExampleItemModel{
   const factory ExampleItemModel({
     @Default('')
-    String? en,
+    String en,
     @Default('')
-    String? vi,
+    String vi,
   }) = _ExampleItemModel;
 }

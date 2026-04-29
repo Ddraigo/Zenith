@@ -11,7 +11,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../../shared/utils/helper_function.dart';
+import '../../../../../shared/utils/snackbar_helper.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -35,9 +35,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     _authSubscription = ref.listenManual<AsyncValue<void>>(authProvider, (prev, next){
       next.when(
         data: (_){
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar( const SnackBar(content: Text('Đăng nhập thành công!')));
+          // ScaffoldMessenger.of(
+          //   context,
+          // ).showSnackBar( const SnackBar(content: Text('Đăng nhập thành công!')));
           _clearForm();
 
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -48,11 +48,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         }, 
         loading: (){},
         error: (error, _) {
-              final msg = error is AppException
-                  ? MyHelper.getErrorMessage(error)
-                  : 'Đã xảy ra lỗi';
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-        },
+  if (error is AppException) {
+    SnackBarHelper.showError(context, error);
+  } else {
+    SnackBarHelper.showWarning(context, 'Đã xảy ra lỗi');
+  }
+},
       );
     });
   }
@@ -127,35 +128,35 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       SizedBox(height: 24.h),
                       _buildformLogin(loginState),
                       SizedBox(height: 24.h),
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        spacing: 8,
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: Divider(
-                              thickness: 1,
-                              color: colorScheme.outline,
-                            ),
-                          ),
-                          Text(
-                            'HOẶC',
-                            style: MyTextStyle.poppinsMedium700.copyWith(
-                              color: colorScheme.outline.withValues(alpha: 0.5),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Divider(
-                              thickness: 1,
-                              color: colorScheme.outline,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 24.h),
-                      _buildThirdPartyLogin(),
-                      SizedBox(height: 24.h),
+                      // Row(
+                      //   mainAxisSize: MainAxisSize.max,
+                      //   spacing: 8,
+                      //   children: [
+                      //     Expanded(
+                      //       flex: 1,
+                      //       child: Divider(
+                      //         thickness: 1,
+                      //         color: colorScheme.outline,
+                      //       ),
+                      //     ),
+                      //     Text(
+                      //       'HOẶC',
+                      //       style: MyTextStyle.poppinsMedium700.copyWith(
+                      //         color: colorScheme.outline.withValues(alpha: 0.5),
+                      //       ),
+                      //     ),
+                      //     Expanded(
+                      //       flex: 1,
+                      //       child: Divider(
+                      //         thickness: 1,
+                      //         color: colorScheme.outline,
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
+                      // SizedBox(height: 24.h),
+                      // _buildThirdPartyLogin(),
+                      // SizedBox(height: 24.h),
                       _buildForgotPassword(colorScheme),
                       _buildRegister(colorScheme),
                     ],

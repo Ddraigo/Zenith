@@ -1,6 +1,5 @@
 
 class Format {
-  static const Duration _vietnamOffset = Duration(hours: 7);
 
   static String formatDMY(DateTime? date) {
     if (date == null) return '';
@@ -15,9 +14,9 @@ class Format {
   }
 
   static DateTime normalizeDate(DateTime? value) {
-    final date = (value ?? DateTime.now()).toUtc().add(_vietnamOffset);
-    return DateTime(date.year, date.month, date.day);
-  }
+  final local = (value ?? DateTime.now()).toLocal();
+  return DateTime(local.year, local.month, local.day);
+}
 
   static String formatYMD(DateTime? date) {
     if (date == null) return '';

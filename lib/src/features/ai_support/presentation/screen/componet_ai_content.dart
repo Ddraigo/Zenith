@@ -70,7 +70,7 @@ Widget commonPhrases(ColorScheme color, List<String> commonPhrases) {
   );
 }
 
-Widget exmaple(List<ExampleItemModel> examples, ColorScheme color) {
+Widget example(List<ExampleItemModel> examples, ColorScheme color) {
   return Column(
     spacing: 8.h,
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,7 +189,7 @@ Widget antonyms(FlashcardAiSupportModel data, ColorScheme color) {
       Wrap(
         spacing: 4.h,
         runSpacing: 4.h,
-        children: data.antonyms!
+        children: data.antonyms
             .map((item) => buildItemChip(item, color, Colors.purple.shade100))
             .toList(),
       ),
@@ -270,7 +270,7 @@ Widget whenToUse(ColorScheme color, FlashcardAiSupportModel data) {
   );
 }
 
-Widget menoryTip(ColorScheme color, String memoryTip) {
+Widget memoryTip(ColorScheme color, String memoryTip) {
   return Column(
     spacing: 8.h,
     children: [

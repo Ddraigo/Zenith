@@ -1,8 +1,11 @@
 import 'dart:developer' as developer;
 
 import 'package:app_demo/src/core/provider/current_user_id_notifire.dart';
+import 'package:app_demo/src/features/profile/data/profile_dto.dart';
 import 'package:app_demo/src/features/profile/data/profile_repository.dart';
 import 'package:app_demo/src/features/profile/domain/profile_model.dart';
+import 'package:app_demo/src/features/statistics/data/repository/user_stats_repo.dart';
+import 'package:app_demo/src/features/statistics/domain/user_stats_model.dart';
 import 'package:app_demo/src/shared/constants/format.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:dart_either/dart_either.dart';
@@ -14,14 +17,26 @@ class ProfileService {
   final Ref _ref;
   ProfileService(this._ref);
   late final _repo = _ref.read(profileRepositoryProvider);
+  late final _userStatsRepo = _ref.read(userStatsRepoProvider);
   String get _currentUserId => _ref.read(currentUserIdProvider);
 
-  Future<ProfileModel> createNewProfile(ProfileModel profile) async {
+  Future<bool> hasProfile(String userId) async {
+    if (userId.isEmpty) {
+      return false;
+    }
+    return _repo.hasProfile(userId: userId);
+  }
+
+  Future<Either<AppException, ProfileModel>> createNewProfile(
+    ProfileModel profile,
+  ) async {
     if (profile.userId.isEmpty) {
-      throw AppException.errorWithMessage('$profile.userId is null');
+      return Either.left(
+        AppException.errorWithMessage('Không tìm thấy id người dùng'),
+      );
     }
 
-    await _repo.createProfile(
+    final result = await _repo.createProfile(
       userId: profile.userId,
       userName: profile.userName,
       gender: profile.gender,
@@ -29,7 +44,29 @@ class ProfileService {
       avatarUrl: profile.avatarUrl ?? '',
     );
 
-    return profile;
+    return result.fold(
+      ifLeft: (e) {
+        developer.log('ProfileService: createNewProfile failed', error: e);
+        return e.left();
+      },
+      ifRight: (created) async {
+        // Initialize user_stats once after profile creation (idempotent upsert).
+        final initResult = await _userStatsRepo.updatedUserStats(
+          userStats: UserStatsModel(
+            userId: created.userId,
+            streakCount: 0,
+            totalPoints: 0,
+          ),
+        );
+        return initResult.fold(
+          ifLeft: (e) {
+            developer.log('ProfileService: init user_stats failed', error: e);
+            return e.left();
+          },
+          ifRight: (_) => created.right(),
+        );
+      },
+    );
   }
 
   Future<Either<AppException, ProfileModel>> getUserProfile() async {
@@ -42,7 +79,12 @@ class ProfileService {
         developer.log('ProfileService: getUserProfile failed', error: e);
         return e.left();
       },
-      ifRight: (data) => data.right(),
+      ifRight: (data) {
+        if (data == null) {
+          return AppException.badRequest('Hồ sơ cá nhân chưa được tạo.').left();
+        }
+        return data.toDomain().right();
+      },
     );
   }
 

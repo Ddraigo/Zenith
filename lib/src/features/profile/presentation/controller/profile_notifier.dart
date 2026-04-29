@@ -1,8 +1,10 @@
 import 'dart:developer' as developer;
 
+import 'package:app_demo/src/core/provider/current_user_id_notifire.dart';
 import 'package:app_demo/src/features/profile/application/profile_service.dart';
 import 'package:app_demo/src/features/profile/domain/profile_model.dart';
 import 'package:app_demo/src/shared/utils/validator.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -12,6 +14,11 @@ import '../../../../shared/http/app_exception.dart';
 part 'profile_notifier.g.dart';
 
 final updateErrorProvider = StateProvider<AppException?>((ref) => null);
+
+final hasProfileProvider = FutureProvider<bool>((ref) async {
+  final userId = ref.watch(currentUserIdProvider);
+  return ref.read(profileServiceProvider).hasProfile(userId);
+});
 
 
 class ProfileFormState {
@@ -28,10 +35,43 @@ class ProfileFormState {
 
 @riverpod
 class ProfileNotifier extends _$ProfileNotifier {
+  static const String missingProfileMessage = 'Hồ sơ cá nhân chưa được tạo.';
+
   @override
   Future<ProfileModel> build() async {
+    // keep provider alive to avoid frequent dispose/recreate fetches
+    try {
+      ref.keepAlive();
+    } catch (_) {}
+    developer.log('ProfileNotifier: build() called');
     final result = await ref.read(profileServiceProvider).getUserProfile();
-    return result.fold(ifLeft: (e) => throw e, ifRight: (profile) => profile);
+    return result.fold(
+      ifLeft: (e) => throw e,
+      ifRight: (profile) => profile,
+    );
+  }
+
+  Future<bool> createProfile(ProfileModel draft) async {
+    final formState = validateForm(
+      userName: draft.userName,
+      dayOfBirth: draft.dayOfBirth,
+    );
+
+    if (!formState.isValid) return false;
+
+    final result = await ref.read(profileServiceProvider).createNewProfile(draft);
+    return result.fold(
+      ifLeft: (e) {
+        ref.read(updateErrorProvider.notifier).state = e;
+        developer.log('createProfile failed', error: e);
+        return false;
+      },
+      ifRight: (created) {
+        ref.read(updateErrorProvider.notifier).state = null;
+        state = AsyncData(created);
+        return true;
+      },
+    );
   }
 
   Future<bool> submitUpdate(ProfileModel draft) async {

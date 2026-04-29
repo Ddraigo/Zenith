@@ -1,13 +1,17 @@
 import 'dart:developer' as developer;
 
 import 'package:app_demo/src/features/flashcard/application/user_daily_word_service.dart';
+import 'package:app_demo/src/features/profile/application/profile_service.dart';
 import 'package:app_demo/src/features/statistics/data/repository/user_stats_repo.dart';
 import 'package:app_demo/src/features/statistics/domain/user_stats_model.dart';
+import 'package:app_demo/src/shared/constants/format.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
+import 'package:app_demo/src/shared/utils/helper_function.dart';
 import 'package:dart_either/dart_either.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/provider/current_user_id_notifire.dart';
+import '../../../core/provider/reward_summary_provider.dart';
 
 final userStatsServiceProvider = Provider(StatisticsService.new);
 
@@ -15,13 +19,24 @@ class StatisticsService {
   final Ref _ref;
   StatisticsService(this._ref);
   late final _repo = _ref.read(userStatsRepoProvider);
-  late final _userDailyWordRepo = _ref.read(userDailyWordServiceProvider);
+  late final _userDailyWordRepo = _ref.read(userDailyWordServiceProvider); 
   String get _currentUserId => _ref.read(currentUserIdProvider);
+
+
 
   Future<Either<AppException, UserStatsModel>> handleDailyReward({
     required DateTime assignedDate,
     required int topicId,
   }) async {
+    if (_currentUserId.isEmpty) {
+      return AppException.badRequest('Thiếu thông tin người dùng.').left();
+    }
+
+    final hasProfile =
+        await _ref.read(profileServiceProvider).hasProfile(_currentUserId);
+    if (!hasProfile) {
+      return AppException.badRequest('Hồ sơ cá nhân chưa được tạo.').left();
+    }
     final userStatsResult = await _repo.fetchUserStats(userId: _currentUserId);
 
     return userStatsResult.fold(
@@ -49,7 +64,12 @@ class StatisticsService {
               return userStats.right();
             }
 
-            final today = assignedDate;
+            final today = Format.normalizeDate(DateTime.now());
+             // Only award if the quiz is from today
+            if (!MyHelper.sameDate(assignedDate, today)) {
+              return userStats.right();
+            }
+            
             final yesterday = today.subtract(const Duration(days: 1));
 
             final completeCount = dailyWords
@@ -66,20 +86,15 @@ class StatisticsService {
             // );
 
             if (!reached50) {
-              developer.log('handleDailyReward: skip because reached50=false');
+              // developer.log('handleDailyReward: skip because reached50=false');
               return userStats.right();
             }
 
-            bool sameDate(DateTime? a, DateTime? b) {
-              if (a == null || b == null) return false;
-              return a.year == b.year && a.month == b.month && a.day == b.day;
-            }
-
-            final pointsAwardedToday = sameDate(
+            final pointsAwardedToday = MyHelper.sameDate(
               userStats.lastPointsAwardedDate,
               today,
             );
-            final streakCountedToday = sameDate(
+            final streakCountedToday =  MyHelper.sameDate(
               userStats.lastStreakCountedDate,
               today,
             );
@@ -95,6 +110,7 @@ class StatisticsService {
             int totalPoints = userStats.totalPoints;
             int streakCount = userStats.streakCount;
             int pointAdded = 0;
+            bool streakReset = false;
 
             DateTime? lastLearnedDate = userStats.lastLearnedDate;
             DateTime? lastPointsAwardedDate = userStats.lastPointsAwardedDate;
@@ -112,9 +128,12 @@ class StatisticsService {
 
             if (!streakCountedToday) {
               final isContinue =
-                  lastLearnedDate != null && sameDate(lastLearnedDate, yesterday);
+                  lastLearnedDate != null &&  MyHelper.sameDate(lastLearnedDate, yesterday);
 
               streakCount = isContinue ? streakCount + 1 : 1;
+              if (!isContinue) {
+                streakReset = true;
+              }
               lastLearnedDate = today;
               lastStreakCountedDate = today;
 
@@ -133,21 +152,32 @@ class StatisticsService {
             final hasChanges =
                 pointAdded > 0 ||
                 streakCount != userStats.streakCount ||
-                !sameDate(lastLearnedDate, userStats.lastLearnedDate) ||
-                !sameDate(lastPointsAwardedDate, userStats.lastPointsAwardedDate) ||
-                !sameDate(lastStreakCountedDate, userStats.lastStreakCountedDate);
+                ! MyHelper.sameDate(lastLearnedDate, userStats.lastLearnedDate) ||
+                ! MyHelper.sameDate(lastPointsAwardedDate, userStats.lastPointsAwardedDate) ||
+                ! MyHelper.sameDate(lastStreakCountedDate, userStats.lastStreakCountedDate);
 
-            developer.log(
-              'handleDailyReward: computed update '
-              '(pointAdded=$pointAdded, totalPoints=$totalPoints, streakCount=$streakCount, hasChanges=$hasChanges)',
-            );
+            // developer.log(
+            //   'handleDailyReward: computed update '
+            //   '(pointAdded=$pointAdded, totalPoints=$totalPoints, streakCount=$streakCount, hasChanges=$hasChanges)',
+            // );
 
             if (!hasChanges) {
-              developer.log('handleDailyReward: skip because hasChanges=false');
+              // developer.log('handleDailyReward: skip because hasChanges=false');
               return userStats.right();
             }
 
-            return _repo.updatedUserStats(
+            final streakAdded =
+                streakCount > userStats.streakCount
+                    ? streakCount - userStats.streakCount
+                    : 0;
+            final rewardSummary = RewardSummary(
+              pointAdded: pointAdded,
+              streakAdded: streakAdded,
+              streakCount: streakCount,
+              streakReset: streakReset,
+            );
+
+            final updateResult = await _repo.updatedUserStats(
               userStats: UserStatsModel(
                 userId: _currentUserId,
                 streakCount: streakCount,
@@ -158,6 +188,27 @@ class StatisticsService {
                 lastStreakCountedDate: lastStreakCountedDate,
               ),
             );
+
+            return updateResult.fold(
+              ifLeft: (e) => e.left(),
+              ifRight: (updatedStats) {
+                // developer.log(
+                //   'handleDailyReward: setting reward '
+                //   '(pointAdded=${rewardSummary.pointAdded}, '
+                //   'streakAdded=${rewardSummary.streakAdded}, '
+                //   'streakReset=${rewardSummary.streakReset}, '
+                //   'hasReward=${rewardSummary.hasReward})',
+                // );
+                if (rewardSummary.hasReward) {
+                  _ref.read(rewardSummaryProvider.notifier).state =
+                      rewardSummary;
+                  // developer.log('handleDailyReward: reward set successfully');
+                } else {
+                  // developer.log('handleDailyReward: no reward to set');
+                }
+                return updatedStats.right();
+              },
+            );
           },
         );
       },
@@ -165,10 +216,20 @@ class StatisticsService {
   }
 
   Future<int> getStreakDay()async{
-    final streakDay = await _repo.fetchUserStats(userId: _currentUserId);
-    return streakDay.fold(
+    final result = await _repo.fetchUserStats(userId: _currentUserId);
+    return result.fold(
       ifLeft: (e) => throw e, 
-      ifRight: (streak) => streak.streakCount,
+      ifRight: (stats) {
+        final now = DateTime.now();
+        final today = Format.normalizeDate(now);
+        final yesterday = today.subtract(const Duration(days: 1));
+
+        if(stats.lastLearnedDate == null) return 0;
+        if(MyHelper.sameDate(stats.lastLearnedDate, today) || MyHelper.sameDate(stats.lastLearnedDate, yesterday)){
+          return stats.streakCount;
+        }
+        return 0;
+      },
     );
   }
 

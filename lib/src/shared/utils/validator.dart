@@ -59,11 +59,4 @@ class Validator {
     return true;
   }
 
-   static bool isQuotaMessage(String msg) {
-    final lower = msg.toLowerCase();
-    return lower.contains('quota') ||
-        lower.contains('resource_exhausted') ||
-        lower.contains('429') ||
-        lower.contains('rate limit');
-  }
 }

@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AISupportResultModel {
 
- bool get cached; String get source; FlashcardAiSupportModel get data; String? get phonetic; String? get audioUs;
+ bool get cached; TypeSource get source; FlashcardAiSupportModel get data; String get phonetic; String get audioUs;
 /// Create a copy of AISupportResultModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $AISupportResultModelCopyWith<$Res>  {
   factory $AISupportResultModelCopyWith(AISupportResultModel value, $Res Function(AISupportResultModel) _then) = _$AISupportResultModelCopyWithImpl;
 @useResult
 $Res call({
- bool cached, String source, FlashcardAiSupportModel data, String? phonetic, String? audioUs
+ bool cached, TypeSource source, FlashcardAiSupportModel data, String phonetic, String audioUs
 });
 
 
@@ -62,14 +62,14 @@ class _$AISupportResultModelCopyWithImpl<$Res>
 
 /// Create a copy of AISupportResultModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? cached = null,Object? source = null,Object? data = null,Object? phonetic = freezed,Object? audioUs = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? cached = null,Object? source = null,Object? data = null,Object? phonetic = null,Object? audioUs = null,}) {
   return _then(_self.copyWith(
 cached: null == cached ? _self.cached : cached // ignore: cast_nullable_to_non_nullable
 as bool,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
-as String,data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as FlashcardAiSupportModel,phonetic: freezed == phonetic ? _self.phonetic : phonetic // ignore: cast_nullable_to_non_nullable
-as String?,audioUs: freezed == audioUs ? _self.audioUs : audioUs // ignore: cast_nullable_to_non_nullable
-as String?,
+as TypeSource,data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as FlashcardAiSupportModel,phonetic: null == phonetic ? _self.phonetic : phonetic // ignore: cast_nullable_to_non_nullable
+as String,audioUs: null == audioUs ? _self.audioUs : audioUs // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 /// Create a copy of AISupportResultModel
@@ -163,7 +163,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool cached,  String source,  FlashcardAiSupportModel data,  String? phonetic,  String? audioUs)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool cached,  TypeSource source,  FlashcardAiSupportModel data,  String phonetic,  String audioUs)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AISupportResultModel() when $default != null:
 return $default(_that.cached,_that.source,_that.data,_that.phonetic,_that.audioUs);case _:
@@ -184,7 +184,7 @@ return $default(_that.cached,_that.source,_that.data,_that.phonetic,_that.audioU
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool cached,  String source,  FlashcardAiSupportModel data,  String? phonetic,  String? audioUs)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool cached,  TypeSource source,  FlashcardAiSupportModel data,  String phonetic,  String audioUs)  $default,) {final _that = this;
 switch (_that) {
 case _AISupportResultModel():
 return $default(_that.cached,_that.source,_that.data,_that.phonetic,_that.audioUs);case _:
@@ -204,7 +204,7 @@ return $default(_that.cached,_that.source,_that.data,_that.phonetic,_that.audioU
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool cached,  String source,  FlashcardAiSupportModel data,  String? phonetic,  String? audioUs)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool cached,  TypeSource source,  FlashcardAiSupportModel data,  String phonetic,  String audioUs)?  $default,) {final _that = this;
 switch (_that) {
 case _AISupportResultModel() when $default != null:
 return $default(_that.cached,_that.source,_that.data,_that.phonetic,_that.audioUs);case _:
@@ -223,10 +223,10 @@ class _AISupportResultModel implements AISupportResultModel {
   
 
 @override final  bool cached;
-@override final  String source;
+@override final  TypeSource source;
 @override final  FlashcardAiSupportModel data;
-@override@JsonKey() final  String? phonetic;
-@override@JsonKey() final  String? audioUs;
+@override@JsonKey() final  String phonetic;
+@override@JsonKey() final  String audioUs;
 
 /// Create a copy of AISupportResultModel
 /// with the given fields replaced by the non-null parameter values.
@@ -258,7 +258,7 @@ abstract mixin class _$AISupportResultModelCopyWith<$Res> implements $AISupportR
   factory _$AISupportResultModelCopyWith(_AISupportResultModel value, $Res Function(_AISupportResultModel) _then) = __$AISupportResultModelCopyWithImpl;
 @override @useResult
 $Res call({
- bool cached, String source, FlashcardAiSupportModel data, String? phonetic, String? audioUs
+ bool cached, TypeSource source, FlashcardAiSupportModel data, String phonetic, String audioUs
 });
 
 
@@ -275,14 +275,14 @@ class __$AISupportResultModelCopyWithImpl<$Res>
 
 /// Create a copy of AISupportResultModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? cached = null,Object? source = null,Object? data = null,Object? phonetic = freezed,Object? audioUs = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? cached = null,Object? source = null,Object? data = null,Object? phonetic = null,Object? audioUs = null,}) {
   return _then(_AISupportResultModel(
 cached: null == cached ? _self.cached : cached // ignore: cast_nullable_to_non_nullable
 as bool,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
-as String,data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as FlashcardAiSupportModel,phonetic: freezed == phonetic ? _self.phonetic : phonetic // ignore: cast_nullable_to_non_nullable
-as String?,audioUs: freezed == audioUs ? _self.audioUs : audioUs // ignore: cast_nullable_to_non_nullable
-as String?,
+as TypeSource,data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as FlashcardAiSupportModel,phonetic: null == phonetic ? _self.phonetic : phonetic // ignore: cast_nullable_to_non_nullable
+as String,audioUs: null == audioUs ? _self.audioUs : audioUs // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

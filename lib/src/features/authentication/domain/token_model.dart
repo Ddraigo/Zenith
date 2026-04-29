@@ -1,23 +1,11 @@
-class Token {
-  final String _token;
 
-  const Token({required String token}) : _token = token;
+import 'package:freezed_annotation/freezed_annotation.dart';
+part 'token_model.freezed.dart';
+@freezed
+abstract class Token with _$Token{
 
-  String get token => _token;
+  const factory Token({
+    required String token
+  }) = _Token;
 
-  factory Token.fromJson(Map<String, dynamic> data){
-
-    final token = data['token'];
-    
-    if(token is! String){
-      throw FormatException('Invalid JSON: required "token" field of type String in $data');
-    }
-    return Token(token: data['token']);
-  }
-
-  Map<String, dynamic> toJson(){
-    return{
-      'token' : token,
-    };
-  }
 }

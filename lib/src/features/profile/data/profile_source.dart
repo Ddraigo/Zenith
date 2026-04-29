@@ -18,7 +18,22 @@ class ProfileSource {
 
   ProfileSource(this._client);
 
-  Future<ProfileDTO> createProfile({
+  Future<bool> hasProfile({required String userId}) async {
+    try {
+      final data = await _client
+          .from('profiles')
+          .select('id')
+          .eq('id', userId)
+          .maybeSingle();
+      return data != null;
+    } catch (e, st) {
+      developer.log('ProfileSource: hasProfile error: $e');
+      developer.log('$st');
+      return false;
+    }
+  }
+
+  Future<Either<AppException, ProfileDTO>> createProfile({
     required String userId,
     required String userName,
     required String gender,
@@ -37,22 +52,23 @@ class ProfileSource {
           })
           .select()
           .single();
-      return ProfileDTO.fromJson(data);
+      return Either.right(ProfileDTO.fromJson(data));
     } catch (e) {
       throw SupabaseErrorHandle.handle(e);
     }
   }
 
-  Future<Either<AppException, ProfileDTO>> getUserProfile({
+  Future<Either<AppException, ProfileDTO?>> getUserProfile({
     required String userId,
   })async{
     try {
+      developer.log('ProfileSource: getUserProfile called for userId: $userId');
       final data = await _client
                         .from('profiles')
                         .select()
                         .eq('id', userId)
-                        .single();
-      return Either.right(ProfileDTO.fromJson(data));
+                        .maybeSingle();
+      return Either.right(data == null ? null : ProfileDTO.fromJson(data));
     } catch (e, st) {
       developer.log('ProfileSource: getUserProfile error: $e');
       developer.log('$st');

@@ -76,9 +76,9 @@ class ApiProvider {
         'accept': '*/*',
         'Content-Type': content,
       };
-      final _appToken = await _tokenService.fetchToken();
-      if(_appToken != null){
-        headers['Authorization'] = 'Bearer $_appToken';
+      final appToken = await _tokenService.fetchToken();
+      if(appToken != null){
+        headers['Authorization'] = 'Bearer ${appToken.token}';
       }
       if(token != null){
         headers['Authorization'] = 'Bearer $token';
@@ -175,7 +175,7 @@ class ApiProvider {
 
     final _appToken = await _tokenService.fetchToken();
     if(_appToken != null){
-      headers['Authorization'] = 'Bearer $_appToken';
+      headers['Authorization'] = 'Bearer ${_appToken.token}';
     }
 
     try {

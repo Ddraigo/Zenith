@@ -13,7 +13,7 @@ class AISupportRepo {
   AISupportRepo(this._source);
 
   Future<Either<AppException, AISupportResultModel>> getAISupport({
-    required String flashcardId
+    required String flashcardId,
   })async{
     final result = await _source.getAISupport(flashcardId: flashcardId);
     return result.map((data) => data.toDomain());

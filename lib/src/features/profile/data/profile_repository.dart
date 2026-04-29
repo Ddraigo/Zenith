@@ -16,27 +16,35 @@ class ProfileRepository {
 
   ProfileRepository(this._ref);
 
+  Future<bool> hasProfile({required String userId}) {
+    return _ref.hasProfile(userId: userId);
+  }
+
   
-  Future<void> createProfile({
+  Future<Either<AppException, ProfileModel>> createProfile({
     required String userId,
     required String userName,
     required String? avatarUrl,
     required String? gender,
     required DateTime dayOfBirth,
-  }) {
-    return _ref.createProfile(
+  }) async{
+    final result  = await _ref.createProfile(
       userId: userId, 
       userName: userName, 
       avatarUrl: avatarUrl ?? '',
       gender: gender ?? 'none', 
       dayOfBirth: dayOfBirth);
+      return result.fold(
+        ifLeft: (e) => e.left(), 
+        ifRight: (dto) => dto.toDomain().right(),
+      );
   }
 
-  Future<Either<AppException, ProfileModel>> getUserProfile({required String userId})async{
+  Future<Either<AppException, ProfileDTO?>> getUserProfile({required String userId})async{
     final result = await _ref.getUserProfile(userId: userId);
     return  result.fold(
       ifLeft: (e) => e.left(), 
-      ifRight: (dto) => dto.toDomain().right(),
+      ifRight: (dto) => dto.right(),
     );
   }
 

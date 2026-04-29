@@ -2,6 +2,7 @@ import 'package:app_demo/configs/themes/text_style.dart';
 import 'package:app_demo/src/core/provider/shared_flashcard_notifier.dart';
 import 'package:app_demo/src/features/flashcard/presentation/screen/daily_word_bottom_sheet.dart';
 import 'package:app_demo/src/features/flashcard/presentation/screen/flashcard_list.dart';
+import 'package:app_demo/src/features/profile/presentation/controller/profile_notifier.dart';
 import 'package:app_demo/src/features/topic/presentation/controller/list_topic_notifier.dart';
 import 'package:app_demo/src/shared/constants/images_constants.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,10 @@ class FlashcardScreen extends ConsumerWidget {
 
     final selectedTopicId = ref.watch(selectedTopicProvider) ?? 0;
     final flashcardAsync = ref.watch(getFlashcardsProvider(selectedTopicId));
-    
+
+    final userName =
+        ref.watch(profileProvider.select((value) => value.value?.userName)) ??
+        'Bạn';
 
     final getTopicName = topicAsync.maybeWhen(
       data: (topics) {
@@ -56,7 +60,7 @@ class FlashcardScreen extends ConsumerWidget {
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              _header(colorScheme, context, ref),
+              _header(colorScheme, context, ref, userName),
               SizedBox(height: 16),
               _todayProgress(
                 colorScheme,
@@ -131,7 +135,12 @@ class FlashcardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _header(ColorScheme color, BuildContext context, WidgetRef ref) {
+  Widget _header(
+    ColorScheme color,
+    BuildContext context,
+    WidgetRef ref,
+    String userName,
+  ) {
     final streakDayAsycn = ref.watch(streakDayProvider);
     final streakDay = streakDayAsycn.value ?? 0;
     return Row(
@@ -145,12 +154,12 @@ class FlashcardScreen extends ConsumerWidget {
             spacing: 8,
             children: [
               Text(
-                'WELCOME BACK',
+                'CHÀO MỪNG',
                 style: MyTextStyle.poppinsSmall600.copyWith(
                   color: color.outline,
                 ),
               ),
-              Text('Hello, John', style: MyTextStyle.poppinsHeading2),
+              Text(userName, style: MyTextStyle.poppinsHeading2),
             ],
           ),
         ),

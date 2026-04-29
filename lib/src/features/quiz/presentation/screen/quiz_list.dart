@@ -30,36 +30,36 @@ class QuizList extends StatelessWidget {
     final color = Theme.of(context).colorScheme;
     return Column(
       children: [
-        Padding(
-          padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Text('Từ vựng hằng ngày', style: MyTextStyle.poppinsMedium.copyWith(
-                fontSize: 17.sp
-              )),
-              TextButton(
-                onPressed: () {
-                  
-                },
-                child: Text('Tất cả', style: MyTextStyle.poppinsMedium.copyWith(
-                fontSize: 17.sp
-              )),
-              ),
-            ],
+        if (userDailyWordList.isNotEmpty) ...[
+          Padding(
+            padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Text(
+                  'Từ vựng hằng ngày',
+                  style: MyTextStyle.poppinsMedium.copyWith(fontSize: 17.sp),
+                ),
+                TextButton(
+                  onPressed: () {},
+                  child: Text(
+                    'Tất cả',
+                    style: MyTextStyle.poppinsMedium.copyWith(fontSize: 17.sp),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        SizedBox(
-          height: 150.h,
-          child: _dailyWordQuizList(context, userDailyWordList, color),
-        ),
-
-        SizedBox(height: 16.h),
+          SizedBox(
+            height: 150.h,
+            child: _dailyWordQuizList(context, userDailyWordList, color),
+          ),
+          SizedBox(height: 16.h),
+        ],
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.w),
           child: Column(
-            
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

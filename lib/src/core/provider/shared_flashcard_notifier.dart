@@ -22,9 +22,7 @@ final isDailyModeProvider = StateProvider<bool>((ref) => true);
 // Track ngày được chọn từ daily
 final selectedDateProvider = StateProvider<DateTime?>((ref) => null);
 
-/// Resolve topicId thực tế từ selectedTopicId
-/// - Nếu selectedTopicId > 0 → trả về nó
-/// - Nếu selectedTopicId = 0 → lấy từ daily hoặc topic random
+
 @riverpod
 Future<int> streakDay( Ref ref)async{
   return ref.read(userStatsServiceProvider).getStreakDay();

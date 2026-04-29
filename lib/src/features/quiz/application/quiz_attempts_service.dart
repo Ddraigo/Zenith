@@ -8,7 +8,9 @@ import 'package:app_demo/src/features/quiz/domain/question_model.dart';
 import 'package:app_demo/src/features/quiz/domain/quiz_attempt_items_model.dart';
 import 'package:app_demo/src/features/quiz/domain/quiz_attempts_model.dart';
 import 'package:app_demo/src/core/domain/quiz_attempt_args.dart';
+import 'package:app_demo/src/core/provider/shared_flashcard_notifier.dart';
 import 'package:app_demo/src/features/statistics/application/statistics_service.dart';
+import 'package:app_demo/src/features/statistics/presentation/controller/statistics_notifier.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:dart_either/dart_either.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,6 +20,7 @@ import '../../../core/provider/current_user_id_notifire.dart';
 import '../../../core/domain/user_flashcard_progress_model.dart';
 import '../../../core/service/user_flashcard_progress_service.dart';
 import '../../../shared/constants/format.dart';
+import '../../../shared/utils/helper_function.dart';
 import '../../flashcard/domain/flashcard_model.dart';
 import '../data/repository/quiz_attempts_repo.dart';
 
@@ -50,11 +53,11 @@ class QuizAttemptsService {
     final result = await _repo.fetchQuizAttemp(userId: _currentUserId);
     return result.fold(
       ifLeft: (error) {
-        developer.log(
-          'StatisticsService: getQuizAttempList error',
-          error: error,
-          stackTrace: StackTrace.current,
-        );
+        // developer.log(
+        //   'StatisticsService: getQuizAttempList error',
+        //   error: error,
+        //   stackTrace: StackTrace.current,
+        // );
         return error.left();
       },
       ifRight: (data){
@@ -83,11 +86,11 @@ class QuizAttemptsService {
     );
     return result.fold(
       ifLeft: (error) {
-        developer.log(
-          'StatisticsService: Error fetching data',
-          error: error,
-          stackTrace: StackTrace.current,
-        );
+        // developer.log(
+        //   'StatisticsService: Error fetching data',
+        //   error: error,
+        //   stackTrace: StackTrace.current,
+        // );
         return error.left();
       },
       ifRight: (data) => data.right(),
@@ -225,11 +228,11 @@ class QuizAttemptsService {
 
         return insertItem.fold(
           ifLeft: (error) {
-            developer.log(
-              'QuizAttemptsService.submitQuiz item insert failed',
-              error: error,
-              stackTrace: StackTrace.current,
-            );
+            // developer.log(
+            //   'QuizAttemptsService.submitQuiz item insert failed',
+            //   error: error,
+            //   stackTrace: StackTrace.current,
+            // );
             return error.left();
           },
           ifRight: (_) => attempt.right(),
@@ -256,37 +259,57 @@ class QuizAttemptsService {
             .map((q) => q.flashcardId)
             .toList();
 
-        final completionResult = await _dailyWordService.updateIsCompleted(
-          flashcardIds: listFlashcardId,
-          assignedDate: agrs.assignedDate ?? Format.normalizeDate(DateTime.now()),
-        );
+        final today = Format.normalizeDate(DateTime.now());
+        final quizAssignedDate = agrs.assignedDate != null 
+            ? Format.normalizeDate(agrs.assignedDate!)
+            : today;
+        final isQuizFromToday = MyHelper.sameDate(quizAssignedDate, today);
 
-        final statsResult = await _statisticsService.handleDailyReward(
-          assignedDate: agrs.assignedDate ?? Format.normalizeDate(DateTime.now()),
-          topicId: agrs.topicId,
-        );
+        // Only update stats if quiz is from today
+        if (isQuizFromToday) {
+          final completionResult = await _dailyWordService.updateIsCompleted(
+            flashcardIds: listFlashcardId,
+            assignedDate: quizAssignedDate,
+          );
 
-        completionResult.fold(
-          ifLeft: (e) {
-            developer.log(
-              'QuizAttemptsService.updateIsCompleted failed',
-              error: e,
-              stackTrace: StackTrace.current,
-            );
-          },
-          ifRight: (result) => result.right(),
-        );
+          final statsResult = await _statisticsService.handleDailyReward(
+            assignedDate: quizAssignedDate,
+            topicId: agrs.topicId,
+          );
 
-        statsResult.fold(
-          ifLeft: (e) {
-            developer.log(
-              'QuizAttemptsService.handleDailyReward failed',
-              error: e,
-              stackTrace: StackTrace.current,
-            );
-          },
-          ifRight: (result) => result.right(),
-        );
+          // developer.log('QuizAttemptsService: statsResult=$statsResult');
+
+          completionResult.fold(
+            ifLeft: (e) {
+              // developer.log(
+              //   'QuizAttemptsService.updateIsCompleted failed',
+              //   error: e,
+              //   stackTrace: StackTrace.current,
+              // );
+            },
+            ifRight: (result) => result.right(),
+          );
+
+          statsResult.fold(
+            ifLeft: (e) {
+              // developer.log(
+              //   'QuizAttemptsService.handleDailyReward failed',
+              //   error: e,
+              //   stackTrace: StackTrace.current,
+              // );
+            },
+            ifRight: (result) {
+              _ref.invalidate(streakDayProvider);
+              _ref.invalidate(statisticsProvider);
+              return result.right();
+            },
+          );
+        } else {
+          // developer.log(
+          //   'QuizAttemptsService: skip stats update because quiz is not from today '
+          //   '(quizDate=${quizAssignedDate.toIso8601String()}, today=${today.toIso8601String()})',
+          // );
+        }
       }
 
       final itemProgress = _buildFlashcardProgress(session: session);
@@ -305,11 +328,11 @@ class QuizAttemptsService {
         },
       );
     } catch (e, st) {
-      developer.log(
-        'QuizAttemptsService.submitQuiz side-effect failed',
-        error: e,
-        stackTrace: st,
-      );
+      // developer.log(
+      //   'QuizAttemptsService.submitQuiz side-effect failed',
+      //   error: e,
+      //   stackTrace: st,
+      // );
       return Either.left(
         e is AppException
             ? e

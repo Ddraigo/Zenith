@@ -285,9 +285,7 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
         ).showSnackBar(SnackBar(content: Text(MyHelper.getErrorMessage(error))));
       },
       ifRight: (attempt) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Nộp bài thành công')));
+       
         context.pushReplacement(
           AppRouter.quizResultPath,
           extra: QuizResultRouteArgs(quizAttemp: attempt, arg: widget.arg),

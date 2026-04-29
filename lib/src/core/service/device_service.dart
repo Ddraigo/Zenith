@@ -8,7 +8,6 @@ import 'package:app_demo/src/shared/http/supabase_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-
 final userDeviceService = Provider(UserDeviceService.new);
 
 class UserDeviceService {
@@ -23,49 +22,51 @@ class UserDeviceService {
   StreamSubscription<String>? _tokenRefreshSubscription;
 
   Future<String?> getCurrentFcmToken({String? vapidKey}) async {
-    try {
-      final token = await _fcmService.getToken(vapidKey: vapidKey);
-      return token;
-    } catch (e) {
+    if (_isBlank(vapidKey)) {
       developer.log(
-        'UserDeviceService: error getCurrentFcmToken',
+        'UserDeviceService: skip get token because vapidKey is empty',
+        name: 'getCurrentFcmToken',
+      );
+      return null;
+    }
+    try {
+      return await _fcmService.getToken(vapidKey: vapidKey);
+    } catch (e, st) {
+      developer.log(
+        'UserDeviceService: getCurrentFcmToken failed',
         error: e,
-        stackTrace: StackTrace.current,
+        stackTrace: st,
+        name: 'getCurrentFcmToken',
       );
       return null;
     }
   }
 
   Future<List<UserDeviceModel>> getUserFcmToken() async {
-    try {
-      final currentUser = _client.auth.currentUser;
-      if (currentUser == null) {
-        throw StateError('User not authenticated');
-      }
-      final fcm = await _repo.getUserFcmToken(userId: currentUser.id);
+    final currentUser = _requireCurrentUserId();
+    final result = await _repo.getUserFcmToken(userId: currentUser);
 
-      return fcm.fold(
-        ifLeft: (error) {
-          developer.log(
-            'ProfileService: Error getUserFcmToken',
-            error: error,
-            stackTrace: StackTrace.current,
-          );
-          throw error;
-        },
-        ifRight: (fcm) => fcm,
-      );
-    } catch (e) {
-      rethrow;
-    }
+    return result.fold(
+      ifLeft: (error) {
+        developer.log(
+          'UserDeviceService: getUserFcmToken failed',
+          error: error,
+          stackTrace: StackTrace.current,
+          name: 'getUserFcmToken',
+        );
+        throw error;
+      },
+      ifRight: (tokens) => tokens,
+    );
   }
 
   Future<bool> _saveFcmTokenIfNeeded({
     required String fcmToken,
     required String userId,
+    List<UserDeviceModel>? currentTokens,
   }) async {
-    final currentTokens = await getUserFcmToken();
-    final existsToken = currentTokens.any((e) => e.fcmToken == fcmToken);
+    final tokens = currentTokens ?? await getUserFcmToken();
+    final existsToken = tokens.any((e) => e.fcmToken == fcmToken);
     if (existsToken) {
       return false;
     }
@@ -75,13 +76,14 @@ class UserDeviceService {
     return result.fold(
       ifLeft: (error) {
         developer.log(
-          'UserDeviceService: Error saveFcmToken',
+          'UserDeviceService: saveFcmToken failed',
           error: error,
           stackTrace: StackTrace.current,
+          name: '_saveFcmTokenIfNeeded',
         );
         throw error;
       },
-      ifRight: (fcm) => true,
+      ifRight: (_) => true,
     );
   }
 
@@ -89,7 +91,10 @@ class UserDeviceService {
     required String fcmToken,
     required String userId,
   }) async {
-    final result = await _repo.deleteFcmToken(userId: userId, fcmToken: fcmToken);
+    final result = await _repo.deleteFcmToken(
+      userId: userId,
+      fcmToken: fcmToken,
+    );
 
     return result.fold(
       ifLeft: (error) {
@@ -105,26 +110,13 @@ class UserDeviceService {
   }
 
   Future<String?> syncFcmToken({String? vapidKey}) async {
-    try {
-      final currentUser = _client.auth.currentUser;
-      if (currentUser == null) {
-        throw StateError('User not authenticated');
-      }
+    final currentUser = _requireCurrentUserId();
+    final fcmToken = await getCurrentFcmToken(vapidKey: vapidKey);
+    if (_isBlank(fcmToken)) return null;
 
-      final fcmToken = await getCurrentFcmToken(vapidKey: vapidKey);
+    await _saveFcmTokenIfNeeded(fcmToken: fcmToken!, userId: currentUser);
 
-      if (fcmToken != null) {
-        await _saveFcmTokenIfNeeded(fcmToken: fcmToken, userId: currentUser.id);
-      }
-      return fcmToken;
-    } catch (e) {
-      developer.log(
-        'UserDeviceService: Error syncFcmToken',
-        error: e,
-        stackTrace: StackTrace.current,
-      );
-      rethrow;
-    }
+    return fcmToken;
   }
 
   /// Setup FCM token cho user (dùng cho cả login và signup)
@@ -134,60 +126,75 @@ class UserDeviceService {
     String? vapidKey,
     bool subscribeToRefresh = true,
   }) async {
-    try {
-      final newToken = await getCurrentFcmToken(vapidKey: vapidKey);
+    final token = await getCurrentFcmToken(vapidKey: vapidKey);
 
-      if (newToken == null || newToken.isEmpty) return;
-
-      final device = await getUserFcmToken();
-      final existsToken = device.any((e) => e.fcmToken == newToken);
-
-      if (!existsToken) {
-        await _saveFcmTokenIfNeeded(fcmToken: newToken, userId: userId);
-        developer.log(
-          'UserDeviceService: FCM token saved',
-          name: 'setupFcmToken',
-        );
-      }
-
-      if (subscribeToRefresh) {
-        _tokenRefreshSubscription?.cancel();
-        var currentToken = newToken;
-        _tokenRefreshSubscription = _fcmService.onTokenRefresh.listen((newToken) async {
-          try {
-            if (newToken.isEmpty || newToken == currentToken) {
-              return;
-            }
-
-            final oldToken = currentToken;
-            await _saveFcmTokenIfNeeded(fcmToken: newToken, userId: userId);
-
-            if (oldToken.isNotEmpty) {
-              await deleteFcmToken(fcmToken: oldToken, userId: userId);
-            }
-
-            currentToken = newToken;
-            developer.log(
-              'UserDeviceService: FCM token refreshed',
-              name: 'setupFcmToken',
-            );
-          } catch (e) {
-            developer.log(
-              'UserDeviceService: Error onTokenRefresh',
-              error: e,
-              stackTrace: StackTrace.current,
-            );
-          }
-        });
-      }
-    } catch (e) {
+    if (_isBlank(token)) {
       developer.log(
-        'UserDeviceService: Error setupFcmToken',
-        error: e,
-        stackTrace: StackTrace.current,
+        'UserDeviceService: skip setup because token is empty',
+        name: 'setupFcmToken',
       );
       return;
     }
+    try {
+      final currentToken = await getUserFcmToken();
+      final existsToken = currentToken.any((e) => e.fcmToken == token);
+
+
+      if (!existsToken) {
+        await _repo.saveFcmToken(userId: userId, fcmToken: token!);
+        developer.log(
+        'UserDeviceService: FCM token saved',
+        name: 'setupFcmToken',
+      );
+      }
+      if (subscribeToRefresh) {
+        _startTokenRefreshListener(userId: userId, initialToken: token!);
+      }
+    } catch (e, st) {
+      developer.log(
+        'UserDeviceService: setupFcmToken failed',
+        error: e,
+        stackTrace: st,
+        name: 'setupFcmToken',
+      );
+      rethrow;
+    }
+  }
+
+  void _startTokenRefreshListener({
+    required String userId,
+    required String initialToken,
+  }) {
+    _tokenRefreshSubscription?.cancel();
+    var currentToken = initialToken;
+    _tokenRefreshSubscription = _fcmService.onTokenRefresh.listen((
+      newToken,
+    ) async {
+      try {
+        if (newToken.isEmpty || newToken == currentToken) {
+          return;
+        }
+
+        final oldToken = currentToken;
+        await _saveFcmTokenIfNeeded(
+          fcmToken: newToken,
+          userId: userId,
+        );
+
+        if (oldToken.isNotEmpty) {
+          await deleteFcmToken(fcmToken: oldToken, userId: userId);
+        }
+
+        currentToken = newToken;
+      } catch (e, st) {
+        developer.log(
+          'UserDeviceService: token refresh stream error',
+          error: e,
+          stackTrace: st,
+          name: '_startTokenRefreshListener',
+        );
+      }
+    });
   }
 
   Future<void> cleanupDeviceTokenOnSignOut({required String userId}) async {
@@ -199,11 +206,11 @@ class UserDeviceService {
       }
 
       await _fcmService.deleteToken();
-    } catch (e) {
+    } catch (e, st) {
       developer.log(
         'UserDeviceService: Error cleanupDeviceTokenOnSignOut',
         error: e,
-        stackTrace: StackTrace.current,
+        stackTrace: st,
       );
     } finally {
       _tokenRefreshSubscription?.cancel();
@@ -215,4 +222,14 @@ class UserDeviceService {
     _tokenRefreshSubscription?.cancel();
     _tokenRefreshSubscription = null;
   }
+
+  String _requireCurrentUserId() {
+    final userId = _client.auth.currentUser?.id;
+    if (userId == null) {
+      throw StateError('User not authenticated');
+    }
+    return userId;
+  }
+
+  bool _isBlank(String? value) => value == null || value.trim().isEmpty;
 }

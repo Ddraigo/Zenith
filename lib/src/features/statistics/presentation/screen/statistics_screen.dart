@@ -2,6 +2,7 @@ import 'package:app_demo/configs/routes/app_router.dart';
 import 'package:app_demo/configs/themes/text_style.dart';
 import 'package:app_demo/src/core/provider/shared_flashcard_notifier.dart';
 import 'package:app_demo/src/features/quiz/domain/quiz_attempts_model.dart';
+import 'package:app_demo/src/features/profile/presentation/controller/profile_notifier.dart';
 import 'package:app_demo/src/features/statistics/presentation/controller/statistics_notifier.dart';
 import 'package:app_demo/src/features/topic/domain/topic_model.dart';
 import 'package:app_demo/src/shared/constants/images_constants.dart';
@@ -15,6 +16,7 @@ import '../../../../core/domain/quiz_attempt_args.dart';
 import '../../../../shared/constants/format.dart';
 import '../../../../shared/http/app_exception.dart';
 import '../../../../shared/utils/helper_function.dart';
+import '../../../../shared/widgets/retry_widget.dart';
 
 class StatisticsScreen extends ConsumerStatefulWidget {
   const StatisticsScreen({super.key});
@@ -30,100 +32,160 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
-
-    final statisticsAsycn = ref.watch(statisticsProvider);
-    final topicList = ref.watch(getTopicListProvider);
+    final hasProfileAsync = ref.watch(hasProfileProvider);
 
     return SafeArea(
       child: Scaffold(
         body: RefreshIndicator(
-          onRefresh: ref.read(statisticsProvider.notifier).refresh,
-          child: SingleChildScrollView(
-            padding: EdgeInsets.all(16.r),
-          
-            child: statisticsAsycn.when(
-              data: (data) {
-                final wordMaster = data.userFlashcardProgress
-                    .where((items) => items.wrongCount == 0)
-                    .length;
-                final totalWord = data.userFlashcardProgress.length;
-          
-                return Column(
-                  spacing: 8.h,
-                  children: [
-                    GridView.count(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 16.h,
-                      crossAxisSpacing: 16.w,
-                      childAspectRatio: 1.2,
-                      children: [
-                        _overviewItems(
-                          color,
-                          data.userStatsModel.streakCount,
-                          MyIcons.streakPurple,
-                          'STREAK DAYS',
-                        ),
-                        _overviewItems(
-                          color,
-                          data.userStatsModel.totalPoints,
-                          MyIcons.starGreen,
-                          'TOTAL POINTS',
-                        ),
-                        _overviewItems(
-                          color,
-                          wordMaster,
-                          MyIcons.bookPurple,
-                          'WORDS MASTERED',
-                        ),
-                        _overviewItems(
-                          color,
-                          totalWord,
-                          MyIcons.totalLearn,
-                          'TOTAL WORDS',
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 6.h),
-                    _statsProgress(color),
-                    SizedBox(height: 8.h),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+          onRefresh: () async {
+            final hasProfile = await ref.refresh(hasProfileProvider.future);
+            if (hasProfile) {
+              await ref.read(statisticsProvider.notifier).refresh();
+            }
+          },
+          child: hasProfileAsync.when(
+            data: (hasProfile) {
+              if (!hasProfile) {
+                return Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.r),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Quiz gần đây',
-                          style: MyTextStyle.poppinsLarge600.copyWith(
-                            fontSize: 20.sp,
-                          ),
+                          'Hồ sơ cá nhân chưa được tạo.',
+                          style: MyTextStyle.poppinsMedium,
+                          textAlign: TextAlign.center,
                         ),
-                        TextButton(
-                          onPressed: () {},
-                          child: Text('Tất cả', style: MyTextStyle.poppinsMedium),
+                        SizedBox(height: 16.h),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(vertical: 5.w, horizontal: 16.w),
+                          ),
+                          onPressed: () => context.push(AppRouter.profilePath),
+                          child: const Text('Tạo hồ sơ'),
                         ),
                       ],
                     ),
-                    _reviewQuizList(
-                      quizList: data.quizAttemptsModel,
-                      topicList: topicList,
-                      color: color,
-                      context: context,
-                    ),
-                  ],
+                  ),
                 );
-              },
-              error: (error, _) {
-                final msg = error is AppException
-                    ? MyHelper.getErrorMessage(error)
-                    : 'Đã xảy ra lỗi';
-                return Center(child: Text(msg));
-              },
-              loading: () => const Center(child: CircularProgressIndicator()),
+              }
+
+              final topicList = ref.watch(getTopicListProvider);
+              final statisticsAsycn = ref.watch(statisticsProvider);
+              final streakDay = ref.watch(streakDayProvider);
+              return statisticsAsycn.when(
+                data: (data) {
+                  final wordMaster = data.userFlashcardProgress
+                      .where((items) => items.wrongCount == 0)
+                      .length;
+                  final totalWord = data.userFlashcardProgress.length;
+
+                  return SingleChildScrollView(
+                    padding: EdgeInsets.all(16.r),
+                    child: Column(
+                      spacing: 8.h,
+                      children: [
+                        GridView.count(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 16.h,
+                          crossAxisSpacing: 16.w,
+                          childAspectRatio: 1.2,
+                          children: [
+                            _overviewItems(
+                              color,
+                              streakDay.value ?? 0, // data.userStatsModel.streakCount,
+                              MyIcons.streakPurple,
+                              'STREAK DAYS',
+                            ),
+                            _overviewItems(
+                              color,
+                              data.userStatsModel.totalPoints,
+                              MyIcons.starGreen,
+                              'TOTAL POINTS',
+                            ),
+                            _overviewItems(
+                              color,
+                              wordMaster,
+                              MyIcons.bookPurple,
+                              'WORDS MASTERED',
+                            ),
+                            _overviewItems(
+                              color,
+                              totalWord,
+                              MyIcons.totalLearn,
+                              'TOTAL WORDS',
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 6.h),
+                        _statsProgress(color),
+                        SizedBox(height: 8.h),
+                        if (data.quizAttemptsModel.isNotEmpty)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Quiz gần đây',
+                                style: MyTextStyle.poppinsLarge600.copyWith(
+                                  fontSize: 20.sp,
+                                ),
+                              ),
+                              
+                                TextButton(
+                                  onPressed: () {},
+                                  child: Text(
+                                    'Tất cả',
+                                    style: MyTextStyle.poppinsMedium,
+                                  ),
+                                ),
+                            ],
+                          ),
+                          _reviewQuizList(
+                            quizList: data.quizAttemptsModel,
+                            topicList: topicList,
+                            color: color,
+                            context: context,
+                          ),
+                      ],
+                    ),
+                  );
+                },
+                error: (error, _) {
+                  final msg = error is AppException
+                      ? MyHelper.getErrorMessage(error)
+                      : 'Đã xảy ra lỗi';
+                  return RetryWidget(
+                    msg: msg,
+                    onPressed: () => ref.refresh(statisticsProvider),
+                  );
+                },
+                loading: () => SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: const Center(child: CircularProgressIndicator()),
+                ),
+              );
+            },
+            error: (error, _) {
+              final msg = error is AppException
+                  ? MyHelper.getErrorMessage(error)
+                  : 'Đã xảy ra lỗi';
+              return RetryWidget(
+                msg: msg,
+                onPressed: () => ref.refresh(hasProfileProvider),
+              );
+            },
+            loading: () => SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: const Center(child: CircularProgressIndicator()),
             ),
           ),
         ),
-      ),
+        ),
+      
     );
   }
 

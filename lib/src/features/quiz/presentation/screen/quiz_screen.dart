@@ -45,14 +45,20 @@ class QuizScreen extends ConsumerWidget {
                 .expand((items) => items)
                 .toList();
 
-            return SingleChildScrollView(
-              padding: EdgeInsets.symmetric(vertical: 16.h),
-              child: Column(
+            return RefreshIndicator(
+              onRefresh: () async {
+                ref.refresh(getDailyTopicsGroupedProvider(dayRange: 7));
+                ref.refresh(getTopicListProvider);
+              },
+              child: ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: EdgeInsets.symmetric(vertical: 16.h),
                 children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: _dailyProgress(context, color, todayProgress),
-                  ),
+                  if (dailyItems.isNotEmpty)
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: _dailyProgress(context, color, todayProgress),
+                    ),
                   QuizList(
                     userDailyWordList: dailyItems,
                     topicList: topics,

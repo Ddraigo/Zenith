@@ -70,5 +70,11 @@ class MyIcons{
   static const String starGreen =  'assets/icons/star_green.svg';
   static const String bookPurple =  'assets/icons/book_purple.svg';
   static const String aiGemini =  'assets/icons/ai_gemini.svg';
+  static const String changePassword = 'assets/icons/change_password.svg';
+  static const String logout = 'assets/icons/logout.svg';
+  static const String notification = 'assets/icons/notification.svg';
+  static const String themeMode = 'assets/icons/theme_mode.svg';
+  static const String setting = 'assets/icons/setting.svg'; 
+  static const String reward = 'assets/icons/reward.svg';  
+  
 }
-

@@ -11,22 +11,28 @@ class RetryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ColorScheme color = Theme.of(context).colorScheme;
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(msg),
-          SizedBox(height: 16.h),
-          ElevatedButton.icon(
-            onPressed: onPressed,
-            label: Text(
-              'Thử lại',
-              style: MyTextStyle.poppinsMedium400.copyWith(
-                color: color.onPrimary,
+    return SizedBox(
+      height: MediaQuery.of(context).size.height,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(msg),
+            SizedBox(height: 16.h),
+            ElevatedButton.icon(
+              onPressed: onPressed,
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 16.w),
+              ),
+              label: Text(
+                'Thử lại',
+                style: MyTextStyle.poppinsMedium600.copyWith(
+                  color: color.onPrimary,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

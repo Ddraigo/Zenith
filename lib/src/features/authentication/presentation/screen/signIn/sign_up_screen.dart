@@ -12,7 +12,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../../configs/routes/app_router.dart';
-import '../../../../../shared/utils/helper_function.dart';
+import '../../../../../shared/utils/snackbar_helper.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
@@ -43,20 +43,19 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     _signUpSubscription = ref.listenManual<AsyncValue<void>>(signUpProvider, (prev, next) {
       next.when(
         data: (_) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Đăng ký thành công!')));
+          SnackBarHelper.showSuccess(context, 'Đăng ký thành công!');
           _clearForm();
-          Future.delayed(const Duration(milliseconds: 600), () {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted) context.go(AppRouter.loginPath);
           });
         },
         loading: () {},
         error: (error, _) {
-              final msg = error is AppException
-                  ? MyHelper.getErrorMessage(error)
-                  : 'Đã xảy ra lỗi';
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+          if (error is AppException) {
+            SnackBarHelper.showError(context, error);
+          } else {
+            SnackBarHelper.showWarning(context, 'Đã xảy ra lỗi');
+          }
         },
       );
     });

@@ -25,8 +25,8 @@ class AppStartPage extends ConsumerWidget {
           orElse: () => const OnboardingScreen(),
         );
       }, 
-      error: (e, st) => const OnboardingScreen(), 
-      loading: ()=> const LoadingWidget());
+      error: (e, st) => const Center(child: Text('Đã có lỗi xảy ra'),), 
+      loading: ()=> const LoadingWidget(isLoading: true, child: Text('Đang tải'),));
     
   }
 }

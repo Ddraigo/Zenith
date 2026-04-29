@@ -8,6 +8,7 @@ import 'package:app_demo/src/features/profile/application/profile_service.dart';
 import 'package:app_demo/src/features/profile/domain/profile_model.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:app_demo/src/shared/http/supabase_provider.dart';
+import 'package:app_demo/src/shared/utils/validator.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -22,8 +23,9 @@ class AuthService {
   late final SupabaseClient _client = _ref.read(supabaseClientProvider);
   late final UserDeviceService _userDevice = _ref.read(userDeviceService);
   Future<void> login(String email, String password) async {
+    _validateLoginInput(email, password);
     try {
-      await _repo.login(email: email, password: password);
+      await _repo.login(email: email.trim(), password: password.trim());
       final session = _client.auth.currentSession;
 
       if (session == null) {
@@ -34,23 +36,10 @@ class AuthService {
 
       final userId = _client.auth.currentUser?.id;
       if (userId == null) {
-        throw const AppException.errorWithMessage('User id null');
+        throw const AppException.errorWithMessage('Không tìm thấy users');
       }
 
-      final vapidKey = dotenv.env['FCM_VAPID_KEY'];
-      try {
-        await _userDevice.setupFcmToken(
-          userId: userId,
-          vapidKey: vapidKey,
-          subscribeToRefresh: true,
-        );
-      } catch (e) {
-        developer.log(
-          'AuthService: setupFcmToken failed after login',
-          error: e,
-          stackTrace: StackTrace.current,
-        );
-      }
+      await _setupUserFCM(userId: userId, subscribeToRefresh: true);
     } on AppException {
       rethrow;
     } catch (e, st) {
@@ -63,6 +52,42 @@ class AuthService {
     }
   }
 
+  Future<void> _setupUserFCM({
+    required String userId,
+    required bool subscribeToRefresh,
+  }) async {
+    final vapidKey = dotenv.env['FCM_VAPID_KEY'];
+    if(vapidKey == null || vapidKey.isEmpty){
+      developer.log('FCM_VAPID_KEY is not configured');
+      return;
+    }
+    try {
+      await _userDevice.setupFcmToken(
+        userId: userId,
+        vapidKey: vapidKey,
+        subscribeToRefresh: true,
+      );
+    } catch (e, st) {
+      developer.log(
+        'AuthService: FCM setup failed',
+        error: e,
+        stackTrace: st,
+      );
+    }
+  }
+
+  void _validateLoginInput(String email, String password) {
+    if (email.trim().isEmpty || password.trim().isEmpty) {
+      throw const AppException.badRequest('Emmail và mật khẩu không hợp lệ');
+    }
+    if (!Validator.isValidEmail(email)) {
+      throw const AppException.badRequest('Email không hợp lệ');
+    }
+    if (!Validator.isValidPassword(password)) {
+      throw const AppException.badRequest('Mật khẩu không hợp lệ');
+    }
+  }
+
   Future<void> signUp({
     required String userName,
     required String email,
@@ -70,41 +95,35 @@ class AuthService {
     required DateTime dayOfBirth,
     required String gender,
   }) async {
+    _validateLoginInput(email, password);
+   _validateSignUpInput(userName: userName, dayOfBirth: dayOfBirth, gender: gender);
+  
     try {
       final user = await _ref
           .read(authRepositoryProvider)
-          .signUp(email: email, password: password);
-
-      final genderCheck = gender.trim().isEmpty ? 'none' : gender;
+          .signUp(email: email.trim(), password: password.trim());
 
       final profile = ProfileModel(
         userId: user.id,
-        userName: userName,
+        userName: userName.trim(),
         dayOfBirth: dayOfBirth,
-        gender: genderCheck,
+        gender: gender.trim(),
       );
 
-      await _ref.read(profileServiceProvider).createNewProfile(profile);
-      final token = _client.auth.currentSession?.accessToken;
+      final profileResult = await _ref
+          .read(profileServiceProvider)
+          .createNewProfile(profile);
+      profileResult.fold(
+        ifLeft: (e) => throw e,
+        ifRight: (_) {},
+      );
 
-      if (token != null) {
+      final token = _client.auth.currentSession?.accessToken;
+      if (token != null && token.isNotEmpty) {
         await _tokenService.saveToken(Token(token: token));
       }
 
-      final vapidKey = dotenv.env['FCM_VAPID_KEY'];
-      try {
-        await _userDevice.setupFcmToken(
-          userId: user.id,
-          vapidKey: vapidKey,
-          subscribeToRefresh: false,
-        );
-      } catch (e) {
-        developer.log(
-          'AuthService: setupFcmToken failed after signup',
-          error: e,
-          stackTrace: StackTrace.current,
-        );
-      }
+      await _setupUserFCM(userId: user.id, subscribeToRefresh: true);
     } on AppException {
       rethrow;
     } catch (e, st) {
@@ -117,16 +136,45 @@ class AuthService {
     }
   }
 
-  Future<void> signOut() async {
-    final userId = _client.auth.currentUser?.id;
-
-    if (userId != null) {
-      await _userDevice.cleanupDeviceTokenOnSignOut(userId: userId);
-    } else {
-      _userDevice.dispose();
+  void _validateSignUpInput({
+    required String userName,
+    required DateTime dayOfBirth,
+    required String gender,
+  }) {
+    if(userName.trim().isEmpty){
+      throw const AppException.badRequest('Tên người dùng đang trống');
     }
+    if(!Validator.isValidDayOfBirth(dayOfBirth)){
+      throw const AppException.badRequest('Ngày sinh không hợp lệ');
 
-    await _repo.signOut();
-    await _tokenService.remove();
+    }
+    if(gender.isEmpty){
+      throw const AppException.badRequest('Giới tính đang trống');
+    }
+  }
+
+  Future<void> signOut() async {
+    try {
+      final userId = _client.auth.currentUser?.id;
+
+      if (userId != null) {
+        try {
+          await _userDevice.cleanupDeviceTokenOnSignOut(userId: userId);
+        } catch (e) {
+          developer.log('Cleanup device token failed', error: e);
+        }
+      } else {
+        _userDevice.dispose();
+      }
+      try {
+        await _repo.signOut();
+      } catch (e) {
+        developer.log('Repo signOut failed', error: e);
+      }
+      await _tokenService.remove();
+    } catch (e) {
+      developer.log('SignOut failed', error: e);
+      rethrow;
+    }
   }
 }

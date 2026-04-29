@@ -1,9 +1,11 @@
+import 'package:app_demo/src/app/widget/app_start_page.dart';
 import 'package:app_demo/src/features/authentication/presentation/screen/onboarding/onboarding_page.dart';
 import 'package:app_demo/src/features/authentication/presentation/screen/onboarding/onboarding_screen.dart';
 import 'package:app_demo/src/features/authentication/presentation/screen/login/login_screen.dart';
 import 'package:app_demo/src/features/authentication/presentation/screen/signIn/sign_up_screen.dart';
 import 'package:app_demo/src/features/flashcard/presentation/screen/flashcard_screen.dart';
 import 'package:app_demo/src/core/domain/quiz_attempt_args.dart';
+import 'package:app_demo/src/features/profile/presentation/screen/setting_sreen.dart';
 import 'package:app_demo/src/features/quiz/presentation/screen/quiz_attemp_screen.dart';
 import 'package:app_demo/src/core/presentation/screen/quiz_result_screen.dart';
 import 'package:app_demo/src/features/statistics/presentation/screen/statistics_screen.dart';
@@ -16,7 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: AppRouter.loginPath,
+  initialLocation: AppRouter.startPage,
   
   routes: <RouteBase>[
     GoRoute(
@@ -33,6 +35,10 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRouter.startPage,
+      builder:  (context, state) => const AppStartPage(),
+    ),
+    GoRoute(
+      path: AppRouter.onboardingPath,
       builder:  (context, state) => const OnBoardingSkipedPage(title: 'Join to get the delicious quizines!', image: MyImages.onBoardingImage4),
     ),
     GoRoute(
@@ -79,6 +85,10 @@ final GoRouter appRouter = GoRouter(
       path: AppRouter.userStatsPath,
       builder: (context, state)=> StatisticsScreen(),
     ),
+    GoRoute(
+      path: AppRouter.settingPath,
+      builder: (context, state)=> SettingSreen(),
+    ),
 
   ],
   errorBuilder: (context, state) {
@@ -101,6 +111,7 @@ class AppRouter {
   static const String quizAttempPath =  '/quiz_attemp';
   static const String quizResultPath =  '/quiz_result';
   static const String userStatsPath = '/user_stats';
+  static const String settingPath = '/setting';
 
 
 }

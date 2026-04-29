@@ -20,7 +20,9 @@ class AISupportService {
     if(flashcardId.isEmpty){
       return Either.left(AppException.errorWithMessage('flashcardId is empty'));
     }
-    final result = await _repo.getAISupport(flashcardId: flashcardId);
+    final result = await _repo.getAISupport(
+      flashcardId: flashcardId, 
+    );
     return result.fold(
       ifLeft: (e){
         developer.log('AISupportService: getAISupport failed', error: e);

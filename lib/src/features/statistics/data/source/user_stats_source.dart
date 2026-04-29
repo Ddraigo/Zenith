@@ -57,8 +57,8 @@ class UserStatsSource {
           .maybeSingle();
 
       if (data == null) {
-        return await updatedUserStats(
-          userStats: UserStatsDTO(
+        return Either.right(
+          UserStatsDTO(
             userId: userId,
             streakCount: 0,
             totalPoints: 0,

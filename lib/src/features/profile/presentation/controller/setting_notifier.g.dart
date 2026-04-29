@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'profile_notifier.dart';
+part of 'setting_notifier.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,43 +9,43 @@ part of 'profile_notifier.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(ProfileNotifier)
-final profileProvider = ProfileNotifierProvider._();
+@ProviderFor(SettingNotifier)
+final settingProvider = SettingNotifierProvider._();
 
-final class ProfileNotifierProvider
-    extends $AsyncNotifierProvider<ProfileNotifier, ProfileModel> {
-  ProfileNotifierProvider._()
+final class SettingNotifierProvider
+    extends $AsyncNotifierProvider<SettingNotifier, void> {
+  SettingNotifierProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'profileProvider',
+        name: r'settingProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$profileNotifierHash();
+  String debugGetCreateSourceHash() => _$settingNotifierHash();
 
   @$internal
   @override
-  ProfileNotifier create() => ProfileNotifier();
+  SettingNotifier create() => SettingNotifier();
 }
 
-String _$profileNotifierHash() => r'0403726c6eaff498ad4641c2f798c90028eae5fa';
+String _$settingNotifierHash() => r'1cd868ef52a6169455f2418f42454026f9df5620';
 
-abstract class _$ProfileNotifier extends $AsyncNotifier<ProfileModel> {
-  FutureOr<ProfileModel> build();
+abstract class _$SettingNotifier extends $AsyncNotifier<void> {
+  FutureOr<void> build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<ProfileModel>, ProfileModel>;
+    final ref = this.ref as $Ref<AsyncValue<void>, void>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<ProfileModel>, ProfileModel>,
-              AsyncValue<ProfileModel>,
+              AnyNotifier<AsyncValue<void>, void>,
+              AsyncValue<void>,
               Object?,
               Object?
             >;

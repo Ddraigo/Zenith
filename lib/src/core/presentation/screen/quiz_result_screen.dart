@@ -4,14 +4,17 @@ import 'package:app_demo/configs/themes/text_style.dart';
 import 'package:app_demo/src/features/home/presentation/home_screen.dart';
 import 'package:app_demo/src/features/quiz/domain/quiz_attempts_model.dart';
 import 'package:app_demo/src/core/presentation/controller/quiz_result_notifier.dart';
+import 'package:app_demo/src/core/provider/reward_summary_provider.dart';
+import 'package:app_demo/src/shared/constants/images_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../domain/quiz_attempt_args.dart';
 
-class QuizResultScreen extends ConsumerWidget {
+class QuizResultScreen extends ConsumerStatefulWidget {
   const QuizResultScreen({
     super.key,
     required this.quizAttemp,
@@ -21,11 +24,247 @@ class QuizResultScreen extends ConsumerWidget {
   final QuizAttemptArgs arg;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<QuizResultScreen> createState() => _QuizResultScreenState();
+}
+
+class _QuizResultScreenState extends ConsumerState<QuizResultScreen> {
+  bool _rewardDialogShown = false;
+
+  void _showRewardDialog(RewardSummary reward, ColorScheme color) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
+            decoration: BoxDecoration(
+              color: color.onPrimary,
+              borderRadius: BorderRadius.circular(24.r),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Icon
+                SvgPicture.asset(MyIcons.reward),
+                SizedBox(height: 16.h),
+
+                // Title
+                Text(
+                  'Chúc mừng bạn',
+                  style: MyTextStyle.poppinsLarge700.copyWith(
+                    fontSize: 24.sp,
+                    color: color.primary,
+                  ),
+                ),
+                SizedBox(height: 8.h),
+
+                // Subtitle
+                Text(
+                  'Nhận được điểm thưởng',
+                  style: MyTextStyle.poppinsMedium.copyWith(
+                    fontSize: 12.sp,
+                    color: color.outline.withValues(alpha: 0.6),
+                  ),
+                ),
+                SizedBox(height: 20.h),
+
+                // Points earned
+                if (reward.pointAdded > 0)
+                  Container(
+                    padding: EdgeInsets.all(12.r),
+                    margin: EdgeInsets.only(bottom: 12.h),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.r),
+                      color: color.outline.withValues(alpha: 0.08),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(8.r),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: color.onPrimary,
+                              ),
+                              child: Icon(
+                                Icons.stars_rounded,
+                                color: color.primary,
+                                size: 24.sp,
+                              ),
+                            ),
+                            SizedBox(width: 12.w),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'ĐIỂM THƯỞNG',
+                                  style: MyTextStyle.poppinsMedium.copyWith(
+                                    fontSize: 10.sp,
+                                    color: color.outline.withValues(alpha: 0.7),
+                                  ),
+                                ),
+                                Text(
+                                  '+${reward.pointAdded}',
+                                  style: MyTextStyle.poppinsLarge700.copyWith(
+                                    fontSize: 16.sp,
+                                    color: color.primary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              'TỔNG',
+                              style: MyTextStyle.poppinsMedium.copyWith(
+                                fontSize: 10.sp,
+                                color: color.outline.withValues(alpha: 0.7),
+                              ),
+                            ),
+                            Text(
+                              '500',
+                              style: MyTextStyle.poppinsLarge700.copyWith(
+                                fontSize: 16.sp,
+                                color: color.primary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                // Streak
+                if (reward.streakAdded > 0 || reward.streakReset)
+                  Container(
+                    padding: EdgeInsets.all(12.r),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.r),
+                      color: color.outline.withValues(alpha: 0.08),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(8.r),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: color.onPrimary,
+                              ),
+                              child: Icon(
+                                Icons.local_fire_department,
+                                color: Colors.red.shade400,
+                                size: 24.sp,
+                              ),
+                            ),
+                            SizedBox(width: 12.w),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'STREAK UP',
+                                  style: MyTextStyle.poppinsMedium.copyWith(
+                                    fontSize: 10.sp,
+                                    color: color.outline.withValues(alpha: 0.7),
+                                  ),
+                                ),
+                                Text(
+                                  reward.streakReset
+                                      ? '+1'
+                                      : '+${reward.streakAdded}',
+                                  style: MyTextStyle.poppinsLarge700.copyWith(
+                                    fontSize: 16.sp,
+                                    color: color.primary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              'HIỆN TẠI',
+                              style: MyTextStyle.poppinsMedium.copyWith(
+                                fontSize: 10.sp,
+                                color: color.outline.withValues(alpha: 0.7),
+                              ),
+                            ),
+                            Text(
+                              '${reward.streakCount} Ngày',
+                              style: MyTextStyle.poppinsLarge700.copyWith(
+                                fontSize: 16.sp,
+                                color: const Color(0xFF7B2B7B),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                SizedBox(height: 24.h),
+
+                // OK Button
+                SizedBox(
+                  width: double.infinity,
+                  height: 48.h,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(horizontal: 5.h),
+                      minimumSize: Size(double.maxFinite, 40.h),
+                    ),
+                    onPressed: () {
+                      Navigator.of(dialogContext).pop();
+                      ref.read(rewardSummaryProvider.notifier).state = null;
+                      _rewardDialogShown = false;
+                    },
+                    child: Text(
+                      'OK',
+                      style: MyTextStyle.poppinsMedium600.copyWith(
+                        color: Colors.white,
+                        fontSize: 16.sp,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
     final quizResultAsync = ref.watch(
-      quizResultProvider(quizAttempId: quizAttemp.id),
+      quizResultProvider(quizAttempId: widget.quizAttemp.id),
     );
+
+    // Watch reward provider
+    final reward = ref.watch(rewardSummaryProvider);
+
+    // Show dialog when reward detected
+    if (reward != null && !_rewardDialogShown) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!_rewardDialogShown && context.mounted) {
+          _rewardDialogShown = true;
+          _showRewardDialog(reward, color);
+        }
+      });
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -62,7 +301,10 @@ class QuizResultScreen extends ConsumerWidget {
                   ),
                 ),
                 onPressed: () {
-                  context.pushReplacement(AppRouter.quizAttempPath, extra: arg);
+                  context.pushReplacement(
+                    AppRouter.quizAttempPath,
+                    extra: widget.arg,
+                  );
                 },
                 icon: const Icon(Icons.refresh_rounded),
                 label: const Text('Làm lại'),
@@ -136,40 +378,50 @@ class QuizResultScreen extends ConsumerWidget {
                               children: [
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         'Đáp án',
-                                        style: MyTextStyle.poppinsMedium.copyWith(
-                                          color: color.outline.withValues(alpha: 0.7),
-                                        ),
+                                        style: MyTextStyle.poppinsMedium
+                                            .copyWith(
+                                              color: color.outline.withValues(
+                                                alpha: 0.7,
+                                              ),
+                                            ),
                                       ),
                                       Text(
-                                          item.question,
-                                          style: MyTextStyle.poppinsLarge600.copyWith(
-                                            color: color.primary,
-                                          ),
-                                        ),
+                                        item.question,
+                                        style: MyTextStyle.poppinsLarge600
+                                            .copyWith(color: color.primary),
+                                      ),
                                     ],
                                   ),
                                 ),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         'Trả lời',
-                                        style: MyTextStyle.poppinsMedium.copyWith(
-                                          color: color.outline.withValues(alpha: 0.7),
-                                        ),
+                                        style: MyTextStyle.poppinsMedium
+                                            .copyWith(
+                                              color: color.outline.withValues(
+                                                alpha: 0.7,
+                                              ),
+                                            ),
                                       ),
                                       Text(
                                         item.userAnswer,
-                                        style: MyTextStyle.poppinsLarge600.copyWith(
-                                          color: item.isCorrect
-                                              ? AppColors.gradientDark
-                                              : color.error.withValues(alpha: 0.7),
-                                        ),
+                                        style: MyTextStyle.poppinsLarge600
+                                            .copyWith(
+                                              color: item.isCorrect
+                                                  ? AppColors.gradientDark
+                                                  : color.error.withValues(
+                                                      alpha: 0.7,
+                                                    ),
+                                            ),
                                       ),
                                     ],
                                   ),
@@ -194,7 +446,8 @@ class QuizResultScreen extends ConsumerWidget {
 
   Widget _summaryResult(ColorScheme color) {
     final inCorrectAnwer =
-        quizAttemp.totalQuestions - (quizAttemp.correctAnswers ?? 0);
+        widget.quizAttemp.totalQuestions -
+        (widget.quizAttemp.correctAnswers ?? 0);
     return Row(
       spacing: 16.h,
       children: [
@@ -218,7 +471,10 @@ class QuizResultScreen extends ConsumerWidget {
                     strokeCap: StrokeCap.round,
                     strokeWidth: 10,
                     backgroundColor: color.outline.withValues(alpha: 0.4),
-                    value: ((quizAttemp.score ?? 0.0) / 100).clamp(0.0, 1.0),
+                    value: ((widget.quizAttemp.score ?? 0.0) / 100).clamp(
+                      0.0,
+                      1.0,
+                    ),
                     valueColor: AlwaysStoppedAnimation<Color>(color.primary),
                   ),
                 ),
@@ -226,7 +482,7 @@ class QuizResultScreen extends ConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      "${quizAttemp.score}%",
+                      "${widget.quizAttemp.score}%",
                       style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
@@ -234,7 +490,7 @@ class QuizResultScreen extends ConsumerWidget {
                       ),
                     ),
                     Text(
-                      "${quizAttemp.correctAnswers ?? 0} / ${quizAttemp.totalQuestions}",
+                      "${widget.quizAttemp.correctAnswers ?? 0} / ${widget.quizAttemp.totalQuestions}",
                       style: MyTextStyle.poppinsMedium600.copyWith(
                         color: color.outline.withValues(alpha: 0.7),
                       ),
@@ -267,7 +523,7 @@ class QuizResultScreen extends ConsumerWidget {
                         ),
 
                         Text(
-                          '${quizAttemp.correctAnswers}',
+                          '${widget.quizAttemp.correctAnswers}',
                           style: MyTextStyle.poppinsLarge,
                         ),
                       ],

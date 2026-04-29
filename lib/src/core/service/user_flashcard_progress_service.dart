@@ -24,9 +24,6 @@ class UserFlashcardProgressService {
     return result.fold(
       ifLeft: (e) => e.left(),
       ifRight: (items) {
-        if (items.isEmpty) {
-          return Either.left(AppException.errorWithMessage('Danh sách rỗng'));
-        }
         return Either.right(items);
       },
     );
