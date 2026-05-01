@@ -78,4 +78,32 @@ class AuthSource {
   }
 
   Future<void> signOut() async => await _client.auth.signOut();
+
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    try {
+      final user = _client.auth.currentUser;
+      final email = user?.email;
+      if (user == null || email == null || email.isEmpty) {
+        throw const AppException.unauthorized();
+      }
+
+      await _client.auth.signInWithPassword(
+        email: email,
+        password: currentPassword,
+      );
+
+      await _client.auth.updateUser(
+        UserAttributes(password: newPassword),
+      );
+    } on AuthException catch (e) {
+      throw SupabaseErrorHandle.handle(e);
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

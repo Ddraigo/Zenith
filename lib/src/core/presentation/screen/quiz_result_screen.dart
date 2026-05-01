@@ -288,46 +288,50 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen> {
       ),
       bottomNavigationBar: SafeArea(
         minimum: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(32.r),
+        child: Container(
+          margin: EdgeInsets.only(bottom: 16.h),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(32.r),
+                    ),
                   ),
+                  onPressed: () {
+                    context.pushReplacement(
+                      AppRouter.quizAttempPath,
+                      extra: widget.arg,
+                    );
+                  },
+                  icon: const Icon(Icons.refresh_rounded),
+                  label: const Text('Làm lại'),
                 ),
-                onPressed: () {
-                  context.pushReplacement(
-                    AppRouter.quizAttempPath,
-                    extra: widget.arg,
-                  );
-                },
-                icon: const Icon(Icons.refresh_rounded),
-                label: const Text('Làm lại'),
               ),
-            ),
-            SizedBox(height: 12.h),
-            SizedBox(
-              height: 50.h,
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                style: OutlinedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(32.r),
+              SizedBox(height: 12.h),
+              SizedBox(
+                height: 50.h,
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(32.r),
+                    ),
                   ),
+                  onPressed: () {
+                    ref.read(homeTapProvider.notifier).state = 0;
+                    context.go(AppRouter.homePath);
+                  },
+                  icon: const Icon(Icons.home_rounded),
+                  label: const Text('Về trang chủ'),
                 ),
-                onPressed: () {
-                  context.go(AppRouter.homePath);
-                },
-                icon: const Icon(Icons.home_rounded),
-                label: const Text('Về trang chủ'),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       body: SafeArea(

@@ -11,4 +11,14 @@ class SettingService {
   Future<void> logout()async{
     await _authService.signOut();
   }
+
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    await _authService.changePassword(
+      currentPassword: currentPassword,
+      newPassword: newPassword,
+    );
+  }
 }

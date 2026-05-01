@@ -31,4 +31,14 @@ class AuthRepository {
   Future<void> signOut() {
     return _source.signOut();
   }
+
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) {
+    return _source.changePassword(
+      currentPassword: currentPassword,
+      newPassword: newPassword,
+    );
+  }
 }

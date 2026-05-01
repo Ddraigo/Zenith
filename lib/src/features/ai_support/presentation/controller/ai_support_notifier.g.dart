@@ -50,7 +50,7 @@ final class AISupportNotifierProvider
   }
 }
 
-String _$aISupportNotifierHash() => r'3adca063a557ae8758cff302934680abed1d318f';
+String _$aISupportNotifierHash() => r'babc83b8cd3723a22c52f4b0399765195aa83729';
 
 final class AISupportNotifierFamily extends $Family
     with

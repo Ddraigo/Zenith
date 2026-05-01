@@ -43,25 +43,25 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       if (mounted) setState(() {});
     });
 
-    _updateErrorSub = ref.listenManual<AppException?>(
-      updateErrorProvider,
-      (prev, next) {
-        if (!mounted || next == null || prev == next) return;
+    _updateErrorSub = ref.listenManual<AppException?>(updateErrorProvider, (
+      prev,
+      next,
+    ) {
+      if (!mounted || next == null || prev == next) return;
 
-        final msg = MyHelper.getErrorMessage(next);
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(
-            SnackBar(
-              content: Text(msg),
-              duration: const Duration(seconds: 3),
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
+      final msg = MyHelper.getErrorMessage(next);
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(msg),
+            duration: const Duration(seconds: 3),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
 
-        ref.read(updateErrorProvider.notifier).state = null;
-      },
-    );
+      ref.read(updateErrorProvider.notifier).state = null;
+    });
   }
 
   @override
@@ -102,7 +102,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         );
   }
 
-  Future<void> _saveProfile({required bool isCreateMode, ProfileModel? profile}) async {
+  Future<void> _saveProfile({
+    required bool isCreateMode,
+    ProfileModel? profile,
+  }) async {
     final notifier = ref.read(profileProvider.notifier);
 
     final draft = isCreateMode
@@ -193,34 +196,34 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final hasProfileAsync = ref.watch(hasProfileProvider);
     final userEmail = ref.read(userEmailProvider);
 
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 5,
-          shadowColor: Colors.black26,
-          backgroundColor: color.onPrimary,
-          toolbarHeight: 70.h,
-          titleSpacing: 0,
-          centerTitle: true,
-          title: const Text('Thông tin cá nhân'),
-          leading: IconButton(
-            onPressed: () => context.pop(),
-            icon: const Icon(Icons.arrow_back_ios_new_rounded),
-          ),
-          actions: [
-            IconButton(
-              onPressed: () => context.push(AppRouter.settingPath),
-              icon: SvgPicture.asset(
-                MyIcons.setting,
-                colorFilter: ColorFilter.mode(
-                  color.primary.withValues(alpha: 0.7),
-                  BlendMode.srcIn,
-                ),
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 5,
+        shadowColor: Colors.black26,
+        backgroundColor: color.onPrimary,
+        toolbarHeight: 70.h,
+        titleSpacing: 0,
+        centerTitle: true,
+        title: const Text('Thông tin cá nhân'),
+        leading: IconButton(
+          onPressed: () => context.pop(),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () => context.push(AppRouter.settingPath),
+            icon: SvgPicture.asset(
+              MyIcons.setting,
+              colorFilter: ColorFilter.mode(
+                color.primary.withValues(alpha: 0.7),
+                BlendMode.srcIn,
               ),
             ),
-          ],
-        ),
-        body: Padding(
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: Container(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
           child: hasProfileAsync.when(
             data: (hasProfile) {
@@ -248,8 +251,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     formEnabled: _isEditing,
                     submitLabel: _isEditing ? 'Lưu' : 'Cập nhật profile',
                     onSubmit: _isEditing
-                        ? () =>
-                            _saveProfile(isCreateMode: false, profile: profile)
+                        ? () => _saveProfile(
+                            isCreateMode: false,
+                            profile: profile,
+                          )
                         : _startEdit,
                   );
                 },
@@ -274,8 +279,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     onPressed: () => ref.refresh(profileProvider),
                   );
                 },
-                loading: () =>
-                    const Center(child: CircularProgressIndicator()),
+                loading: () => const Center(child: CircularProgressIndicator()),
               );
             },
             error: (error, _) {
@@ -315,14 +319,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         SizedBox(height: 16.h),
         Text(userEmail, style: MyTextStyle.poppinsLarge.copyWith(height: 1)),
         SizedBox(height: 8.h),
-        Expanded(
-          child: _buildFormRegister(
-            isEditting: formEnabled,
-          ),
-        ),
+        Expanded(child: _buildFormRegister(isEditting: formEnabled)),
         ElevatedButton.icon(
           onPressed: onSubmit,
-        
+
           style: ElevatedButton.styleFrom(
             minimumSize: Size(double.maxFinite, 40.h),
             shape: RoundedRectangleBorder(
@@ -435,18 +435,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               .map(
                 (g) => DropdownMenuItem<Gender?>(
                   value: g,
-                  child: Text(
-                    switch (g) {
-                      Gender.none => 'Khác',
-                      Gender.male => 'Nam',
-                      Gender.female => 'Nữ',
-                    },
-                  ),
+                  child: Text(switch (g) {
+                    Gender.none => 'Khác',
+                    Gender.male => 'Nam',
+                    Gender.female => 'Nữ',
+                  }),
                 ),
               )
               .toList(),
           onChanged: isEditting
-              ? (value) => setState(() => _selectedGender = value ?? Gender.none)
+              ? (value) =>
+                    setState(() => _selectedGender = value ?? Gender.none)
               : null,
         ),
       ],

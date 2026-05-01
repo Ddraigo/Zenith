@@ -122,11 +122,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                             ),
                           ),
                           Text(
-                            'Let\'s Get Started',
+                            'Hãy bắt đầu',
                             style: MyTextStyle.poppinsHeading1,
                           ),
                           Text(
-                            'Create a new account',
+                            'Tạo tài khoản',
                             style: MyTextStyle.poppinsHeading2.copyWith(
                               color: colorScheme.onSecondary,
                             ),

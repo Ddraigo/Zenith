@@ -18,7 +18,7 @@ class SupabaseErrorHandle {
 
       switch (code) {
         case 'invalid_credentials':
-          return const AppException.unauthorized();
+          return const AppException.badRequest('Email hoặc mật khẩu không đúng');
           
         case 'email_exists':
         case 'user_already_exists':

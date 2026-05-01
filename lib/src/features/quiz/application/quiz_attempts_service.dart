@@ -324,6 +324,8 @@ class QuizAttemptsService {
             return Either.left(AppException.errorWithMessage('progressResult'));
           }
 
+          _ref.invalidate(statisticsProvider);
+
           return unit.right();
         },
       );

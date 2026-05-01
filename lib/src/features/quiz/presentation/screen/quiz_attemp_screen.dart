@@ -62,6 +62,7 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
       ),
     );
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: color.onPrimary,
         toolbarHeight: 70.h,
@@ -77,32 +78,34 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
         ),
       ),
       body: SafeArea(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: quizAsync.when(
-            data: (quizes) {
-              if (quizes.questions.isEmpty) {
-                return const Center(child: Text('Không có câu hỏi để làm bài'));
-              }
+        child: quizAsync.when(
+          data: (quizes) {
+            if (quizes.questions.isEmpty) {
+              return const Center(child: Text('Không có câu hỏi để làm bài'));
+            }
 
-              final isLastQuestion =
-                  _currentIndex >= quizes.questions.length - 1;
+            final isLastQuestion = _currentIndex >= quizes.questions.length - 1;
 
-              final answeredCount = quizes.questions
-                  .where(
-                    (q) => (quizes.userAnswers[q.flashcardId] ?? '')
-                        .trim()
-                        .isNotEmpty,
-                  )
-                  .length;
-              final progressValue = (answeredCount / quizes.questions.length)
-                  .clamp(0.0, 1.0);
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            final answeredCount = quizes.questions
+                .where(
+                  (q) => (quizes.userAnswers[q.flashcardId] ?? '')
+                      .trim()
+                      .isNotEmpty,
+                )
+                .length;
+            final progressValue = (answeredCount / quizes.questions.length)
+                .clamp(0.0, 1.0);
+            final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
+            final availableHeight = MediaQuery.sizeOf(context).height - keyboardInset;
+            final cardHeight = math.max(180.h, availableHeight * 0.28);
+
+            return Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: Stack(
                 children: [
-                  Expanded(
+                  Positioned.fill(
                     child: Column(
-                      spacing: 16.h,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         SizedBox(height: 8.h),
                         Row(
@@ -122,6 +125,7 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
                             ),
                           ],
                         ),
+                        SizedBox(height: 8.h),
                         LinearProgressIndicator(
                           minHeight: 16.h,
                           borderRadius: BorderRadius.circular(10.r),
@@ -131,7 +135,9 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
                             color.primary,
                           ),
                         ),
-                        Expanded(
+                        SizedBox(height: 16.h),
+                        SizedBox(
+                          height: cardHeight,
                           child: CardSwiper(
                             allowedSwipeDirection:
                                 const AllowedSwipeDirection.none(),
@@ -142,7 +148,6 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
                               quizes.questions.length,
                             ),
                             backCardOffset: const Offset(0, 20),
-
                             cardBuilder:
                                 (
                                   context,
@@ -167,71 +172,75 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
                             },
                           ),
                         ),
-                        Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 16.h),
-                            child: _userInput(color),
-                          ),
-                        ),
                       ],
                     ),
                   ),
-
-                  SafeArea(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 32.h),
-                      child: ElevatedButton(
-                        onPressed: _isSubmitting
-                            ? null
-                            : () => _handleNextOrSubmit(quizes),
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadiusGeometry.circular(32.r),
-                          ),
-                        ),
-                        child: Row(
-                          spacing: 8.w,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              isLastQuestion ? 'Nộp bài' : 'Câu tiếp theo',
-                              style: MyTextStyle.poppinsMedium600.copyWith(
-                                color: color.onPrimary,
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: AnimatedPadding(
+                      duration: const Duration(milliseconds: 180),
+                      curve: Curves.easeOut,
+                      padding: EdgeInsets.only(bottom: keyboardInset + 16.h),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _userInput(color),
+                          SizedBox(height: 20.h),
+                          ElevatedButton(
+                            onPressed: _isSubmitting
+                                ? null
+                                : () => _handleNextOrSubmit(quizes),
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadiusGeometry.circular(32.r),
                               ),
                             ),
-                            Icon(
-                              isLastQuestion
-                                  ? Icons.check_rounded
-                                  : Icons.arrow_forward_rounded,
-                              color: color.onPrimary,
+                            child: Row(
+                              spacing: 8.w,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  isLastQuestion ? 'Nộp bài' : 'Câu tiếp theo',
+                                  style: MyTextStyle.poppinsMedium600.copyWith(
+                                    color: color.onPrimary,
+                                  ),
+                                ),
+                                Icon(
+                                  isLastQuestion
+                                      ? Icons.check_rounded
+                                      : Icons.arrow_forward_rounded,
+                                  color: color.onPrimary,
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ],
-              );
-            },
-            error: (error, _) {
-              final msg = error is AppException
-                  ? MyHelper.getErrorMessage(error)
-                  : 'Đã xảy ra lỗi';
-              return RetryWidget(
-                msg: msg,
-                onPressed: () => ref.refresh(
-                  quizSessionProvider(
-                    widget.arg.type,
-                    widget.arg.topicId,
-                    widget.arg.assignedDate,
-                  ),
+              ),
+            );
+          },
+          error: (error, _) {
+            final msg = error is AppException
+                ? MyHelper.getErrorMessage(error)
+                : 'Đã xảy ra lỗi';
+            return RetryWidget(
+              msg: msg,
+              onPressed: () => ref.refresh(
+                quizSessionProvider(
+                  widget.arg.type,
+                  widget.arg.topicId,
+                  widget.arg.assignedDate,
                 ),
-              );
-            },
-            loading: () => Center(child: CircularProgressIndicator()),
-          ),
+              ),
+            );
+          },
+          loading: () => Center(child: CircularProgressIndicator()),
         ),
       ),
+      
     );
   }
 

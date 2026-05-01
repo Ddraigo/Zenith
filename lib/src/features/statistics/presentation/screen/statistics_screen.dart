@@ -135,7 +135,6 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                                   fontSize: 20.sp,
                                 ),
                               ),
-                              
                                 TextButton(
                                   onPressed: () {
                                     showModalBottomSheet(

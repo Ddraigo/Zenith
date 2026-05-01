@@ -177,4 +177,45 @@ class AuthService {
       rethrow;
     }
   }
+
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    _validateChangePasswordInput(
+      currentPassword: currentPassword,
+      newPassword: newPassword,
+    );
+
+    try {
+      await _repo.changePassword(
+        currentPassword: currentPassword.trim(),
+        newPassword: newPassword.trim(),
+      );
+    } on AppException {
+      rethrow;
+    } catch (e, st) {
+      developer.log(
+        'AuthService: changePassword unexpected error',
+        error: e,
+        stackTrace: st,
+      );
+      throw const AppException.unknown();
+    }
+  }
+
+  void _validateChangePasswordInput({
+    required String currentPassword,
+    required String newPassword,
+  }) {
+    if (!Validator.isValidPassword(currentPassword)) {
+      throw const AppException.badRequest('Mật khẩu hiện tại không hợp lệ');
+    }
+    if (!Validator.isValidPassword(newPassword)) {
+      throw const AppException.badRequest('Mật khẩu mới không hợp lệ');
+    }
+    if (currentPassword.trim() == newPassword.trim()) {
+      throw const AppException.badRequest('Mật khẩu mới phải khác mật khẩu cũ');
+    }
+  }
 }
