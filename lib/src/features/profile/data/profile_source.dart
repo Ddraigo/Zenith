@@ -1,6 +1,8 @@
 import 'dart:developer' as developer;
+import 'dart:io';
 
 import 'package:app_demo/src/features/profile/data/profile_dto.dart';
+import 'package:app_demo/src/shared/constants/avatar_config.dart';
 import 'package:app_demo/src/shared/constants/format.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:app_demo/src/shared/http/supabase_provider.dart';
@@ -97,6 +99,50 @@ class ProfileSource {
     return Either.right(ProfileDTO.fromJson(request));
     } catch (e, st) {
       developer.log('ProfileSource: editUserProfile failed: $e');
+      developer.log('$st');
+      return Either.left(SupabaseErrorHandle.handle(e));
+    }
+  }
+
+  Future<Either<AppException, ProfileDTO>> uploadProfileAvatar({
+    required String userId,
+    required File imageFile,
+  }) async {
+    try {
+      final avatarPath = AvatarConfig.getAvatarPath(userId);
+
+      try {
+        await _client.storage
+            .from(AvatarConfig.bucketName)
+            .remove([avatarPath]);
+      } catch (e) {
+        developer.log('ProfileSource: Old avatar not found, continuing upload');
+      }
+
+      await _client.storage.from(AvatarConfig.bucketName).upload(
+        avatarPath,
+        imageFile,
+        fileOptions: FileOptions(
+          cacheControl: AvatarConfig.cacheControl,
+          upsert: true,
+        ),
+      );
+
+        final publicUrl =
+          _client.storage.from(AvatarConfig.bucketName).getPublicUrl(avatarPath);
+        final cacheBustedUrl =
+          '$publicUrl?t=${DateTime.now().millisecondsSinceEpoch}';
+
+      final request = await _client
+          .from('profiles')
+          .update({'avatar_url': cacheBustedUrl})
+          .eq('id', userId)
+          .select()
+          .single();
+
+      return Either.right(ProfileDTO.fromJson(request));
+    } catch (e, st) {
+      developer.log('ProfileSource: uploadProfileAvatar failed: $e');
       developer.log('$st');
       return Either.left(SupabaseErrorHandle.handle(e));
     }

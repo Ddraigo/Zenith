@@ -1,4 +1,5 @@
 import 'dart:developer' as developer;
+import 'dart:io';
 
 import 'package:app_demo/src/core/provider/current_user_id_notifire.dart';
 import 'package:app_demo/src/features/profile/data/profile_dto.dart';
@@ -113,6 +114,25 @@ class ProfileService {
         dayOfBirth: userProfile.dayOfBirth,
         avatarUrl: userProfile.avatarUrl
       )
+    );
+  }
+
+  Future<Either<AppException, ProfileModel>> updateProfileAvatar(
+    File imageFile,
+  ) async {
+    if (_currentUserId.isEmpty) {
+      return Either.left(AppException.errorWithMessage('Không tìm thấy user'));
+    }
+    final result = await _repo.uploadProfileAvatar(
+      userId: _currentUserId,
+      imageFile: imageFile,
+    );
+    return result.fold(
+      ifLeft: (e) {
+        developer.log('ProfileService: updateProfileAvatar failed', error: e);
+        return e.left();
+      },
+      ifRight: (profile) => profile.right(),
     );
   }
 }

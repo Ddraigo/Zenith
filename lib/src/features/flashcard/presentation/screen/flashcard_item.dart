@@ -150,17 +150,12 @@ class _FlashcardItemState extends State<FlashcardItem>
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     context: context,
                     builder: (context){
-                      return DraggableScrollableSheet(
-                        initialChildSize: 0.6,
-                        minChildSize: 0.4,
-                        maxChildSize: 0.95,
-                        expand: false,
-                        builder: (context, scrollController){
-                          return AiSupportBottomSheet(
-                            key: ValueKey(widget.flashcard.id),
-                            flashcard: widget.flashcard, 
-                            controller: scrollController,);
-                        }
+                      return SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.9,
+                        child: AiSupportBottomSheet(
+                          key: ValueKey(widget.flashcard.id),
+                          flashcard: widget.flashcard,
+                        ),
                       );
                     }
                         

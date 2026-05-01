@@ -26,7 +26,7 @@ class AppStartPage extends ConsumerWidget {
         );
       }, 
       error: (e, st) => const Center(child: Text('Đã có lỗi xảy ra'),), 
-      loading: ()=> const LoadingWidget(isLoading: true, child: Text('Đang tải'),));
+      loading: ()=> const LoadingWidget(isLoading: true, child: SizedBox.shrink()));
     
   }
 }

@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/provider/current_user_id_notifire.dart';
+import '../../profile/presentation/controller/profile_notifier.dart';
 import '../../../shared/widgets/my_avatar.dart';
 import '../../flashcard/presentation/screen/flashcard_screen.dart';
 import '../../statistics/presentation/screen/statistics_screen.dart';
@@ -22,6 +24,12 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final index = ref.watch(homeTapProvider);
     final color = Theme.of(context).colorScheme;
+    final profileAsync = ref.watch(profileProvider);
+    final avatarUrl = profileAsync.maybeWhen(
+      data: (profile) => profile.avatarUrl ?? '',
+      orElse: () => '',
+    );
+    final displayName = ref.watch(userEmailProvider);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: color.onPrimary,
@@ -32,7 +40,8 @@ class HomeScreen extends ConsumerWidget {
         leading: Container(
           margin: EdgeInsets.only(left: 16.w),
           child: MyAvatar(
-            userAvatar: '', 
+            userAvatar: avatarUrl,
+            displayName: displayName,
             size: 40.r,
             onTap: () => context.push(AppRouter.profilePath),
           ),

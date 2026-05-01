@@ -1,6 +1,7 @@
 import 'package:app_demo/configs/routes/app_router.dart';
 import 'package:app_demo/configs/themes/text_style.dart';
 import 'package:app_demo/src/core/provider/current_user_id_notifire.dart';
+import 'package:app_demo/src/core/service/image_upload_service.dart';
 import 'package:app_demo/src/features/profile/domain/profile_model.dart';
 import 'package:app_demo/src/features/profile/presentation/controller/profile_notifier.dart';
 import 'package:app_demo/src/shared/widgets/my_avatar.dart';
@@ -133,6 +134,59 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     setState(() => _isEditing = true);
   }
 
+  void _onAvatarEditPressed() async {
+    final imageService = ref.read(imageUploadServiceProvider);
+    try {
+      final imageFile = await imageService.pickImage();
+      if (imageFile == null) {
+        // User cancelled picker
+        return;
+      }
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Đang tải ảnh lên...'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      final notifier = ref.read(profileProvider.notifier);
+      final ok = await notifier.updateProfileAvatar(imageFile);
+
+      if (!mounted) return;
+      if (!ok) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        return;
+      }
+
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          const SnackBar(
+            content: Text('Ảnh đã được cập nhật!'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+    } catch (e) {
+      if (!mounted) return;
+
+      String errorMsg = 'Có lỗi xảy ra. Vui lòng thử lại.';
+      if (e is AppException) {
+        errorMsg = MyHelper.getErrorMessage(e);
+      }
+
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(errorMsg),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
@@ -252,7 +306,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return Column(
       children: [
         SizedBox(height: 16.h),
-        _userAvatar(userAvatar, color),
+        _userAvatar(
+          userAvatar,
+          userEmail,
+          color,
+          onPressed: _onAvatarEditPressed,
+        ),
         SizedBox(height: 16.h),
         Text(userEmail, style: MyTextStyle.poppinsLarge.copyWith(height: 1)),
         SizedBox(height: 8.h),
@@ -263,8 +322,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ),
         ElevatedButton.icon(
           onPressed: onSubmit,
+        
           style: ElevatedButton.styleFrom(
-            minimumSize: Size(double.maxFinite, 35.h),
+            minimumSize: Size(double.maxFinite, 40.h),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(48.r),
             ),
@@ -285,7 +345,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
-  Widget _userAvatar(String userAvatar, ColorScheme color) {
+  Widget _userAvatar(
+    String userAvatar,
+    String displayName,
+    ColorScheme color, {
+    required VoidCallback onPressed,
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -298,7 +363,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.grey, width: 3),
               ),
-              child: MyAvatar(userAvatar: userAvatar, size: 45.r),
+              child: MyAvatar(
+                userAvatar: userAvatar,
+                displayName: displayName,
+                size: 45.r,
+              ),
             ),
             Positioned(
               right: -12,
@@ -322,7 +391,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ),
                 child: IconButton(
                   padding: EdgeInsets.zero,
-                  onPressed: () {},
+                  onPressed: onPressed,
                   icon: Icon(Icons.edit, color: color.onPrimary),
                 ),
               ),

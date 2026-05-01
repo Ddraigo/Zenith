@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:app_demo/src/features/profile/data/profile_dto.dart';
 import 'package:app_demo/src/features/profile/data/profile_source.dart';
 import 'package:app_demo/src/features/profile/domain/profile_model.dart';
@@ -63,6 +65,20 @@ class ProfileRepository {
       );
     return result.fold(
       ifLeft: (e) => e.left(), 
+      ifRight: (dto) => dto.toDomain().right(),
+    );
+  }
+
+  Future<Either<AppException, ProfileModel>> uploadProfileAvatar({
+    required String userId,
+    required File imageFile,
+  }) async {
+    final result = await _ref.uploadProfileAvatar(
+      userId: userId,
+      imageFile: imageFile,
+    );
+    return result.fold(
+      ifLeft: (e) => e.left(),
       ifRight: (dto) => dto.toDomain().right(),
     );
   }

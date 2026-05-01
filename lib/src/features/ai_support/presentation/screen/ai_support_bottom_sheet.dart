@@ -35,24 +35,26 @@ class AiSupportBottomSheet extends ConsumerWidget {
         child: aiSupportAsycn.when(
           data: (aiSupportData) {
             if (aiSupportData.source == TypeSource.quotaExceeded) {
-              return RetryWidget(
-                msg: 'Hiện đã hết lượt gọi AI, vui lòng thử lại sau',
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        'AI đang tạm hết quota, vui lòng thử lại sau',
-                      ),
-                    ),
-                  );
-                },
+              return SizedBox(
+                height: MediaQuery.of(context).size.height * 0.8,
+                child: Center(
+                  child: Text(
+                    'Hiện đã hết lượt gọi AI, vui lòng chờ đến ngày mai',
+                    style: MyTextStyle.poppinsMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               );
             }
             if (aiSupportData.source == TypeSource.pending) {
-              return Center(
-                child: Text(
-                  'Vui lòng chờ AI phản hồi',
-                  style: MyTextStyle.poppinsMedium,
+              return SizedBox(
+                height: MediaQuery.of(context).size.height * 0.8,
+                child: Center(
+                  child: Text(
+                    'Vui lòng chờ trong giây lát',
+                    style: MyTextStyle.poppinsMedium,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               );
             }
@@ -101,7 +103,10 @@ class AiSupportBottomSheet extends ConsumerWidget {
                   .refresh(_flashcardId),
             );
           },
-          loading: () => Center(child: CircularProgressIndicator()),
+          loading: () => SizedBox(
+            height: MediaQuery.of(context).size.height * 0.8,
+            child: Center(child: CircularProgressIndicator()),
+          ),
         ),
       ),
     );

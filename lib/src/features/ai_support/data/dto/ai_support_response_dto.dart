@@ -79,8 +79,9 @@ List<ExampleItemModel> _asExamples(dynamic value) {
 
 TypeSource _parseSource(String sourceString){
   try {
+    final normalized = sourceString.toLowerCase().replaceAll('_', '');
     return TypeSource.values.firstWhere(
-      (e) => e.name == sourceString.toLowerCase().replaceAll('_', ''),
+      (e) => e.name.toLowerCase() == normalized,
       orElse: () => TypeSource.unknown,
     );
   } catch (e) {

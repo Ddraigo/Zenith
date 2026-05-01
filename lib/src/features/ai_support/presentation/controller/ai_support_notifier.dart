@@ -11,12 +11,14 @@ part 'ai_support_notifier.g.dart';
 final aiQuotaBlockedProvider = StateProvider<bool>((ref) => false);
 final aiSupportPendingCountProvider = StateProvider<int>((ref) => 0);
 
+const _pendingPollInterval = Duration(seconds: 3);
 const _maxPendingPolls = 45;
 const _quotaBlockDuration = Duration(minutes: 1);
 
 @riverpod
 class AISupportNotifier extends _$AISupportNotifier {
   Timer? _quotaResetTimer;
+  Timer? _pendingPollTimer;
 
   void _blockQuotaTemporarily() {
     ref.read(aiQuotaBlockedProvider.notifier).state = true;
@@ -40,9 +42,18 @@ class AISupportNotifier extends _$AISupportNotifier {
   Future<AISupportResultModel> build(String flashcardId) async {
     ref.onDispose(() {
       _quotaResetTimer?.cancel();
+      _pendingPollTimer?.cancel();
     });
     _resetPendingCount();
     return _loadData(flashcardId);
+  }
+
+  void _schedulePendingPoll(String flashcardId) {
+    if (_pendingPollTimer?.isActive ?? false) return;
+    _pendingPollTimer = Timer(_pendingPollInterval, () {
+      if (!ref.mounted) return;
+      refresh(flashcardId);
+    });
   }
 
   Future<AISupportResultModel> _loadData(String flashcardId) async {
@@ -74,11 +85,13 @@ class AISupportNotifier extends _$AISupportNotifier {
             if (pendingCount > _maxPendingPolls) {
               developer.log('AISupportNotifier: pending timeout');
               throw AppException.errorWithMessage(
-                'Yêu cầu đã hết hạn. Vui lòng thử lại',
+                'Yêu cầu đã hết hạn. Vui lòng thử lại sau',
               );
             }
+            _schedulePendingPoll(flashcardId);
           } else {
             _resetPendingCount();
+            _pendingPollTimer?.cancel();
           }
           return data;
         },

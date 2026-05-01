@@ -8,11 +8,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:app_demo/src/shared/widgets/bottom_sheet_list_item.dart';
 
 import '../../../../../configs/themes/text_style.dart';
 import '../../../flashcard/domain/daily_word_summary.dart';
+import '../../../../core/provider/shared_flashcard_notifier.dart';
 import '../../../topic/presentation/controller/topic_flashcard_notifier.dart';
-
 
 class QuizList extends StatelessWidget {
   const QuizList({
@@ -28,6 +29,7 @@ class QuizList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
+    final allDailyAsync = ref.watch(getDailyAllTopicsGroupedProvider);
     return Column(
       children: [
         if (userDailyWordList.isNotEmpty) ...[
@@ -42,7 +44,24 @@ class QuizList extends StatelessWidget {
                   style: MyTextStyle.poppinsMedium.copyWith(fontSize: 17.sp),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (_) => BottomSheetListItem(
+                        title: 'Từ vựng hằng ngày',
+                        builder: (scrollController) =>
+                            _buildAllDailyListSheet(
+                          context,
+                          allDailyAsync,
+                          color,
+                          scrollController,
+                        ),
+                      ),
+                    );
+                  },
                   child: Text(
                     'Tất cả',
                     style: MyTextStyle.poppinsMedium.copyWith(fontSize: 17.sp),
@@ -65,15 +84,21 @@ class QuizList extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Text('Từ vựng chủ đề',style: MyTextStyle.poppinsMedium.copyWith(
-                fontSize: 17.sp
-              )),
-                  TextButton(
-                    onPressed: () {},
-                    child: Text('Tất cả', style: MyTextStyle.poppinsMedium.copyWith(
-                fontSize: 17.sp
-              )),
+                  Expanded(
+                    child: Text(
+                      'Từ vựng chủ đề',
+                      style: MyTextStyle.poppinsMedium.copyWith(fontSize: 17.sp),
+                    ),
                   ),
+                  // TextButton(
+                  //   onPressed: () {},
+                  //   child: Text(
+                  //     'Tất cả',
+                  //     style: MyTextStyle.poppinsMedium.copyWith(
+                  //       fontSize: 17.sp,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
               _topicQuizList(context, topicList, color),
@@ -96,7 +121,7 @@ class QuizList extends StatelessWidget {
         itemCount: items.length,
         itemBuilder: (context, index) {
           final item = items[index];
-      
+
           return GestureDetector(
             onTap: () {
               final args = QuizAttemptArgs(
@@ -105,7 +130,7 @@ class QuizList extends StatelessWidget {
                 title: item.topicName,
                 assignedDate: item.assignedDate,
               );
-              
+
               context.push(AppRouter.quizAttempPath, extra: args);
             },
             child: Container(
@@ -114,17 +139,18 @@ class QuizList extends StatelessWidget {
               width: 140.w,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16.r),
-                color: color.outline.withValues(alpha:  0.08),
-                border: Border.all(color: color.outlineVariant.withValues(alpha: 0.5)),
+                color: color.outline.withValues(alpha: 0.08),
+                border: Border.all(
+                  color: color.outlineVariant.withValues(alpha: 0.5),
+                ),
               ),
-      
+
               child: Column(
                 spacing: 2.h,
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  
                   Text(
                     item.topicName.isEmpty ? 'N/A' : item.topicName,
                     style: MyTextStyle.poppinsLarge600.copyWith(
@@ -142,26 +168,131 @@ class QuizList extends StatelessWidget {
                       color: color.primary,
                     ),
                   ),
-                  // Row(
-                  //   spacing: 2.w,
-                  //   children: [
-                  //     Icon(
-                  //       Icons.play_circle_outline_rounded,
-                  //       color: color.outline,
-                  //     ),
-                  //     Text(
-                  //       "Start",
-                  //       style: MyTextStyle.poppinsMedium700.copyWith(
-                  //         color: color.outline,
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
+
                 ],
               ),
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _dailyWordFullList(
+    BuildContext context,
+    List<DailyWordSummaryModel> items,
+    ColorScheme color,
+    ScrollController scrollController,
+  ) {
+    return ListView.builder(
+      controller: scrollController,
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        final item = items[index];
+        return Container(
+          margin: EdgeInsets.symmetric(vertical: 8.h),
+          padding: EdgeInsets.all(12.r),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16.r),
+            color: color.outline.withValues(alpha: 0.08),
+            border: Border.all(
+              color: color.outlineVariant.withValues(alpha: 0.5),
+            ),
+          ),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16.r),
+            onTap: () {
+              final args = QuizAttemptArgs(
+                type: QuizAttemptType.daily,
+                topicId: item.topicId,
+                title: item.topicName,
+                assignedDate: item.assignedDate,
+              );
+              Navigator.of(context).pop();
+              context.push(AppRouter.quizAttempPath, extra: args);
+            },
+            child: Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(8.r),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: color.secondaryContainer.withValues(alpha: 0.8),
+                  ),
+                  child: SvgPicture.asset(
+                    MyIcons.learn,
+                    colorFilter: ColorFilter.mode(
+                      color.primary,
+                      BlendMode.srcIn,
+                    ),
+                    height: 28.h,
+                    width: 28.w,
+                  ),
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.topicName.isEmpty ? 'N/A' : item.topicName,
+                        style: MyTextStyle.poppinsLarge600.copyWith(
+                          fontSize: 18.sp,
+                          color: color.onPrimaryFixedVariant
+                              .withValues(alpha: 0.7),
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                      Text(
+                        Format.formatDMY(item.assignedDate).isEmpty
+                            ? 'N/A'
+                            : Format.formatDMY(item.assignedDate),
+                        style: MyTextStyle.poppinsMedium.copyWith(
+                          color: color.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 18,
+                  color: color.outline.withValues(alpha: 0.6),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildAllDailyListSheet(
+    BuildContext context,
+    AsyncValue<Map<DateTime, List<DailyWordSummaryModel>>> allDailyAsync,
+    ColorScheme color,
+    ScrollController scrollController,
+  ) {
+    return allDailyAsync.when(
+      data: (dailyWords) {
+        final items = dailyWords.values.expand((e) => e).toList();
+        if (items.isEmpty) {
+          return Center(
+            child: Text(
+              'Chưa có dữ liệu',
+              style: MyTextStyle.poppinsMedium,
+            ),
+          );
+        }
+        return _dailyWordFullList(context, items, color, scrollController);
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, _) => Center(
+        child: Text(
+          'Đã xảy ra lỗi',
+          style: MyTextStyle.poppinsMedium,
+        ),
       ),
     );
   }
@@ -253,9 +384,11 @@ class QuizList extends StatelessWidget {
                 },
                 style: IconButton.styleFrom(
                   padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
-                  
                 ),
-                icon: Icon(Icons.arrow_forward_ios_rounded, color: color.outline.withValues(alpha:  0.5),),
+                icon: Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  color: color.outline.withValues(alpha: 0.5),
+                ),
               ),
             ],
           ),

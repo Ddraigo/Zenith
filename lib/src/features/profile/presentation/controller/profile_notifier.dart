@@ -1,4 +1,5 @@
 import 'dart:developer' as developer;
+import 'dart:io';
 
 import 'package:app_demo/src/core/provider/current_user_id_notifire.dart';
 import 'package:app_demo/src/features/profile/application/profile_service.dart';
@@ -39,7 +40,6 @@ class ProfileNotifier extends _$ProfileNotifier {
 
   @override
   Future<ProfileModel> build() async {
-    // keep provider alive to avoid frequent dispose/recreate fetches
     try {
       ref.keepAlive();
     } catch (_) {}
@@ -120,6 +120,31 @@ class ProfileNotifier extends _$ProfileNotifier {
       nameError: validateUserName(userName),
       dayOfBirthError: validateDayOfBirth(dayOfBirth),
     );
+  }
+
+  Future<bool> updateProfileAvatar(File imageFile) async {
+    try {
+      developer.log('Starting avatar upload for: ${imageFile.path}');
+      final result = await ref.read(profileServiceProvider).updateProfileAvatar(imageFile);
+      return result.fold(
+        ifLeft: (e) {
+          ref.read(updateErrorProvider.notifier).state = e;
+          developer.log('updateProfileAvatar failed', error: e);
+          return false;
+        },
+        ifRight: (updated) {
+          ref.read(updateErrorProvider.notifier).state = null;
+          state = AsyncData(updated);
+          developer.log('updateProfileAvatar success');
+          return true;
+        },
+      );
+    } catch (e, st) {
+      developer.log('updateProfileAvatar exception', error: e, stackTrace: st);
+      final exception = AppException.errorWithMessage('Lỗi cập nhật ảnh: $e');
+      ref.read(updateErrorProvider.notifier).state = exception;
+      return false;
+    }
   }
 
   // void setProfile(ProfileModel draft){

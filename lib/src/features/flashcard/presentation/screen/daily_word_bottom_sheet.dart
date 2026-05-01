@@ -25,7 +25,7 @@ class DailyWordBottomSheet extends ConsumerWidget {
     return DraggableScrollableSheet(
       expand: false,
       maxChildSize: 0.9,
-      minChildSize: 0.3,
+      minChildSize: 0.9,
       builder: (context, scrollController) {
         return Container(
           decoration: BoxDecoration(

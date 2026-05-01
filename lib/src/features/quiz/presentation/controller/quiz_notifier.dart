@@ -3,7 +3,6 @@ import 'package:app_demo/src/features/quiz/domain/question_model.dart';
 import 'package:app_demo/src/core/domain/quiz_attempt_args.dart';
 import 'package:app_demo/src/features/quiz/domain/quiz_attempts_model.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
-import 'package:app_demo/src/shared/constants/format.dart';
 import 'package:dart_either/dart_either.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -69,7 +68,7 @@ class QuizSessionNotifier extends _$QuizSessionNotifier {
       agrs: QuizAttemptArgs(
         type: type,
         topicId: topicId,
-        assignedDate: assignedDate, // Keep original, don't normalize
+        assignedDate: assignedDate, 
       ),
     );
   }

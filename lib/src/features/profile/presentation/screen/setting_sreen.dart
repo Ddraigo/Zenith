@@ -1,7 +1,8 @@
 import 'package:app_demo/configs/routes/app_router.dart';
 import 'package:app_demo/configs/themes/text_style.dart';
-import 'package:app_demo/src/core/provider/current_user_id_notifire.dart';
+import 'package:app_demo/src/features/profile/presentation/controller/profile_notifier.dart';
 import 'package:app_demo/src/features/profile/presentation/controller/setting_notifier.dart';
+import 'package:app_demo/src/shared/utils/logout_utils.dart';
 import 'package:app_demo/src/shared/constants/images_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,9 +18,9 @@ class SettingSreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final color = Theme.of(context).colorScheme;
-    final notificationStatus = ref.watch(pushNotificationProvider);
-    final darkModeStatus = ref.watch(darkModeProvider);
-    
+    // final notificationStatus = ref.watch(pushNotificationProvider);
+    // final darkModeStatus = ref.watch(darkModeProvider);
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -37,13 +38,57 @@ class SettingSreen extends ConsumerWidget {
             icon: const Icon(Icons.arrow_back_ios_new_rounded),
           ),
         ),
+        bottomNavigationBar: SafeArea(
+          child: Container(
+            margin: EdgeInsets.symmetric(vertical: 16.h),
+            padding: EdgeInsets.symmetric( horizontal: 16.w),
+            child: ElevatedButton(
+              onPressed: () {
+                ref.read(settingProvider.notifier).logout();
+                if (context.mounted) {
+                  invalidateUserSessionProviders(ref);
+                  context.go(AppRouter.loginPath);
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: color.onPrimary,
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+              ),
+              child: Row(
+                spacing: 10.w,
+                children: [
+                  SvgPicture.asset(MyIcons.logout, width: 40.w, height: 40.h),
+                  Expanded(
+                    child: Text(
+                      'Đăng xuất',
+                      style: MyTextStyle.poppinsMedium.copyWith(fontSize: 18.sp),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+
+        // _buttonAction(
+        //     onPressed: (){
+        //       ref.read(settingProvider.notifier).logout();
+        //       if(context.mounted){
+        //         ref.invalidate(currentUserIdProvider);
+        //         context.go(AppRouter.loginPath);
+        //       }
+        //     },
+        //     color: color,
+        //     label: 'Đăng xuất',
+        //     iconPath: MyIcons.logout,
+        //   ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             spacing: 8.h,
             children: [
               _account(color, ref, context),
-              SizedBox(height: 8.h,),
+              SizedBox(height: 8.h),
               // _general(
               //   color: color,
               //   ref: ref,
@@ -74,19 +119,6 @@ class SettingSreen extends ConsumerWidget {
           color: color,
           label: 'Đổi mật khẩu',
           iconPath: MyIcons.changePassword,
-        ),
-
-        _buttonAction(
-          onPressed: (){
-            ref.read(settingProvider.notifier).logout();
-            if(context.mounted){
-              ref.invalidate(currentUserIdProvider);
-              context.go(AppRouter.loginPath);
-            }
-          },
-          color: color,
-          label: 'Đăng xuất',
-          iconPath: MyIcons.logout,
         ),
       ],
     );

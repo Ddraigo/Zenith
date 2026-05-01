@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:app_demo/src/shared/widgets/bottom_sheet_list_item.dart';
 
 import '../../../../core/domain/quiz_attempt_args.dart';
 import '../../../../shared/constants/format.dart';
@@ -120,8 +121,8 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 6.h),
-                        _statsProgress(color),
+                        // SizedBox(height: 6.h),
+                        // _statsProgress(color),
                         SizedBox(height: 8.h),
                         if (data.quizAttemptsModel.isNotEmpty)
                           Row(
@@ -136,7 +137,24 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                               ),
                               
                                 TextButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.transparent,
+                                      builder: (_) => BottomSheetListItem(
+                                        title: 'Quiz đã làm',
+                                        builder: (scrollController) =>
+                                            _reviewQuizListSheet(
+                                          quizList: data.quizAttemptsModel,
+                                          topicList: topicList,
+                                          color: color,
+                                          context: context,
+                                          scrollController: scrollController,
+                                        ),
+                                      ),
+                                    );
+                                  },
                                   child: Text(
                                     'Tất cả',
                                     style: MyTextStyle.poppinsMedium,
@@ -195,12 +213,13 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
     required ColorScheme color,
     required BuildContext context,
   }) {
+    final previewItems = quizList.take(10).toList();
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: quizList.length,
+      itemCount: previewItems.length,
       itemBuilder: (context, index) {
-        final item = quizList[index];
+        final item = previewItems[index];
         
         final topicName = topicList.when(
           data: (topics) => topics
@@ -265,6 +284,126 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                             topicName,
                             style: MyTextStyle.poppinsLarge600.copyWith(
                               color: color.inverseSurface.withValues(alpha: 0.8),
+                            ),
+                          ),
+                          Text(
+                            Format.formatDMY(item.createdAt),
+                            style: MyTextStyle.poppinsMedium600.copyWith(
+                              color: color.outline.withValues(alpha: 0.6),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(right: 8.h),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            '${item.score} score',
+                            style: MyTextStyle.poppinsLarge600.copyWith(
+                              color: color.primary,
+                            ),
+                          ),
+                          Text(
+                            '${item.correctAnswers}/${item.totalQuestions}',
+                            style: MyTextStyle.poppinsMedium600.copyWith(
+                              color: color.outline.withValues(alpha: 0.6),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _reviewQuizListSheet({
+    required List<QuizAttemptsModel> quizList,
+    required AsyncValue<List<TopicModel>> topicList,
+    required ColorScheme color,
+    required BuildContext context,
+    required ScrollController scrollController,
+  }) {
+    return ListView.builder(
+      controller: scrollController,
+      itemCount: quizList.length,
+      itemBuilder: (context, index) {
+        final item = quizList[index];
+        final topicName = topicList.when(
+          data: (topics) => topics
+              .firstWhere(
+                (t) => t.id == item.topicId,
+                orElse: () => TopicModel(id: 0, name: 'N/A'),
+              )
+              .name,
+          error: (_, _) => 'error: N/A',
+          loading: () => '...',
+        );
+        return Container(
+          margin: EdgeInsets.symmetric(vertical: 8.h),
+          child: Material(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(48.r),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(48.r),
+              onTap: () {
+                Navigator.of(context).pop();
+                context.push(
+                  AppRouter.quizResultPath,
+                  extra: QuizResultRouteArgs(
+                    quizAttemp: item,
+                    arg: QuizAttemptArgs(
+                      type: parseAttemptType(item.attemptType),
+                      topicId: item.topicId ?? 0,
+                      attemptId: item.id,
+                      assignedDate: Format.normalizeDate(item.createdAt),
+                    ),
+                  ),
+                );
+              },
+              child: Ink(
+                padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.h),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(48.r),
+                  color: color.onPrimary,
+                ),
+                child: Row(
+                  spacing: 16.h,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(8.r),
+                      decoration: BoxDecoration(
+                        color: color.outline.withValues(alpha: 0.09),
+                        shape: BoxShape.circle,
+                      ),
+                      child: SvgPicture.asset(
+                        width: 30.w,
+                        height: 30.h,
+                        MyIcons.learn,
+                        colorFilter: ColorFilter.mode(
+                          color.primary,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            topicName,
+                            style: MyTextStyle.poppinsLarge600.copyWith(
+                              color: color.inverseSurface
+                                  .withValues(alpha: 0.8),
                             ),
                           ),
                           Text(
