@@ -27,7 +27,7 @@ class AuthNotifier extends _$AuthNotifier {
       return 'Mật khẩu không được để trống';
     }
     if (!Validator.isValidPassword(value)) {
-      return 'Mật khẩu phải có hơn 4 kí tự';
+      return 'Mật khẩu phải từ 7 kí tự';
     }
     return null;
   }
@@ -37,7 +37,6 @@ class AuthNotifier extends _$AuthNotifier {
           Validator.isValidValue(password);
   }
 
-  /// Handle login - delegates to AuthService with proper error handling
   Future<void> login(String email, String password) async {
     
     if(!isValidForm(email, password)) return;

@@ -5,12 +5,14 @@ import 'package:app_demo/configs/themes/text_style.dart';
 import 'package:app_demo/src/features/quiz/domain/question_model.dart';
 import 'package:app_demo/src/core/domain/quiz_attempt_args.dart';
 import 'package:app_demo/src/features/quiz/presentation/controller/quiz_notifier.dart';
+import 'package:app_demo/src/shared/utils/snackbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/provider/shared_flashcard_notifier.dart';
 import '../../../../shared/http/app_exception.dart';
 import '../../../../shared/utils/helper_function.dart';
 import '../../../../shared/widgets/retry_widget.dart';
@@ -289,11 +291,13 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
 
     result.fold(
       ifLeft: (error) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(MyHelper.getErrorMessage(error))));
+        SnackBarHelper.showError(context, MyHelper.getErrorMessage(error) as AppException);
+        // ScaffoldMessenger.of(
+        //   context,
+        // ).showSnackBar(SnackBar(content: Text(MyHelper.getErrorMessage(error))));
       },
       ifRight: (attempt) {
+        ref.invalidate(getDailyTopicsGroupedProvider(dayRange: 7));
        
         context.pushReplacement(
           AppRouter.quizResultPath,

@@ -114,7 +114,7 @@ class ImageUploadService {
 
       developer.log(
         'Compression successful: ${(compressedSize / 1024).toStringAsFixed(2)} KB '
-        '(${ratio}% of original)',
+        '($ratio% of original)',
       );
 
       // Delete original file if compression was successful and files are different

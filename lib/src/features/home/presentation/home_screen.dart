@@ -32,10 +32,11 @@ class HomeScreen extends ConsumerWidget {
     final displayName = ref.watch(userEmailProvider);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: color.onPrimary,
-        toolbarHeight: 80.h,
-        titleSpacing: 0,
         elevation: 1,
+        shadowColor: Colors.black12,
+        backgroundColor: color.onPrimary,
+        toolbarHeight: 70.h,
+        titleSpacing: 0,
         leadingWidth: 70.w,
         leading: Container(
           margin: EdgeInsets.only(left: 16.w),
@@ -51,8 +52,9 @@ class HomeScreen extends ConsumerWidget {
             padding: EdgeInsetsGeometry.only(right: 16.w, top: 12.h),
             child: IconButton(
               onPressed: () {},
-              icon: Badge(
-                padding: EdgeInsetsDirectional.only(bottom: 10.h),
+              icon: Badge.count(
+                count: 2,
+                // padding: EdgeInsetsDirectional.all(1.r),
                 child: SvgPicture.asset(
                   MyIcons.bell,
                   colorFilter: ColorFilter.mode(color.primary, BlendMode.srcIn),

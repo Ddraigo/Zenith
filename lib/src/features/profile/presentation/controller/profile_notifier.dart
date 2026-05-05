@@ -141,7 +141,7 @@ class ProfileNotifier extends _$ProfileNotifier {
       );
     } catch (e, st) {
       developer.log('updateProfileAvatar exception', error: e, stackTrace: st);
-      final exception = AppException.errorWithMessage('Lỗi cập nhật ảnh: $e');
+      final exception = AppException.errorWithMessage('Lỗi cập nhật ảnh');
       ref.read(updateErrorProvider.notifier).state = exception;
       return false;
     }

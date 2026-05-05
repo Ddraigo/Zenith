@@ -2,6 +2,7 @@ import 'package:app_demo/configs/themes/text_style.dart';
 import 'package:app_demo/src/features/flashcard/domain/daily_word_summary.dart';
 import 'package:app_demo/src/features/quiz/presentation/screen/quiz_list.dart';
 import 'package:app_demo/src/shared/utils/helper_function.dart';
+import 'package:app_demo/src/shared/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -47,8 +48,8 @@ class QuizScreen extends ConsumerWidget {
 
             return RefreshIndicator(
               onRefresh: () async {
-                ref.refresh(getDailyTopicsGroupedProvider(dayRange: 7));
-                ref.refresh(getTopicListProvider);
+                ref.invalidate(getDailyTopicsGroupedProvider(dayRange: 7));
+                ref.invalidate(getTopicListProvider);
               },
               child: ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
@@ -68,7 +69,7 @@ class QuizScreen extends ConsumerWidget {
               ),
             );
           },
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading: () => const LoadingWidget(isLoading: true, child: SizedBox.shrink()),
           error: (error, _) {
             final msg = error is AppException
                 ? MyHelper.getErrorMessage(error)
@@ -97,11 +98,20 @@ class QuizScreen extends ConsumerWidget {
       padding: EdgeInsets.all(32.r),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(48.r),
-        gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomRight,
-          colors: [color.primaryContainer, color.onPrimary],
-          transform: GradientRotation(45),
+        // gradient: LinearGradient(
+        //   begin: Alignment.topRight,
+        //   end: Alignment.bottomRight,
+        //   colors: [color.primaryContainer, color.onPrimary.withValues(alpha: 0.5)],
+        //   transform: GradientRotation(45),
+        // ),
+        gradient: RadialGradient(
+          center: Alignment(0.6, -0.5),
+          radius: 0.8,
+          colors: <Color>[
+            color.primaryContainer.withValues(alpha: 0.5),
+            color.onPrimary,
+          ],
+          stops: <double>[0.1, 0.9],
         ),
         boxShadow: [
           BoxShadow(
@@ -118,6 +128,7 @@ class QuizScreen extends ConsumerWidget {
             "Chinh phục ${todayProgress.totalWords} từ hôm nay",
             style: MyTextStyle.poppinsHeading2,
           ),
+          SizedBox(height: 2.h,),
           Text(
             "Làm quiz ngay để giữ chuỗi ngày học hành siêng năng nhé!",
             style: MyTextStyle.poppinsLarge400.copyWith(color: color.secondary),
@@ -183,7 +194,7 @@ class QuizScreen extends ConsumerWidget {
                   ),
                   minimumSize: Size(40.w, 20.h),
                   shadowColor: color.primary.withValues(alpha: 0.5),
-                  elevation: 5,
+                  elevation: 3,
                 ),
                 child: Text('Start'),
               ),

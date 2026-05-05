@@ -1,4 +1,3 @@
-import 'dart:developer' as developer;
 import 'dart:math';
 
 import 'package:app_demo/src/features/flashcard/application/flashcard_service.dart';
@@ -329,7 +328,7 @@ class QuizAttemptsService {
           return unit.right();
         },
       );
-    } catch (e, st) {
+    } catch (e) {
       // developer.log(
       //   'QuizAttemptsService.submitQuiz side-effect failed',
       //   error: e,

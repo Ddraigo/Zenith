@@ -15,6 +15,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../shared/constants/images_constants.dart';
 import '../../../../shared/http/app_exception.dart';
 import '../../../../shared/utils/helper_function.dart';
+import '../../../../shared/utils/snackbar_helper.dart';
 import '../../../../shared/widgets/date_picker_custom.dart';
 import '../../../../shared/widgets/text_field_custom.dart';
 import '../../../authentication/presentation/controller/sign_up_notifier.dart';
@@ -127,8 +128,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
     if (!mounted || !ok) return;
     if (isCreateMode) {
-      ref.refresh(hasProfileProvider);
-      ref.refresh(profileProvider);
+      ref.invalidate(hasProfileProvider);
+      ref.invalidate(profileProvider);
     }
     setState(() => _isEditing = false);
   }
@@ -163,14 +164,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         return;
       }
 
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          const SnackBar(
-            content: Text('Ảnh đã được cập nhật!'),
-            duration: Duration(seconds: 2),
-          ),
-        );
+      // ScaffoldMessenger.of(context)
+      //   ..hideCurrentSnackBar()
+      //   ..showSnackBar(
+      //     const SnackBar(
+      //       content: Text('Ảnh đã được cập nhật!'),
+      //       duration: Duration(seconds: 2),
+      //     ),
+      //   );
+      SnackBarHelper.showSuccess(context, 'Ảnh đã được cập nhật!');
     } catch (e) {
       if (!mounted) return;
 
@@ -179,14 +181,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         errorMsg = MyHelper.getErrorMessage(e);
       }
 
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(
-            content: Text(errorMsg),
-            duration: const Duration(seconds: 3),
-          ),
-        );
+      // ScaffoldMessenger.of(context)
+      //   ..hideCurrentSnackBar()
+      //   ..showSnackBar(
+      //     SnackBar(
+      //       content: Text(errorMsg),
+      //       duration: const Duration(seconds: 3),
+      //     ),
+      //   );
+      SnackBarHelper.showError(context, errorMsg as AppException);
     }
   }
 
@@ -198,7 +201,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 5,
+        elevation: 3,
         shadowColor: Colors.black26,
         backgroundColor: color.onPrimary,
         toolbarHeight: 70.h,

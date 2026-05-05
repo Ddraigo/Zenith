@@ -139,7 +139,7 @@ class QuizList extends StatelessWidget {
               width: 140.w,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16.r),
-                color: color.outline.withValues(alpha: 0.08),
+                color: color.outline.withValues(alpha: 0.06),
                 border: Border.all(
                   color: color.outlineVariant.withValues(alpha: 0.5),
                 ),
@@ -194,7 +194,7 @@ class QuizList extends StatelessWidget {
           padding: EdgeInsets.all(12.r),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16.r),
-            color: color.outline.withValues(alpha: 0.08),
+            color: color.outline.withValues(alpha: 0.06),
             border: Border.all(
               color: color.outlineVariant.withValues(alpha: 0.5),
             ),
@@ -320,7 +320,7 @@ class QuizList extends StatelessWidget {
           width: double.infinity,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(32.r),
-            color: color.outline.withValues(alpha: 0.08),
+            color: color.outline.withValues(alpha: 0.06),
           ),
 
           child: Row(

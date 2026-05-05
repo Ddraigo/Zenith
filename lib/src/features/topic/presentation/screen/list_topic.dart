@@ -8,22 +8,19 @@ import 'package:flutter_svg/svg.dart';
 
 import '../controller/topic_flashcard_notifier.dart';
 
-
-
 class ListTopic extends ConsumerWidget {
   const ListTopic({super.key, this.onTopicSelected, required this.topics});
   final Function(int topicId)? onTopicSelected;
   final List<TopicModel> topics;
-  
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     if (topics.isEmpty) {
       return const Center(child: Text('Không tìm thấy danh sách chủ đề nào'));
     }
-    
+
     return GridView.builder(
       padding: EdgeInsets.all(16.w),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -41,12 +38,12 @@ class ListTopic extends ConsumerWidget {
           loading: () => '... từ',
           error: (_, _) => '0 từ',
         );
-        
+
         return GestureDetector(
           onTap: () => onTopicSelected?.call(topic.id),
           child: Card(
             color: colorScheme.onTertiary,
-            elevation: 2,
+            elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadiusGeometry.circular(40.r),
             ),
@@ -57,10 +54,10 @@ class ListTopic extends ConsumerWidget {
                 Container(
                   padding: EdgeInsets.all(8.r),
                   decoration: BoxDecoration(
-                    color: colorScheme.primaryContainer,
+                    color: colorScheme.primaryContainer.withValues(alpha: 0.5),
                     shape: BoxShape.circle,
                   ),
-                  
+
                   child: SvgPicture.asset(
                     MyIcons.learn,
                     colorFilter: ColorFilter.mode(
