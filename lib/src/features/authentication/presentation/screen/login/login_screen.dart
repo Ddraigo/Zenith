@@ -106,9 +106,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         spacing: 16,
                         children: [
                           SvgPicture.asset(
-                            MyImages.logoSmall,
-                            width: 50.w,
-                            height: 50.h,
+                            MyImages.logoIcon,
+                            width: 80.w,
+                            height: 80.h,
                             colorFilter: ColorFilter.mode(
                                 colorScheme.primary, BlendMode.srcIn),
                           ),
@@ -183,7 +183,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           focusNode: _emailFocusNode,
           controller: _emailController,
           errorText: isSubmitted 
-          ? loginNotifier.validateEmail(_emailController.text) 
+          ? loginNotifier.validateEmail(_emailController.text.trim()) 
           : null, 
         ),
         TextFieldCustom(

@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
   Widget _logo() {
-    return SvgPicture.asset(MyImages.logoSmall, fit: BoxFit.contain);
+    return SvgPicture.asset(MyImages.logoIcon, fit: BoxFit.contain);
   }
 
 class OnBoardingPage extends StatelessWidget {

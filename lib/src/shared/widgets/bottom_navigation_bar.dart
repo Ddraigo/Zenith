@@ -35,7 +35,7 @@ class MyBottomNavigationBar extends ConsumerWidget {
         _buildItem(
           colorScheme: colorScheme,
           iconPath: MyIcons.bookCheck,
-          label: "Topic",
+          label: "Chủ đề",
           index: 1,
           position: position,
         ),
@@ -49,7 +49,7 @@ class MyBottomNavigationBar extends ConsumerWidget {
         _buildItem(
           colorScheme: colorScheme,
           iconPath: MyIcons.progress,
-          label: "Progress",
+          label: "Lịch sử",
           index: 3,
           position: position,
         ),
@@ -62,7 +62,7 @@ class MyBottomNavigationBar extends ConsumerWidget {
     required String iconPath,
     required int index,
     required int position,
-    required label,
+    required String label,
   }) {
     final isSelected = position == index;
     final color = isSelected ? colorScheme.primary : colorScheme.outline;

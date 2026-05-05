@@ -18,7 +18,7 @@ class MyImages{
 
 class MyIcons{
     // Icons
-  static const String appIcon = 'assets/icons/icon_app.svg'; 
+  static const String appIcon = 'assets/icons/logo/logo_icon.svg'; 
   static const String emailIcon = 'assets/icons/email.svg'; 
   static const String lockIcon = 'assets/icons/lock.svg'; 
   static const String facebookIcon = 'assets/icons/facebook.svg'; 

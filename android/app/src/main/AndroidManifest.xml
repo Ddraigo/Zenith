@@ -4,9 +4,10 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <application
-        android:label="app_demo"
-        android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:label="Zenith"
+        android:name= "${applicationName}" 
+           
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"

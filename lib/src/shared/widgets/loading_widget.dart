@@ -21,7 +21,7 @@ class LoadingWidget extends StatelessWidget {
         if (isLoading)
           Positioned.fill(
             child: Container(
-              color: (backgroundColor ?? Colors.white24),
+              color: (backgroundColor ?? Colors.white70),
               child: Center(
                 child: CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(

@@ -47,22 +47,22 @@ class HomeScreen extends ConsumerWidget {
             onTap: () => context.push(AppRouter.profilePath),
           ),
         ),
-        actions: [
-          Padding(
-            padding: EdgeInsetsGeometry.only(right: 16.w, top: 12.h),
-            child: IconButton(
-              onPressed: () {},
-              icon: Badge.count(
-                count: 2,
-                // padding: EdgeInsetsDirectional.all(1.r),
-                child: SvgPicture.asset(
-                  MyIcons.bell,
-                  colorFilter: ColorFilter.mode(color.primary, BlendMode.srcIn),
-                ),
-              ),
-            ),
-          ),
-        ],
+        // actions: [
+        //   Padding(
+        //     padding: EdgeInsetsGeometry.only(right: 16.w, top: 12.h),
+        //     child: IconButton(
+        //       onPressed: () {},
+        //       icon: Badge.count(
+        //         count: 2,
+        //         // padding: EdgeInsetsDirectional.all(1.r),
+        //         child: SvgPicture.asset(
+        //           MyIcons.bell,
+        //           colorFilter: ColorFilter.mode(color.primary, BlendMode.srcIn),
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        // ],
       ),
       bottomNavigationBar: const MyBottomNavigationBar(),
       body: IndexedStack(
