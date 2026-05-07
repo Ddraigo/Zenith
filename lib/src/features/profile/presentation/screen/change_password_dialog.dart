@@ -126,71 +126,74 @@ class _ChangePasswordDialogState extends ConsumerState<ChangePasswordDialog> {
   Widget build(BuildContext context) {
     final color = widget.color;
 
-    return AlertDialog(
-      contentPadding: EdgeInsets.all(16.r),
-      backgroundColor: color.onPrimary,
-      actionsPadding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
-      title: const Text('Đổi mật khẩu'),
-      content: SingleChildScrollView(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          TextField(
-            controller: currentController,
-            obscureText: hideCurrent,
-            decoration: InputDecoration(
-              labelText: 'Mật khẩu hiện tại',
-              suffixIcon: IconButton(
-                onPressed: () => setState(() => hideCurrent = !hideCurrent),
-                icon: Icon(hideCurrent ? Icons.visibility_off : Icons.visibility),
+    return GestureDetector(
+      onTap: FocusScope.of(context).unfocus,
+      child: AlertDialog(
+        contentPadding: EdgeInsets.all(16.r),
+        backgroundColor: color.onPrimary,
+        actionsPadding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
+        title: const Text('Đổi mật khẩu'),
+        content: SingleChildScrollView(
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            TextField(
+              controller: currentController,
+              obscureText: hideCurrent,
+              decoration: InputDecoration(
+                labelText: 'Mật khẩu hiện tại',
+                suffixIcon: IconButton(
+                  onPressed: () => setState(() => hideCurrent = !hideCurrent),
+                  icon: Icon(hideCurrent ? Icons.visibility_off : Icons.visibility),
+                ),
               ),
             ),
-          ),
-          SizedBox(height: 12.h),
-          TextField(
-            controller: newController,
-            obscureText: hideNew,
-            decoration: InputDecoration(
-              labelText: 'Mật khẩu mới',
-              suffixIcon: IconButton(
-                onPressed: () => setState(() => hideNew = !hideNew),
-                icon: Icon(hideNew ? Icons.visibility_off : Icons.visibility),
-              ),
-            ),
-          ),
-          SizedBox(height: 12.h),
-          TextField(
-            controller: confirmController,
-            obscureText: hideConfirm,
-            decoration: InputDecoration(
-              labelText: 'Xác nhận mật khẩu',
-              suffixIcon: IconButton(
-                onPressed: () => setState(() => hideConfirm = !hideConfirm),
-                icon: Icon(hideConfirm ? Icons.visibility_off : Icons.visibility),
-              ),
-            ),
-          ),
-          if (errorText != null) ...[
             SizedBox(height: 12.h),
-            Text(
-              errorText!,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            TextField(
+              controller: newController,
+              obscureText: hideNew,
+              decoration: InputDecoration(
+                labelText: 'Mật khẩu mới',
+                suffixIcon: IconButton(
+                  onPressed: () => setState(() => hideNew = !hideNew),
+                  icon: Icon(hideNew ? Icons.visibility_off : Icons.visibility),
+                ),
+              ),
             ),
-          ],
-        ]),
+            SizedBox(height: 12.h),
+            TextField(
+              controller: confirmController,
+              obscureText: hideConfirm,
+              decoration: InputDecoration(
+                labelText: 'Xác nhận mật khẩu',
+                suffixIcon: IconButton(
+                  onPressed: () => setState(() => hideConfirm = !hideConfirm),
+                  icon: Icon(hideConfirm ? Icons.visibility_off : Icons.visibility),
+                ),
+              ),
+            ),
+            if (errorText != null) ...[
+              SizedBox(height: 12.h),
+              Text(
+                errorText!,
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+            ],
+          ]),
+        ),
+        actions: [
+          OutlinedButton(
+            style: OutlinedButton.styleFrom(padding: EdgeInsets.symmetric(vertical: 5.h)),
+            onPressed: isSubmitting ? null : () => Navigator.of(context).pop(),
+            child: const Text('Hủy'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(padding: EdgeInsets.symmetric(vertical: 5.h)),
+            onPressed: isSubmitting ? null : handleSubmit,
+            child: isSubmitting
+                ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                : const Text('Lưu'),
+          ),
+        ],
       ),
-      actions: [
-        OutlinedButton(
-          style: OutlinedButton.styleFrom(padding: EdgeInsets.symmetric(vertical: 5.h)),
-          onPressed: isSubmitting ? null : () => Navigator.of(context).pop(),
-          child: const Text('Hủy'),
-        ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(padding: EdgeInsets.symmetric(vertical: 5.h)),
-          onPressed: isSubmitting ? null : handleSubmit,
-          child: isSubmitting
-              ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
-              : const Text('Lưu'),
-        ),
-      ],
     );
   }
 }

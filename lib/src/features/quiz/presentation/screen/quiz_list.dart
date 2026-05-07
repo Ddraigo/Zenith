@@ -47,13 +47,12 @@ class QuizList extends StatelessWidget {
                   onPressed: () {
                     showModalBottomSheet(
                       context: context,
-                      
+
                       isScrollControlled: true,
                       backgroundColor: Colors.transparent,
                       builder: (_) => BottomSheetListItem(
                         title: 'Từ vựng hằng ngày',
-                        builder: (scrollController) =>
-                            _buildAllDailyListSheet(
+                        builder: (scrollController) => _buildAllDailyListSheet(
                           context,
                           allDailyAsync,
                           color,
@@ -87,7 +86,9 @@ class QuizList extends StatelessWidget {
                   Expanded(
                     child: Text(
                       'Từ vựng chủ đề',
-                      style: MyTextStyle.poppinsMedium.copyWith(fontSize: 17.sp),
+                      style: MyTextStyle.poppinsMedium.copyWith(
+                        fontSize: 17.sp,
+                      ),
                     ),
                   ),
                   // TextButton(
@@ -114,67 +115,63 @@ class QuizList extends StatelessWidget {
     List<DailyWordSummaryModel> items,
     ColorScheme color,
   ) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8.w),
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          final item = items[index];
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        final item = items[index];
 
-          return GestureDetector(
-            onTap: () {
-              final args = QuizAttemptArgs(
-                type: QuizAttemptType.daily,
-                topicId: item.topicId,
-                title: item.topicName,
-                assignedDate: item.assignedDate,
-              );
+        return GestureDetector(
+          onTap: () {
+            final args = QuizAttemptArgs(
+              type: QuizAttemptType.daily,
+              topicId: item.topicId,
+              title: item.topicName,
+              assignedDate: item.assignedDate,
+            );
 
-              context.push(AppRouter.quizAttempPath, extra: args);
-            },
-            child: Container(
-              margin: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
-              padding: EdgeInsets.all(10.r),
-              width: 140.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16.r),
-                color: color.outline.withValues(alpha: 0.06),
-                border: Border.all(
-                  color: color.outlineVariant.withValues(alpha: 0.5),
-                ),
-              ),
-
-              child: Column(
-                spacing: 2.h,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    item.topicName.isEmpty ? 'N/A' : item.topicName,
-                    style: MyTextStyle.poppinsLarge600.copyWith(
-                      fontSize: 20.sp,
-                      color: color.onPrimaryFixedVariant.withValues(alpha: 0.7),
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                  ),
-                  Text(
-                    Format.formatDMY(item.assignedDate).isEmpty
-                        ? 'N/A'
-                        : Format.formatDMY(item.assignedDate),
-                    style: MyTextStyle.poppinsMedium.copyWith(
-                      color: color.primary,
-                    ),
-                  ),
-
-                ],
+            context.push(AppRouter.quizAttempPath, extra: args);
+          },
+          child: Container(
+            margin: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
+            padding: EdgeInsets.all(10.r),
+            width: 140.w,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16.r),
+              color: color.outline.withValues(alpha: 0.06),
+              border: Border.all(
+                color: color.outlineVariant.withValues(alpha: 0.5),
               ),
             ),
-          );
-        },
-      ),
+
+            child: Column(
+              spacing: 2.h,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  item.topicName.isEmpty ? 'N/A' : item.topicName,
+                  style: MyTextStyle.poppinsLarge600.copyWith(
+                    fontSize: 20.sp,
+                    color: color.onPrimaryFixedVariant.withValues(alpha: 0.7),
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+                Text(
+                  Format.formatDMY(item.assignedDate).isEmpty
+                      ? 'N/A'
+                      : Format.formatDMY(item.assignedDate),
+                  style: MyTextStyle.poppinsMedium.copyWith(
+                    color: color.primary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -238,8 +235,9 @@ class QuizList extends StatelessWidget {
                         item.topicName.isEmpty ? 'N/A' : item.topicName,
                         style: MyTextStyle.poppinsLarge600.copyWith(
                           fontSize: 18.sp,
-                          color: color.onPrimaryFixedVariant
-                              .withValues(alpha: 0.7),
+                          color: color.onPrimaryFixedVariant.withValues(
+                            alpha: 0.7,
+                          ),
                         ),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
@@ -279,20 +277,14 @@ class QuizList extends StatelessWidget {
         final items = dailyWords.values.expand((e) => e).toList();
         if (items.isEmpty) {
           return Center(
-            child: Text(
-              'Chưa có dữ liệu',
-              style: MyTextStyle.poppinsMedium,
-            ),
+            child: Text('Chưa có dữ liệu', style: MyTextStyle.poppinsMedium),
           );
         }
         return _dailyWordFullList(context, items, color, scrollController);
       },
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, _) => Center(
-        child: Text(
-          'Đã xảy ra lỗi',
-          style: MyTextStyle.poppinsMedium,
-        ),
+        child: Text('Đã xảy ra lỗi', style: MyTextStyle.poppinsMedium),
       ),
     );
   }
@@ -316,81 +308,105 @@ class QuizList extends StatelessWidget {
         );
         return Container(
           margin: EdgeInsets.symmetric(vertical: 8.h),
-          padding: EdgeInsets.all(16.r),
-          width: double.infinity,
-          decoration: BoxDecoration(
+          child: Material(
+            color: Colors.transparent,
             borderRadius: BorderRadius.circular(32.r),
-            color: color.outline.withValues(alpha: 0.06),
-          ),
-
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
+            child: InkWell(
+              borderRadius: BorderRadius.circular(32.r),
+              onTap: () {
+                final args = QuizAttemptArgs(
+                  type: QuizAttemptType.topic,
+                  topicId: item.id,
+                  title: item.name,
+                );
+                context.push(AppRouter.quizAttempPath, extra: args);
+              },
+              child: Ink(
+                padding: EdgeInsets.all(16.r),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(32.r),
+                  color: color.outline.withValues(alpha: 0.06),
+                ),
                 child: Row(
-                  spacing: 16.h,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      padding: EdgeInsets.all(10.r),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: color.secondaryContainer.withValues(alpha: 0.8),
-                      ),
-
-                      child: SvgPicture.asset(
-                        MyIcons.learn,
-                        colorFilter: ColorFilter.mode(
-                          color.primary,
-                          BlendMode.srcIn,
-                        ),
-                        height: 30.h,
-                        width: 30.w,
-                      ),
-                    ),
                     Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Row(
+                        spacing: 16.h,
                         children: [
-                          Text(
-                            item.name.isEmpty ? 'N/A' : item.name,
-                            style: MyTextStyle.poppinsLarge600.copyWith(
-                              color: color.primary,
-                              height: 1.2.h,
+                          Container(
+                            padding: EdgeInsets.all(10.r),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: color.secondaryContainer.withValues(
+                                alpha: 0.8,
+                              ),
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+
+                            child: SvgPicture.asset(
+                              MyIcons.learn,
+                              colorFilter: ColorFilter.mode(
+                                color.primary,
+                                BlendMode.srcIn,
+                              ),
+                              height: 30.h,
+                              width: 30.w,
+                            ),
                           ),
-                          Text(
-                            wordCountText,
-                            style: MyTextStyle.poppinsMedium400.copyWith(
-                              color: color.outline.withValues(alpha: 0.8),
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item.name.isEmpty ? 'N/A' : item.name,
+                                  style: MyTextStyle.poppinsLarge600.copyWith(
+                                    color: color.primary,
+                                    height: 1.2.h,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Text(
+                                  wordCountText,
+                                  style: MyTextStyle.poppinsMedium400.copyWith(
+                                    color: color.outline.withValues(alpha: 0.8),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
                     ),
+                    // IconButton(
+                    //   onPressed: () {
+                    //     final args = QuizAttemptArgs(
+                    //       type: QuizAttemptType.topic,
+                    //       topicId: item.id,
+                    //       title: item.name,
+                    //     );
+                    //     context.push(AppRouter.quizAttempPath, extra: args);
+                    //   },
+                    //   style: IconButton.styleFrom(
+                    //     padding: EdgeInsets.symmetric(
+                    //       horizontal: 8.w,
+                    //       vertical: 8.h,
+                    //     ),
+                    //   ),
+                    //   icon: Icon(
+                    //     Icons.arrow_forward_ios_rounded,
+                    //     color: color.outline.withValues(alpha: 0.5),
+                    //   ),
+                    // ),
+                    Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        color: color.outline.withValues(alpha: 0.5),
+                      ),
                   ],
                 ),
               ),
-              IconButton(
-                onPressed: () {
-                  final args = QuizAttemptArgs(
-                    type: QuizAttemptType.topic,
-                    topicId: item.id,
-                    title: item.name,
-                  );
-                  context.push(AppRouter.quizAttempPath, extra: args);
-                },
-                style: IconButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
-                ),
-                icon: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  color: color.outline.withValues(alpha: 0.5),
-                ),
-              ),
-            ],
+            ),
           ),
         );
       },

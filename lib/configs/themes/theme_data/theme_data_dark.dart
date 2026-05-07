@@ -24,7 +24,7 @@ const ColorScheme darkColorScheme = ColorScheme(
   onSecondaryFixed: Color(0xFF251626),
   onSecondaryFixedVariant: Color(0xFF534153),
   tertiary: Color(0xFFF6B8AD),
-  onTertiary: Color(0xFF4C251F),
+  onTertiary: Color.fromARGB(255, 46, 45, 46),
   tertiaryContainer: Color(0xFF673B34),
   onTertiaryContainer: Color(0xFFFFDAD4),
   tertiaryFixed: Color(0xFFFFDAD4),
@@ -118,7 +118,7 @@ ThemeData getDarkTheme() {
   return ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
-    fontFamily: AppFonts.poppins,
+    fontFamily: AppFonts.roboto,
     colorScheme: darkColorScheme,
 
     scaffoldBackgroundColor: darkColorScheme.onPrimary,

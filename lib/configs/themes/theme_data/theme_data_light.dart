@@ -87,7 +87,7 @@ const ColorScheme lightColorScheme = ColorScheme(
   surface: Color(0xFFFDF4F8),
   onSurface: Color(0xFF1F1A1F),
   surfaceDim: Color(0xFFE0D5DD),
-  surfaceBright: Color(0xFFFDF4F8),
+  surfaceBright: Color.fromARGB(255, 255, 248, 251),
   surfaceContainerLowest: Color(0xFFFDFCFD),
   surfaceContainerLow: Color(0xFFFAEDF5),
   surfaceContainer: Color(0xFFF4E9F0),
@@ -119,7 +119,7 @@ ThemeData getLightTheme() {
   return ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
-    fontFamily: AppFonts.poppins,
+    fontFamily: AppFonts.roboto,
     colorScheme: lightColorScheme,
 
     scaffoldBackgroundColor: lightColorScheme.onSecondary,

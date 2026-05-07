@@ -7,11 +7,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class MyTextStyle {
   const MyTextStyle._();
 
-  static final TextStyle _basePoppins = TextStyle(
-    fontFamily: AppFonts.poppins,
-    color: AppColors.typography500,
-  );
-
   static final TextStyle _baseRoboto = TextStyle(
     fontFamily: AppFonts.roboto,
     color: AppColors.typography500,
@@ -22,106 +17,92 @@ class MyTextStyle {
     color: AppColors.typography500,
   );
 
-  static final TextStyle poppinsHeading1 = _basePoppins.copyWith(
-    fontSize: 32.sp,
-    fontWeight: FontWeight.bold,
+  static final TextStyle poppinsHeading1 = _baseRoboto.copyWith(
+    fontSize: 34.sp,
+    fontWeight: FontWeight.w700,
     letterSpacing: -0.64,
-    height: 1.2.h,
   );
 
-  static final TextStyle poppinsHeading2 = _basePoppins.copyWith(
+  static final TextStyle poppinsHeading2 = _baseRoboto.copyWith(
     fontSize: 32.sp,
-    fontWeight: FontWeight.bold,
+    fontWeight: FontWeight.w700,
     letterSpacing: -0.32,
-    height: 1.0.h,
   );
 
-  static final TextStyle poppinsLarge = _basePoppins.copyWith(
-    fontSize: 17.sp,
-    fontWeight: FontWeight.normal,
+  static final TextStyle poppinsLarge = _baseRoboto.copyWith(
+    fontSize: 18.sp,
+    fontWeight: FontWeight.w400,
     letterSpacing: -0.17,
-    height: 1.3.h,
   );
 
-  static final TextStyle poppinsMedium = _basePoppins.copyWith(
-    fontSize: 15.sp,
+  static final TextStyle poppinsMedium = _baseRoboto.copyWith(
+    fontSize: 16.sp,
     fontWeight: FontWeight.w400,
     letterSpacing: 0,
-    height: 1.3.h,
   );
 
-  static final TextStyle poppinsSmall = _basePoppins.copyWith(
+  static final TextStyle poppinsSmall = _baseRoboto.copyWith(
     fontSize: 12.sp,
     fontWeight: FontWeight.w500,
     letterSpacing: 0,
-    height: 1.3.h,
   );
 
   // ---------------- Poppins Large ----------------
-  static final TextStyle poppinsLarge400 = _basePoppins.copyWith(
-    fontSize: 17.sp,
+  static final TextStyle poppinsLarge400 = _baseRoboto.copyWith(
+    fontSize: 18.sp,
     fontWeight: FontWeight.w400,
     letterSpacing: -0.17,
-    height: 1.5.h,
   );
 
-  static final TextStyle poppinsLarge600 = _basePoppins.copyWith(
-    fontSize: 17.sp,
+  static final TextStyle poppinsLarge600 = _baseRoboto.copyWith(
+    fontSize: 18.sp,
     fontWeight: FontWeight.w600,
     letterSpacing: -0.17,
-    height: 1.5.h,
   );
 
-  static final TextStyle poppinsLarge700 = _basePoppins.copyWith(
-    fontSize: 17.sp,
+  static final TextStyle poppinsLarge700 = _baseRoboto.copyWith(
+    fontSize: 18.sp,
     fontWeight: FontWeight.w700,
     letterSpacing: -0.17,
-    height: 1.5.h,
   );
 
   // ---------------- Poppins Medium ----------------
-  static final TextStyle poppinsMedium400 = _basePoppins.copyWith(
-    fontSize: 15.sp,
+  static final TextStyle poppinsMedium400 = _baseRoboto.copyWith(
+    fontSize: 16.sp,
     fontWeight: FontWeight.w400,
     letterSpacing: 0,
-    height: 1.7.h,
   );
 
-  static final TextStyle poppinsMedium600 = _basePoppins.copyWith(
-    fontSize: 15.sp,
+  static final TextStyle poppinsMedium600 = _baseRoboto.copyWith(
+    fontSize: 16.sp,
     fontWeight: FontWeight.w600,
     letterSpacing: 0,
-    height: 1.7.h,
   );
 
-  static final TextStyle poppinsMedium700 = _basePoppins.copyWith(
-    fontSize: 15.sp,
+  static final TextStyle poppinsMedium700 = _baseRoboto.copyWith(
+    fontSize: 16.sp,
     fontWeight: FontWeight.w700,
     letterSpacing: 0,
-    height: 1.7.h,
   );
 
   // ---------------- Poppins Small ----------------
-  static final TextStyle poppinsSmall500 = _basePoppins.copyWith(
+  static final TextStyle poppinsSmall500 = _baseRoboto.copyWith(
     fontSize: 12.sp,
     fontWeight: FontWeight.w500,
     letterSpacing: 0,
-    height: 1.7.h,
     color: AppColors.black, 
   );
 
-  static final TextStyle poppinsSmall600 = _basePoppins.copyWith(
+  static final TextStyle poppinsSmall600 = _baseRoboto.copyWith(
     fontSize: 12.sp,
     fontWeight: FontWeight.w600,
     letterSpacing: 0,
-    height: 1.7.h,
   );
 
-  static final TextStyle poppinsSmall700 = _basePoppins.copyWith(
+  static final TextStyle poppinsSmall700 = _baseRoboto.copyWith(
     fontSize: 12.sp,
     fontWeight: FontWeight.w700,
     letterSpacing: 0,
-    height: 1.7.h,
   );
 
   // ==================== ROBOTO ====================
@@ -130,35 +111,30 @@ class MyTextStyle {
     fontSize: 24.sp,
     fontWeight: FontWeight.w600,
     letterSpacing: -0.48,
-    height: 1.0.h,
   );
 
   static final TextStyle robotoLarge = _baseRoboto.copyWith(
-    fontSize: 17.sp,
+    fontSize: 18.sp,
     fontWeight: FontWeight.w700,
     letterSpacing: -0.17,
-    height: 1.3.h,
   );
 
   static final TextStyle robotoMedium = _baseRoboto.copyWith(
-    fontSize: 15.sp,
+    fontSize: 16.sp,
     fontWeight: FontWeight.w600,
     letterSpacing: 0,
-    height: 1.3.h,
   );
 
   static final TextStyle robotoSmall = _baseRoboto.copyWith(
     fontSize: 12.sp,
     fontWeight: FontWeight.w600,
     letterSpacing: 0,
-    height: 1.3.h,
   );
 
   static final TextStyle robotoMonoMedium = _baseRobotoMono.copyWith(
-    fontSize: 15.sp,
+    fontSize: 16.sp,
     fontWeight: FontWeight.w400,
     letterSpacing: 0,
-    height: 1.7.h,
   );
 
   // static final TextStyle headingH1 = _baseText.copyWith(fontSize: 26.sp, fontWeight: FontWeight.bold, height: 1.5);

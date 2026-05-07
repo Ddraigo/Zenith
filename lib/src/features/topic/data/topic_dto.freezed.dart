@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$TopicDTO {
 
- int get id; String get name;@JsonKey(name: 'created_at') DateTime? get createdAt;
+ int get id; String get name;@JsonKey(name: 'svg_content') String? get icon;@JsonKey(name: 'created_at') DateTime? get createdAt;
 /// Create a copy of TopicDTO
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $TopicDTOCopyWith<TopicDTO> get copyWith => _$TopicDTOCopyWithImpl<TopicDTO>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TopicDTO&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TopicDTO&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,createdAt);
+int get hashCode => Object.hash(runtimeType,id,name,icon,createdAt);
 
 @override
 String toString() {
-  return 'TopicDTO(id: $id, name: $name, createdAt: $createdAt)';
+  return 'TopicDTO(id: $id, name: $name, icon: $icon, createdAt: $createdAt)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $TopicDTOCopyWith<$Res>  {
   factory $TopicDTOCopyWith(TopicDTO value, $Res Function(TopicDTO) _then) = _$TopicDTOCopyWithImpl;
 @useResult
 $Res call({
- int id, String name,@JsonKey(name: 'created_at') DateTime? createdAt
+ int id, String name,@JsonKey(name: 'svg_content') String? icon,@JsonKey(name: 'created_at') DateTime? createdAt
 });
 
 
@@ -65,11 +65,12 @@ class _$TopicDTOCopyWithImpl<$Res>
 
 /// Create a copy of TopicDTO
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? createdAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? icon = freezed,Object? createdAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as String,icon: freezed == icon ? _self.icon : icon // ignore: cast_nullable_to_non_nullable
+as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
 }
@@ -155,10 +156,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name, @JsonKey(name: 'created_at')  DateTime? createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name, @JsonKey(name: 'svg_content')  String? icon, @JsonKey(name: 'created_at')  DateTime? createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TopicDTO() when $default != null:
-return $default(_that.id,_that.name,_that.createdAt);case _:
+return $default(_that.id,_that.name,_that.icon,_that.createdAt);case _:
   return orElse();
 
 }
@@ -176,10 +177,10 @@ return $default(_that.id,_that.name,_that.createdAt);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name, @JsonKey(name: 'created_at')  DateTime? createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name, @JsonKey(name: 'svg_content')  String? icon, @JsonKey(name: 'created_at')  DateTime? createdAt)  $default,) {final _that = this;
 switch (_that) {
 case _TopicDTO():
-return $default(_that.id,_that.name,_that.createdAt);case _:
+return $default(_that.id,_that.name,_that.icon,_that.createdAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -196,10 +197,10 @@ return $default(_that.id,_that.name,_that.createdAt);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name, @JsonKey(name: 'created_at')  DateTime? createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name, @JsonKey(name: 'svg_content')  String? icon, @JsonKey(name: 'created_at')  DateTime? createdAt)?  $default,) {final _that = this;
 switch (_that) {
 case _TopicDTO() when $default != null:
-return $default(_that.id,_that.name,_that.createdAt);case _:
+return $default(_that.id,_that.name,_that.icon,_that.createdAt);case _:
   return null;
 
 }
@@ -211,11 +212,12 @@ return $default(_that.id,_that.name,_that.createdAt);case _:
 @JsonSerializable()
 
 class _TopicDTO implements TopicDTO {
-  const _TopicDTO({required this.id, required this.name, @JsonKey(name: 'created_at') this.createdAt});
+  const _TopicDTO({required this.id, required this.name, @JsonKey(name: 'svg_content') this.icon, @JsonKey(name: 'created_at') this.createdAt});
   factory _TopicDTO.fromJson(Map<String, dynamic> json) => _$TopicDTOFromJson(json);
 
 @override final  int id;
 @override final  String name;
+@override@JsonKey(name: 'svg_content') final  String? icon;
 @override@JsonKey(name: 'created_at') final  DateTime? createdAt;
 
 /// Create a copy of TopicDTO
@@ -231,16 +233,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TopicDTO&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TopicDTO&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,createdAt);
+int get hashCode => Object.hash(runtimeType,id,name,icon,createdAt);
 
 @override
 String toString() {
-  return 'TopicDTO(id: $id, name: $name, createdAt: $createdAt)';
+  return 'TopicDTO(id: $id, name: $name, icon: $icon, createdAt: $createdAt)';
 }
 
 
@@ -251,7 +253,7 @@ abstract mixin class _$TopicDTOCopyWith<$Res> implements $TopicDTOCopyWith<$Res>
   factory _$TopicDTOCopyWith(_TopicDTO value, $Res Function(_TopicDTO) _then) = __$TopicDTOCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String name,@JsonKey(name: 'created_at') DateTime? createdAt
+ int id, String name,@JsonKey(name: 'svg_content') String? icon,@JsonKey(name: 'created_at') DateTime? createdAt
 });
 
 
@@ -268,11 +270,12 @@ class __$TopicDTOCopyWithImpl<$Res>
 
 /// Create a copy of TopicDTO
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? createdAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? icon = freezed,Object? createdAt = freezed,}) {
   return _then(_TopicDTO(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as String,icon: freezed == icon ? _self.icon : icon // ignore: cast_nullable_to_non_nullable
+as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
 }

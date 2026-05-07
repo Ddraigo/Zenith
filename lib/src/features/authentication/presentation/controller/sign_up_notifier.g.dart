@@ -33,7 +33,7 @@ final class SignUpNotifierProvider
   SignUpNotifier create() => SignUpNotifier();
 }
 
-String _$signUpNotifierHash() => r'bf6e314391a65ec6e282ce2dd5a2313fc58cccd8';
+String _$signUpNotifierHash() => r'd3811c4146fb3b3012e041a0a2bf07ba51803a5d';
 
 abstract class _$SignUpNotifier extends $AsyncNotifier<void> {
   FutureOr<void> build();

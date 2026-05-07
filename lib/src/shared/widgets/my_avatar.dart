@@ -1,28 +1,30 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MyAvatar extends StatelessWidget {
+import '../../core/provider/current_user_id_notifire.dart';
+
+class MyAvatar extends ConsumerWidget {
   const MyAvatar({
     super.key,
     required this.userAvatar,
-    this.displayName,
     this.onTap,
     required this.size,
   });
   final String userAvatar;
-  final String? displayName;
   final VoidCallback? onTap;
   final double size;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref ) {
     final bool hasAvatarUrl = userAvatar.isNotEmpty;
-    final String initial = _getInitial(displayName);
+    final userEmail = ref.watch(userEmailProvider);
+    final String initial = _getInitial(userEmail);
     return GestureDetector(
       onTap: onTap,
       child: CircleAvatar(
         radius: size,
-        backgroundColor: Colors.purple.shade800,
+        backgroundColor: Colors.purple.shade600,
         backgroundImage: hasAvatarUrl
             ? NetworkImage(userAvatar) as ImageProvider
             : null,

@@ -46,26 +46,28 @@ class QuizScreen extends ConsumerWidget {
                 .expand((items) => items)
                 .toList();
 
-            return RefreshIndicator(
-              onRefresh: () async {
-                ref.invalidate(getDailyTopicsGroupedProvider(dayRange: 7));
-                ref.invalidate(getTopicListProvider);
-              },
-              child: ListView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: EdgeInsets.symmetric(vertical: 16.h),
-                children: [
-                  if (dailyItems.isNotEmpty)
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: _dailyProgress(context, color, todayProgress),
+            return SafeArea(
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  ref.invalidate(getDailyTopicsGroupedProvider(dayRange: 7));
+                  ref.invalidate(getTopicListProvider);
+                },
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: EdgeInsets.symmetric(vertical: 16.h),
+                  children: [
+                    if (dailyItems.isNotEmpty)
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        child: _dailyProgress(context, color, todayProgress),
+                      ),
+                    QuizList(
+                      userDailyWordList: dailyItems,
+                      topicList: topics,
+                      ref: ref,
                     ),
-                  QuizList(
-                    userDailyWordList: dailyItems,
-                    topicList: topics,
-                    ref: ref,
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           },
@@ -161,12 +163,14 @@ class QuizScreen extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    LinearProgressIndicator(
-                      minHeight: 10.h,
+                    ClipRRect(
                       borderRadius: BorderRadius.circular(10.r),
-                      backgroundColor: color.outline.withValues(alpha: 0.4),
-                      value: todayProgress.progressPrecent,
-                      valueColor: AlwaysStoppedAnimation<Color>(color.primary),
+                      child: LinearProgressIndicator(
+                        minHeight: 10.h,
+                        backgroundColor: color.outline.withValues(alpha: 0.4),
+                        value: todayProgress.progressPrecent,
+                        valueColor: AlwaysStoppedAnimation<Color>(color.primary),
+                      ),
                     ),
                   ],
                 ),

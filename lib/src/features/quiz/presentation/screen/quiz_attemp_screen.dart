@@ -6,10 +6,12 @@ import 'package:app_demo/src/features/quiz/domain/question_model.dart';
 import 'package:app_demo/src/core/domain/quiz_attempt_args.dart';
 import 'package:app_demo/src/features/quiz/presentation/controller/quiz_notifier.dart';
 import 'package:app_demo/src/shared/utils/snackbar_helper.dart';
+import 'package:app_demo/src/shared/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/provider/shared_flashcard_notifier.dart';
@@ -63,186 +65,191 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
         widget.arg.assignedDate,
       ),
     );
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        backgroundColor: color.onPrimary,
-        toolbarHeight: 70.h,
-        titleSpacing: 0,
-        centerTitle: true,
-        title: Text(widget.arg.title ?? ''),
-        leading: IconButton(
-          onPressed: () {
-            ref.read(homeTapProvider.notifier).state = 2;
-            context.go(AppRouter.homePath);
-          },
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          backgroundColor: color.onPrimary,
+          toolbarHeight: 70.h,
+          titleSpacing: 0,
+          centerTitle: true,
+          title: Text(widget.arg.title ?? ''),
+          leading: IconButton(
+            onPressed: () {
+              ref.read(homeTapProvider.notifier).state = 2;
+              context.go(AppRouter.homePath);
+            },
+            icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          ),
         ),
-      ),
-      body: SafeArea(
-        child: quizAsync.when(
-          data: (quizes) {
-            if (quizes.questions.isEmpty) {
-              return const Center(child: Text('Không có câu hỏi để làm bài'));
-            }
-
-            final isLastQuestion = _currentIndex >= quizes.questions.length - 1;
-
-            final answeredCount = quizes.questions
-                .where(
-                  (q) => (quizes.userAnswers[q.flashcardId] ?? '')
-                      .trim()
-                      .isNotEmpty,
-                )
-                .length;
-            final progressValue = (answeredCount / quizes.questions.length)
-                .clamp(0.0, 1.0);
-            final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
-            final availableHeight = MediaQuery.sizeOf(context).height - keyboardInset;
-            final cardHeight = math.max(180.h, availableHeight * 0.28);
-
-            return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SizedBox(height: 8.h),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Tiến độ',
-                              style: MyTextStyle.poppinsMedium600.copyWith(
-                                color: color.outline.withValues(alpha: 0.7),
-                              ),
-                            ),
-                            Text(
-                              '$answeredCount/${quizes.questions.length}',
-                              style: MyTextStyle.poppinsMedium600.copyWith(
-                                color: color.primary,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 8.h),
-                        LinearProgressIndicator(
-                          minHeight: 16.h,
-                          borderRadius: BorderRadius.circular(10.r),
-                          backgroundColor: color.outline.withValues(alpha: 0.4),
-                          value: progressValue,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            color.primary,
-                          ),
-                        ),
-                        SizedBox(height: 16.h),
-                        SizedBox(
-                          height: cardHeight,
-                          child: CardSwiper(
-                            allowedSwipeDirection:
-                                const AllowedSwipeDirection.none(),
-                            controller: _swiperController,
-                            cardsCount: quizes.questions.length,
-                            numberOfCardsDisplayed: math.min(
-                              3,
-                              quizes.questions.length,
-                            ),
-                            backCardOffset: const Offset(0, 20),
-                            cardBuilder:
-                                (
-                                  context,
-                                  index,
-                                  horizontalThresholdPercentage,
-                                  verticalThresholdPercentage,
-                                ) {
-                                  final question = quizes.questions[index];
-                                  return _questionCard(question, color);
-                                },
-                            onSwipe: (previousIndex, currentIndex, direction) {
-                              setState(() {
-                                if (currentIndex != null) {
-                                  _currentIndex = currentIndex;
-                                }
-                                _isError = false;
-                              });
-
-                              userAnswer.clear();
-                              _isError = false;
-                              return true;
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: AnimatedPadding(
-                      duration: const Duration(milliseconds: 180),
-                      curve: Curves.easeOut,
-                      padding: EdgeInsets.only(bottom: keyboardInset + 16.h),
+        body: SafeArea(
+          child: quizAsync.when(
+            data: (quizes) {
+              if (quizes.questions.isEmpty) {
+                return const Center(child: Text('Không có câu hỏi để làm bài'));
+              }
+      
+              final isLastQuestion = _currentIndex >= quizes.questions.length - 1;
+      
+              final answeredCount = quizes.questions
+                  .where(
+                    (q) => (quizes.userAnswers[q.flashcardId] ?? '')
+                        .trim()
+                        .isNotEmpty,
+                  )
+                  .length;
+              final progressValue = (answeredCount / quizes.questions.length)
+                  .clamp(0.0, 1.0);
+              final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
+              final availableHeight = MediaQuery.sizeOf(context).height - keyboardInset;
+              final cardHeight = math.max(180.h, availableHeight * 0.28);
+      
+              return Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Stack(
+                  children: [
+                    Positioned.fill(
                       child: Column(
-                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          _userInput(color),
-                          SizedBox(height: 20.h),
-                          ElevatedButton(
-                            onPressed: _isSubmitting
-                                ? null
-                                : () => _handleNextOrSubmit(quizes),
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadiusGeometry.circular(32.r),
+                          SizedBox(height: 8.h),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Tiến độ',
+                                style: MyTextStyle.poppinsMedium600.copyWith(
+                                  color: color.outline.withValues(alpha: 0.7),
+                                ),
+                              ),
+                              Text(
+                                '$answeredCount/${quizes.questions.length}',
+                                style: MyTextStyle.poppinsMedium600.copyWith(
+                                  color: color.primary,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8.h),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10.r),
+                            child: LinearProgressIndicator(
+                              minHeight: 16.h,
+                              backgroundColor: color.outline.withValues(alpha: 0.4),
+                              value: progressValue,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                color.primary,
                               ),
                             ),
-                            child: Row(
-                              spacing: 8.w,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  isLastQuestion ? 'Nộp bài' : 'Câu tiếp theo',
-                                  style: MyTextStyle.poppinsMedium600.copyWith(
-                                    color: color.onPrimary,
-                                  ),
-                                ),
-                                Icon(
-                                  isLastQuestion
-                                      ? Icons.check_rounded
-                                      : Icons.arrow_forward_rounded,
-                                  color: color.onPrimary,
-                                ),
-                              ],
+                          ),
+                          SizedBox(height: 8.h),
+                          SizedBox(
+                            height: cardHeight,
+                            child: CardSwiper(
+                              allowedSwipeDirection:
+                                  const AllowedSwipeDirection.none(),
+                              controller: _swiperController,
+                              cardsCount: quizes.questions.length,
+                              numberOfCardsDisplayed: math.min(
+                                3,
+                                quizes.questions.length,
+                              ),
+                              backCardOffset: const Offset(0, 20),
+                              cardBuilder:
+                                  (
+                                    context,
+                                    index,
+                                    horizontalThresholdPercentage,
+                                    verticalThresholdPercentage,
+                                  ) {
+                                    final question = quizes.questions[index];
+                                    return _questionCard(question, color);
+                                  },
+                              onSwipe: (previousIndex, currentIndex, direction) {
+                                setState(() {
+                                  if (currentIndex != null) {
+                                    _currentIndex = currentIndex;
+                                  }
+                                  _isError = false;
+                                });
+      
+                                userAnswer.clear();
+                                _isError = false;
+                                return true;
+                              },
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          },
-          error: (error, _) {
-            final msg = error is AppException
-                ? MyHelper.getErrorMessage(error)
-                : 'Đã xảy ra lỗi';
-            return RetryWidget(
-              msg: msg,
-              onPressed: () => ref.refresh(
-                quizSessionProvider(
-                  widget.arg.type,
-                  widget.arg.topicId,
-                  widget.arg.assignedDate,
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: AnimatedPadding(
+                        duration: const Duration(milliseconds: 180),
+                        curve: Curves.easeOut,
+                        padding: EdgeInsets.only(bottom: keyboardInset + 16.h),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _userInput(color),
+                            SizedBox(height: 20.h),
+                            ElevatedButton(
+                              onPressed: _isSubmitting
+                                  ? null
+                                  : () => _handleNextOrSubmit(quizes),
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadiusGeometry.circular(32.r),
+                                ),
+                              ),
+                              child: Row(
+                                spacing: 8.w,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    isLastQuestion ? 'Nộp bài' : 'Câu tiếp theo',
+                                    style: MyTextStyle.poppinsMedium600.copyWith(
+                                      color: color.onPrimary,
+                                    ),
+                                  ),
+                                  Icon(
+                                    isLastQuestion
+                                        ? Icons.check_rounded
+                                        : Icons.arrow_forward_rounded,
+                                    color: color.onPrimary,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            );
-          },
-          loading: () => Center(child: CircularProgressIndicator()),
+              );
+            },
+            error: (error, _) {
+              final msg = error is AppException
+                  ? MyHelper.getErrorMessage(error)
+                  : 'Đã xảy ra lỗi';
+              return RetryWidget(
+                msg: msg,
+                onPressed: () => ref.refresh(
+                  quizSessionProvider(
+                    widget.arg.type,
+                    widget.arg.topicId,
+                    widget.arg.assignedDate,
+                  ),
+                ),
+              );
+            },
+            loading: () => LoadingWidget(isLoading: true, child: SizedBox.shrink()),
+          ),
         ),
+        
       ),
-      
     );
   }
 
@@ -250,6 +257,13 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
     final text = userAnswer.text.trim();
     if (text.isEmpty) {
       setState(() => _isError = true);
+      Fluttertoast.showToast(
+              msg: 'Không được bỏ trống đáp án',
+              textColor: Colors.white,
+              backgroundColor: Colors.red.shade300, 
+              gravity: ToastGravity.TOP,
+              
+            );
       return;
     }
 
@@ -314,6 +328,7 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
       cursorColor: color.primary,
       validator: (value) {
         _isError = value == null || value.isEmpty;
+        
         return null;
       },
       decoration: InputDecoration(
@@ -321,10 +336,10 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
             ? color.primary
             : color.outlineVariant,
 
-        suffixIcon: Icon(Icons.edit),
+        suffixIcon: Icon(Icons.abc_outlined),
         hintText: 'Nhập câu trả lời',
         hintStyle: MyTextStyle.poppinsMedium600.copyWith(color: color.outline),
-        errorText: _isError ? 'Không được bỏ trống đáp án' : null,
+        // errorText: _isError ? 'Không được bỏ trống đáp án' : null,
       ),
     );
   }

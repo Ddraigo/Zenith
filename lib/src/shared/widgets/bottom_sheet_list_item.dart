@@ -33,9 +33,10 @@ class BottomSheetListItem extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const SizedBox(height: 2,),
               Center(
                 child: Container(
-                  width: 42,
+                  width: 45,
                   height: 4,
                   decoration: BoxDecoration(
                     color: Colors.black12,

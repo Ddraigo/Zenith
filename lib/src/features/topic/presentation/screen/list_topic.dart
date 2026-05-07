@@ -58,12 +58,26 @@ class ListTopic extends ConsumerWidget {
                     shape: BoxShape.circle,
                   ),
 
-                  child: SvgPicture.asset(
+                  child: topic.icon.isEmpty ? 
+                  SvgPicture.asset(
+                    
                     MyIcons.learn,
                     colorFilter: ColorFilter.mode(
                       colorScheme.primary,
                       BlendMode.srcIn,
                     ),
+                    width: 30.w,
+                    height: 30.h,
+                    fit: BoxFit.contain,
+                  ) : SvgPicture.string(
+                    topic.icon,
+                    colorFilter: ColorFilter.mode(
+                      colorScheme.primary,
+                      BlendMode.srcIn,
+                    ),
+                    width: 30.w,
+                    height: 30.h,
+                    fit: BoxFit.contain,
                   ),
                 ),
                 SizedBox(height: 12.h),

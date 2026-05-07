@@ -94,55 +94,59 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     final asyncState = ref.watch(signUpProvider);
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Scaffold(
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              padding: EdgeInsets.all(16.r),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        spacing: 10,
-                        children: [
-                          SvgPicture.asset(
-                            MyIcons.appIcon,
-                            width: 50.w,
-                            height: 50.h,
-                            colorFilter: ColorFilter.mode(
-                              colorScheme.primary,
-                              BlendMode.srcIn,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        body: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                physics: const NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.all(16.r),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          spacing: 10,
+                          children: [
+                            SvgPicture.asset(
+                              MyIcons.appIcon,
+                              width: 50.w,
+                              height: 50.h,
+                              colorFilter: ColorFilter.mode(
+                                colorScheme.primary,
+                                BlendMode.srcIn,
+                              ),
                             ),
-                          ),
-                          Text(
-                            'Hãy bắt đầu',
-                            style: MyTextStyle.poppinsHeading1,
-                          ),
-                          Text(
-                            'Tạo tài khoản',
-                            style: MyTextStyle.poppinsHeading2.copyWith(
-                              color: colorScheme.onSecondary,
+                            // Text(
+                            //   'Hãy bắt đầu',
+                            //   style: MyTextStyle.poppinsHeading1,
+                            // ),
+                            Text(
+                              'Tạo tài khoản nào!',
+                              style: MyTextStyle.poppinsHeading2.copyWith(
+                                color: colorScheme.primary.withValues(alpha: 0.7),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-                      _buildFormRegister(asyncState),
-                      const SizedBox(height: 24),
-                      _buildSignIn(colorScheme),
-                    ],
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                        _buildFormRegister(asyncState),
+                        const SizedBox(height: 24),
+                        _buildSignIn(colorScheme),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );

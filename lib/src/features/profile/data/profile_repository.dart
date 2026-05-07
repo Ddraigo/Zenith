@@ -53,7 +53,7 @@ class ProfileRepository {
   Future<Either<AppException, ProfileModel>> editUserProfile({
     required ProfileModel userProfile,
   })async{
-    final now = DateTime.now();
+    final now = DateTime.now().toUtc();
     final result = await _ref.editUserProfile(
       user: ProfileDTO(
         userId: userProfile.userId, 

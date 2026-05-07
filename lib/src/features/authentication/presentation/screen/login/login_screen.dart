@@ -82,89 +82,92 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final loginState = ref.watch(authProvider);
     final colorScheme = Theme.of(context).colorScheme;
-    return Scaffold(
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              physics: NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.all(16.r),
-              
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        spacing: 16,
-                        children: [
-                          SvgPicture.asset(
-                            MyImages.logoIcon,
-                            width: 80.w,
-                            height: 80.h,
-                            colorFilter: ColorFilter.mode(
-                                colorScheme.primary, BlendMode.srcIn),
-                          ),
-                          Text(
-                            'Chào mừng đến với Zenith',
-                            style: MyTextStyle.poppinsHeading1,
-                            textAlign: TextAlign.center,
-                          ),
-                          Text(
-                            'Đăng nhập để tiếp tục',
-                            style: MyTextStyle.poppinsHeading2.copyWith(
-                              color: colorScheme.onSecondary,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        body: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                physics: NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.all(16.r),
+                
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: constraints.maxHeight,
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          spacing: 16,
+                          children: [
+                            SvgPicture.asset(
+                              MyImages.logoIcon,
+                              width: 80.w,
+                              height: 80.h,
+                              colorFilter: ColorFilter.mode(
+                                  colorScheme.primary, BlendMode.srcIn),
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 24.h),
-                      _buildformLogin(loginState),
-                      SizedBox(height: 24.h),
-                      // Row(
-                      //   mainAxisSize: MainAxisSize.max,
-                      //   spacing: 8,
-                      //   children: [
-                      //     Expanded(
-                      //       flex: 1,
-                      //       child: Divider(
-                      //         thickness: 1,
-                      //         color: colorScheme.outline,
-                      //       ),
-                      //     ),
-                      //     Text(
-                      //       'HOẶC',
-                      //       style: MyTextStyle.poppinsMedium700.copyWith(
-                      //         color: colorScheme.outline.withValues(alpha: 0.5),
-                      //       ),
-                      //     ),
-                      //     Expanded(
-                      //       flex: 1,
-                      //       child: Divider(
-                      //         thickness: 1,
-                      //         color: colorScheme.outline,
-                      //       ),
-                      //     ),
-                      //   ],
-                      // ),
-                      // SizedBox(height: 24.h),
-                      // _buildThirdPartyLogin(),
-                      // SizedBox(height: 24.h),
-                      _buildForgotPassword(colorScheme),
-                      _buildRegister(colorScheme),
-                    ],
+                            Text(
+                              'Chào mừng đến với Zenith',
+                              style: MyTextStyle.poppinsHeading1.copyWith(fontWeight: FontWeight.w800),
+                              textAlign: TextAlign.center,
+                            ),
+                            Text(
+                              'Đăng nhập để tiếp tục',
+                              style: MyTextStyle.poppinsHeading2.copyWith(
+                                color: colorScheme.onSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 24.h),
+                        _buildformLogin(loginState),
+                        SizedBox(height: 24.h),
+                        // Row(
+                        //   mainAxisSize: MainAxisSize.max,
+                        //   spacing: 8,
+                        //   children: [
+                        //     Expanded(
+                        //       flex: 1,
+                        //       child: Divider(
+                        //         thickness: 1,
+                        //         color: colorScheme.outline,
+                        //       ),
+                        //     ),
+                        //     Text(
+                        //       'HOẶC',
+                        //       style: MyTextStyle.poppinsMedium700.copyWith(
+                        //         color: colorScheme.outline.withValues(alpha: 0.5),
+                        //       ),
+                        //     ),
+                        //     Expanded(
+                        //       flex: 1,
+                        //       child: Divider(
+                        //         thickness: 1,
+                        //         color: colorScheme.outline,
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
+                        // SizedBox(height: 24.h),
+                        // _buildThirdPartyLogin(),
+                        // SizedBox(height: 24.h),
+                        _buildForgotPassword(colorScheme),
+                        _buildRegister(colorScheme),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
@@ -294,7 +297,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             padding: EdgeInsets.all(0),
             foregroundColor: colorScheme.primary,
             overlayColor: Colors.transparent,
-            textStyle: MyTextStyle.poppinsMedium600,
+            textStyle: MyTextStyle.poppinsMedium700,
           ),
           child: Text(
             'Đăng ký ngay',

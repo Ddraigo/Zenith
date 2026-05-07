@@ -11,6 +11,9 @@ abstract class TopicDTO with _$TopicDTO{
     required int id,
     required String name,
 
+    @JsonKey(name: 'svg_content')
+    String? icon,
+
     @JsonKey(name: 'created_at')
     DateTime? createdAt,
 
@@ -24,6 +27,7 @@ extension TopicDTOMapper on TopicDTO{
     return TopicModel(
       id: id, 
       name: name,
+      icon: icon ?? '',
       createdAt: createdAt,
     );
   }

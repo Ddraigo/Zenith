@@ -62,14 +62,14 @@ class ProfileSource {
 
   Future<Either<AppException, ProfileDTO?>> getUserProfile({
     required String userId,
-  })async{
+  }) async {
     try {
       developer.log('ProfileSource: getUserProfile called for userId: $userId');
       final data = await _client
-                        .from('profiles')
-                        .select()
-                        .eq('id', userId)
-                        .maybeSingle();
+          .from('profiles')
+          .select()
+          .eq('id', userId)
+          .maybeSingle();
       return Either.right(data == null ? null : ProfileDTO.fromJson(data));
     } catch (e, st) {
       developer.log('ProfileSource: getUserProfile error: $e');
@@ -78,25 +78,22 @@ class ProfileSource {
     }
   }
 
-  Map<String, dynamic> _buildPayload(ProfileDTO userProfile){
+  Map<String, dynamic> _buildPayload(ProfileDTO userProfile) {
     final payload = userProfile.toJson();
     payload.removeWhere((_, value) => (value == null || value == ''));
     return payload;
   }
 
   Future<Either<AppException, ProfileDTO>> editUserProfile({
-    required ProfileDTO user
-  })async{
+    required ProfileDTO user,
+  }) async {
     try {
       final request = await _client
-                          .from('profiles')
-                          .upsert(
-                            _buildPayload(user), 
-                            onConflict: 'id'
-                          )
-                          .select()
-                          .single();
-    return Either.right(ProfileDTO.fromJson(request));
+          .from('profiles')
+          .upsert(_buildPayload(user), onConflict: 'id')
+          .select()
+          .single();
+      return Either.right(ProfileDTO.fromJson(request));
     } catch (e, st) {
       developer.log('ProfileSource: editUserProfile failed: $e');
       developer.log('$st');
@@ -112,30 +109,36 @@ class ProfileSource {
       final avatarPath = AvatarConfig.getAvatarPath(userId);
 
       try {
-        await _client.storage
-            .from(AvatarConfig.bucketName)
-            .remove([avatarPath]);
+        await _client.storage.from(AvatarConfig.bucketName).remove([
+          avatarPath,
+        ]);
       } catch (e) {
         developer.log('ProfileSource: Old avatar not found, continuing upload');
       }
 
-      await _client.storage.from(AvatarConfig.bucketName).upload(
-        avatarPath,
-        imageFile,
-        fileOptions: FileOptions(
-          cacheControl: AvatarConfig.cacheControl,
-          upsert: true,
-        ),
-      );
+      await _client.storage
+          .from(AvatarConfig.bucketName)
+          .upload(
+            avatarPath,
+            imageFile,
+            fileOptions: FileOptions(
+              cacheControl: AvatarConfig.cacheControl,
+              upsert: true,
+            ),
+          );
 
-        final publicUrl =
-          _client.storage.from(AvatarConfig.bucketName).getPublicUrl(avatarPath);
-        final cacheBustedUrl =
+      final publicUrl = _client.storage
+          .from(AvatarConfig.bucketName)
+          .getPublicUrl(avatarPath);
+      final cacheBustedUrl =
           '$publicUrl?t=${DateTime.now().millisecondsSinceEpoch}';
 
       final request = await _client
           .from('profiles')
-          .update({'avatar_url': cacheBustedUrl})
+          .update({
+            'avatar_url': cacheBustedUrl,
+            'updated_at': DateTime.now().toUtc(),
+          })
           .eq('id', userId)
           .select()
           .single();
@@ -147,5 +150,4 @@ class ProfileSource {
       return Either.left(SupabaseErrorHandle.handle(e));
     }
   }
-  
 }

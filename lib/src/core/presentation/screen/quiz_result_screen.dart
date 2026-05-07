@@ -2,6 +2,7 @@ import 'package:app_demo/configs/routes/app_router.dart';
 import 'package:app_demo/configs/themes/app_colors.dart';
 import 'package:app_demo/configs/themes/text_style.dart';
 import 'package:app_demo/src/features/home/presentation/home_screen.dart';
+import 'package:app_demo/src/features/quiz/domain/quiz_attempt_items_model.dart';
 import 'package:app_demo/src/features/quiz/domain/quiz_attempts_model.dart';
 import 'package:app_demo/src/core/presentation/controller/quiz_result_notifier.dart';
 import 'package:app_demo/src/core/provider/reward_summary_provider.dart';
@@ -12,6 +13,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../shared/http/app_exception.dart';
+import '../../../shared/utils/helper_function.dart';
+import '../../../shared/widgets/retry_widget.dart';
 import '../../domain/quiz_attempt_args.dart';
 
 class QuizResultScreen extends ConsumerStatefulWidget {
@@ -271,7 +275,6 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen> {
         backgroundColor: color.onPrimary,
         toolbarHeight: 70.h,
         titleSpacing: 0,
-        elevation: 1,
         centerTitle: true,
         title: const Text('Kết quả'),
         leading: IconButton(
@@ -289,7 +292,7 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen> {
       bottomNavigationBar: SafeArea(
         minimum: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
         child: Container(
-          margin: EdgeInsets.only(bottom: 16.h),
+          margin: EdgeInsets.only(bottom: 8.h),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -312,7 +315,6 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen> {
                   label: const Text('Làm lại'),
                 ),
               ),
-              SizedBox(height: 12.h),
               SizedBox(
                 height: 50.h,
                 width: double.infinity,
@@ -320,7 +322,10 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen> {
                   style: OutlinedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(32.r),
+                      
                     ),
+                    side: BorderSide.none,
+                    
                   ),
                   onPressed: () {
                     ref.read(homeTapProvider.notifier).state = 0;
@@ -335,229 +340,233 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen> {
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(16.r),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            spacing: 20.h,
-            children: [
-              _summaryResult(color),
-              quizResultAsync.when(
-                data: (quizResults) {
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: quizResults.length,
-                    itemBuilder: (context, index) {
+        child: CustomScrollView(
+          slivers: [
+            SliverPadding(
+              padding: EdgeInsets.all(16.r),
+              sliver: SliverToBoxAdapter(child: _summaryResult(color)),
+            ),
+            quizResultAsync.when(
+              data: (quizResults) {
+                return SliverPadding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
                       final item = quizResults[index];
-                      return Container(
-                        margin: EdgeInsets.symmetric(vertical: 8.h),
-                        padding: EdgeInsets.symmetric(
-                          vertical: 10.h,
-                          horizontal: 16.w,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20.r),
-                          color: color.onPrimary,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          spacing: 1.h,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Icon(
-                                  item.isCorrect
-                                      ? Icons.check_circle_outline_rounded
-                                      : Icons.cancel_outlined,
-                                  color: item.isCorrect
-                                      ? const Color.fromARGB(255, 40, 116, 41)
-                                      : color.error,
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Đáp án',
-                                        style: MyTextStyle.poppinsMedium
-                                            .copyWith(
-                                              color: color.outline.withValues(
-                                                alpha: 0.7,
-                                              ),
-                                            ),
-                                      ),
-                                      Text(
-                                        item.question,
-                                        style: MyTextStyle.poppinsLarge600
-                                            .copyWith(color: color.primary),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Trả lời',
-                                        style: MyTextStyle.poppinsMedium
-                                            .copyWith(
-                                              color: color.outline.withValues(
-                                                alpha: 0.7,
-                                              ),
-                                            ),
-                                      ),
-                                      Text(
-                                        item.userAnswer,
-                                        style: MyTextStyle.poppinsLarge600
-                                            .copyWith(
-                                              color: item.isCorrect
-                                                  ? AppColors.gradientDark
-                                                  : color.error.withValues(
-                                                      alpha: 0.7,
-                                                    ),
-                                            ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },
-                error: (e, _) => Center(child: Text('Lỗi $e')),
-                loading: () => Center(child: CircularProgressIndicator()),
+                      return _buildResultItem(color, item);
+                    }, childCount: quizResults.length),
+                  ),
+                );
+              },
+              error: (error, _) => SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(
+                  child: RetryWidget(
+                    msg: error is AppException
+                        ? MyHelper.getErrorMessage(error)
+                        : 'Đã xảy ra lỗi',
+                    onPressed: () => ref.refresh(
+                      quizResultProvider(quizAttempId: widget.quizAttemp.id),
+                    ),
+                  ),
+                ),
+              ),
+
+              loading: () => const SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(child: CircularProgressIndicator()),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildResultItem(ColorScheme color, QuizAttemptItemsModel item) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 8.h),
+      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20.r),
+        color: color.onPrimary,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 1.h,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Đáp án',
+                      style: MyTextStyle.poppinsMedium.copyWith(
+                        color: color.outline.withValues(alpha: 0.7),
+                      ),
+                    ),
+                    Text(
+                      item.question,
+                      style: MyTextStyle.poppinsLarge600.copyWith(
+                        color: color.primary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Trả lời',
+                      style: MyTextStyle.poppinsMedium.copyWith(
+                        color: color.outline.withValues(alpha: 0.7),
+                      ),
+                    ),
+                    Text(
+                      item.userAnswer,
+                      style: MyTextStyle.poppinsLarge600.copyWith(
+                        color: item.isCorrect
+                            ? AppColors.gradientDark
+                            : color.error.withValues(alpha: 0.7),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                item.isCorrect
+                    ? Icons.check_circle_outline_rounded
+                    : Icons.cancel_outlined,
+                color: item.isCorrect
+                    ? const Color.fromARGB(255, 40, 116, 41)
+                    : color.error,
               ),
             ],
           ),
-        ),
+        ],
       ),
     );
   }
 
   Widget _summaryResult(ColorScheme color) {
     final inCorrectAnwer =
-        widget.quizAttemp.totalQuestions -
-        (widget.quizAttemp.correctAnswers ?? 0);
-    return Row(
-      spacing: 16.h,
-      children: [
-        Expanded(
-          child: Container(
-            padding: EdgeInsets.all(16.r),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20.r),
-              color: color.onPrimary,
+        widget.quizAttemp.totalQuestions - (widget.quizAttemp.correctAnswers ?? 0);
+        
+    return LayoutBuilder(
+      builder: (context, constraint) {
+      final availableWidth = constraint.maxWidth;
+      final spacing = 8.w;
+      final columnWidth = (availableWidth - spacing) / 2;
+      final rowHeight = columnWidth;
+
+      return SizedBox(
+        height: rowHeight,
+        child: Row(
+          children: [
+            Container(
+              width: columnWidth,
+              padding: EdgeInsets.all(16.r), 
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20.r),
+                color: color.onPrimary,
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  SizedBox.expand( 
+                    child: CircularProgressIndicator(
+                      strokeCap: StrokeCap.round,
+                      strokeWidth: 10.w, 
+                      backgroundColor: color.outline.withValues(alpha: 0.2),
+                      value: ((widget.quizAttemp.score ?? 0.0) / 100).clamp(0.0, 1.0),
+                      valueColor: AlwaysStoppedAnimation<Color>(color.primary),
+                    ),
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center, 
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "${widget.quizAttemp.score}%",
+                        style: MyTextStyle.poppinsHeading2.copyWith(
+                          color: color.primary,
+                        ),
+                      ),
+                      Text(
+                        "${widget.quizAttemp.correctAnswers ?? 0}/${widget.quizAttemp.totalQuestions}",
+                        style: MyTextStyle.poppinsMedium600.copyWith(
+                          color: color.outline.withValues(alpha: 0.7),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
 
-            height: 160.h,
-            width: 160.w,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                SizedBox(
-                  height: 130.h,
-                  width: 130.w,
-                  child: CircularProgressIndicator(
-                    strokeCap: StrokeCap.round,
-                    strokeWidth: 10,
-                    backgroundColor: color.outline.withValues(alpha: 0.4),
-                    value: ((widget.quizAttemp.score ?? 0.0) / 100).clamp(
-                      0.0,
-                      1.0,
-                    ),
-                    valueColor: AlwaysStoppedAnimation<Color>(color.primary),
-                  ),
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      "${widget.quizAttemp.score}%",
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: color.primary,
-                      ),
-                    ),
-                    Text(
-                      "${widget.quizAttemp.correctAnswers ?? 0} / ${widget.quizAttemp.totalQuestions}",
-                      style: MyTextStyle.poppinsMedium600.copyWith(
-                        color: color.outline.withValues(alpha: 0.7),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-        Expanded(
-          child: SizedBox(
-            height: 160.h,
-            child: Column(
-              spacing: 8.h,
-              children: [
-                Expanded(
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.r),
-                      color: AppColors.primary300.withValues(alpha: 0.3),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.check_circle_rounded,
-                          color: const Color.fromARGB(255, 40, 116, 41),
-                        ),
+            SizedBox(width: spacing),
 
-                        Text(
-                          '${widget.quizAttemp.correctAnswers}',
-                          style: MyTextStyle.poppinsLarge,
-                        ),
-                      ],
+            
+            Expanded(
+              child: Column(
+                children: [
+                  // Ô ĐÚNG
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.r),
+                        color: AppColors.primary300.withValues(alpha: 0.3),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.check_circle_rounded,
+                            color: const Color.fromARGB(255, 40, 116, 41),
+                            size: 20.sp,
+                          ),
+                          Text(
+                            '${widget.quizAttemp.correctAnswers}',
+                            style: MyTextStyle.poppinsLarge.copyWith(fontSize: 16.sp),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.r),
-                      color: color.error.withValues(alpha: 0.1),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.cancel_rounded, color: color.error),
-                        Text(
-                          '$inCorrectAnwer',
-                          style: MyTextStyle.poppinsLarge,
-                        ),
-                      ],
+                  SizedBox(height: spacing),
+                  
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.r),
+                        color: color.error.withValues(alpha: 0.1),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.cancel_rounded, color: color.error, size: 20.sp),
+                          Text(
+                            '$inCorrectAnwer',
+                            style: MyTextStyle.poppinsLarge.copyWith(fontSize: 16.sp),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
+          ],
         ),
-      ],
-    );
+      );
+    });
   }
 }

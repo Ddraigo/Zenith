@@ -1,4 +1,3 @@
-import 'package:app_demo/configs/routes/app_router.dart';
 import 'package:app_demo/configs/themes/text_style.dart';
 import 'package:app_demo/src/core/provider/current_user_id_notifire.dart';
 import 'package:app_demo/src/core/service/image_upload_service.dart';
@@ -9,7 +8,6 @@ import 'package:app_demo/src/shared/widgets/retry_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../shared/constants/images_constants.dart';
@@ -164,14 +162,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         return;
       }
 
-      // ScaffoldMessenger.of(context)
-      //   ..hideCurrentSnackBar()
-      //   ..showSnackBar(
-      //     const SnackBar(
-      //       content: Text('Ảnh đã được cập nhật!'),
-      //       duration: Duration(seconds: 2),
-      //     ),
-      //   );
       SnackBarHelper.showSuccess(context, 'Ảnh đã được cập nhật!');
     } catch (e) {
       if (!mounted) return;
@@ -180,15 +170,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       if (e is AppException) {
         errorMsg = MyHelper.getErrorMessage(e);
       }
-
-      // ScaffoldMessenger.of(context)
-      //   ..hideCurrentSnackBar()
-      //   ..showSnackBar(
-      //     SnackBar(
-      //       content: Text(errorMsg),
-      //       duration: const Duration(seconds: 3),
-      //     ),
-      //   );
       SnackBarHelper.showError(context, errorMsg as AppException);
     }
   }
@@ -199,102 +180,104 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final hasProfileAsync = ref.watch(hasProfileProvider);
     final userEmail = ref.read(userEmailProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 3,
-        shadowColor: Colors.black26,
-        backgroundColor: color.onPrimary,
-        toolbarHeight: 70.h,
-        titleSpacing: 0,
-        centerTitle: true,
-        title: const Text('Thông tin cá nhân'),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () => context.push(AppRouter.settingPath),
-            icon: SvgPicture.asset(
-              MyIcons.setting,
-              colorFilter: ColorFilter.mode(
-                color.primary.withValues(alpha: 0.7),
-                BlendMode.srcIn,
-              ),
-            ),
+    return GestureDetector(
+      onTap: FocusScope.of(context).unfocus,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false, 
+        appBar: AppBar(
+          backgroundColor: color.onPrimary,
+          toolbarHeight: 70.h,
+          titleSpacing: 0,
+          centerTitle: true,
+          title: const Text('Thông tin cá nhân'),
+          leading: IconButton(
+            onPressed: () => context.pop(),
+            icon: const Icon(Icons.arrow_back_ios_new_rounded),
           ),
-        ],
-      ),
-      body: SafeArea(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-          child: hasProfileAsync.when(
-            data: (hasProfile) {
-              if (!hasProfile) {
-                return _buildProfileBody(
-                  color: color,
-                  userEmail: userEmail,
-                  userAvatar: '',
-                  isCreateMode: true,
-                  formEnabled: true,
-                  submitLabel: 'Tạo hồ sơ',
-                  onSubmit: () => _saveProfile(isCreateMode: true),
-                );
-              }
-
-              final asyncState = ref.watch(profileProvider);
-              return asyncState.when(
-                data: (profile) {
-                  _fillForm(profile);
+          // actions: [
+          //   IconButton(
+          //     onPressed: () => context.push(AppRouter.settingPath),
+          //     icon: SvgPicture.asset(
+          //       MyIcons.setting,
+          //       colorFilter: ColorFilter.mode(
+          //         color.primary.withValues(alpha: 0.7),
+          //         BlendMode.srcIn,
+          //       ),
+          //     ),
+          //   ),
+          // ],
+        ),
+        body: SafeArea(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+            child: hasProfileAsync.when(
+              data: (hasProfile) {
+                if (!hasProfile) {
                   return _buildProfileBody(
                     color: color,
                     userEmail: userEmail,
-                    userAvatar: profile.avatarUrl ?? '',
-                    isCreateMode: false,
-                    formEnabled: _isEditing,
-                    submitLabel: _isEditing ? 'Lưu' : 'Cập nhật profile',
-                    onSubmit: _isEditing
-                        ? () => _saveProfile(
-                            isCreateMode: false,
-                            profile: profile,
-                          )
-                        : _startEdit,
+                    userAvatar: '',
+                    isCreateMode: true,
+                    formEnabled: true,
+                    submitLabel: 'Tạo hồ sơ',
+                    onSubmit: () => _saveProfile(isCreateMode: true),
                   );
-                },
-                error: (error, _) {
-                  if (_isMissingProfileError(error)) {
+                }
+      
+                final asyncState = ref.watch(profileProvider);
+                return asyncState.when(
+                  data: (profile) {
+                    _fillForm(profile);
                     return _buildProfileBody(
                       color: color,
                       userEmail: userEmail,
-                      userAvatar: '',
-                      isCreateMode: true,
-                      formEnabled: true,
-                      submitLabel: 'Tạo hồ sơ',
-                      onSubmit: () => _saveProfile(isCreateMode: true),
+                      userAvatar: profile.avatarUrl ?? '',
+                      isCreateMode: false,
+                      formEnabled: _isEditing,
+                      submitLabel: _isEditing ? 'Lưu' : 'Cập nhật profile',
+                      onSubmit: _isEditing
+                          ? () => _saveProfile(
+                              isCreateMode: false,
+                              profile: profile,
+                            )
+                          : _startEdit,
                     );
-                  }
-
-                  final msg = error is AppException
-                      ? MyHelper.getErrorMessage(error)
-                      : 'Đã xảy ra lỗi';
-                  return RetryWidget(
-                    msg: msg,
-                    onPressed: () => ref.refresh(profileProvider),
-                  );
-                },
-                loading: () => const Center(child: CircularProgressIndicator()),
-              );
-            },
-            error: (error, _) {
-              final msg = error is AppException
-                  ? MyHelper.getErrorMessage(error)
-                  : 'Đã xảy ra lỗi';
-              return RetryWidget(
-                msg: msg,
-                onPressed: () => ref.refresh(hasProfileProvider),
-              );
-            },
-            loading: () => const Center(child: CircularProgressIndicator()),
+                  },
+                  error: (error, _) {
+                    if (_isMissingProfileError(error)) {
+                      return _buildProfileBody(
+                        color: color,
+                        userEmail: userEmail,
+                        userAvatar: '',
+                        isCreateMode: true,
+                        formEnabled: true,
+                        submitLabel: 'Tạo hồ sơ',
+                        onSubmit: () => _saveProfile(isCreateMode: true),
+                      );
+                    }
+      
+                    final msg = error is AppException
+                        ? MyHelper.getErrorMessage(error)
+                        : 'Đã xảy ra lỗi';
+                    return RetryWidget(
+                      msg: msg,
+                      onPressed: () => ref.refresh(profileProvider),
+                    );
+                  },
+                  loading: () => const Center(child: CircularProgressIndicator()),
+                );
+              },
+              error: (error, _) {
+                final msg = error is AppException
+                    ? MyHelper.getErrorMessage(error)
+                    : 'Đã xảy ra lỗi';
+                return RetryWidget(
+                  msg: msg,
+                  onPressed: () => ref.refresh(hasProfileProvider),
+                );
+              },
+              loading: () => const Center(child: CircularProgressIndicator()),
+            ),
           ),
         ),
       ),
@@ -315,7 +298,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         SizedBox(height: 16.h),
         _userAvatar(
           userAvatar,
-          userEmail,
           color,
           onPressed: _onAvatarEditPressed,
         ),
@@ -325,7 +307,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         Expanded(child: _buildFormRegister(isEditting: formEnabled)),
         ElevatedButton.icon(
           onPressed: onSubmit,
-
           style: ElevatedButton.styleFrom(
             minimumSize: Size(double.maxFinite, 40.h),
             shape: RoundedRectangleBorder(
@@ -350,7 +331,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   Widget _userAvatar(
     String userAvatar,
-    String displayName,
     ColorScheme color, {
     required VoidCallback onPressed,
   }) {
@@ -368,16 +348,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
               child: MyAvatar(
                 userAvatar: userAvatar,
-                displayName: displayName,
                 size: 45.r,
               ),
             ),
             Positioned(
-              right: -12,
+              right: -10,
               bottom: 0,
               child: Container(
-                height: 35.h,
-                width: 35.h,
+                height: 40.h,
+                width: 40.h,
                 padding: EdgeInsets.zero,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
@@ -395,7 +374,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 child: IconButton(
                   padding: EdgeInsets.zero,
                   onPressed: onPressed,
-                  icon: Icon(Icons.edit, color: color.onPrimary),
+                  icon: Icon(Icons.photo_camera_outlined, color: color.onPrimary, size: 24.r,),
                 ),
               ),
             ),

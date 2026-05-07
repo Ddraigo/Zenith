@@ -7,6 +7,7 @@ abstract class TopicModel with _$TopicModel{
   const factory TopicModel({
     required int id,
     required String name,
+    @Default('') String icon,
     DateTime? createdAt,
   }) = _TopicModel;
 

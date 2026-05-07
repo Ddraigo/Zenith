@@ -21,7 +21,7 @@ class AppColors {
   static const typography200 = Color(0xFF91958E);
   static const typography300 = Color(0xFF70756B);
   static const typography400 = Color(0xFF60655C);
-  static const typography500 = Color(0xFF363A33);
+  static const typography500 = Color.fromARGB(255, 56, 51, 58);
 
   // Grey
   static const grey0 = Color(0xFFFFFFFF);

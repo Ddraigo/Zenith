@@ -36,8 +36,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
     final hasProfileAsync = ref.watch(hasProfileProvider);
 
     return SafeArea(
-      child: Scaffold(
-        body: RefreshIndicator(
+      child: RefreshIndicator(
           onRefresh: () async {
             final hasProfile = await ref.refresh(hasProfileProvider.future);
             if (hasProfile) {
@@ -111,7 +110,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                               color,
                               wordMaster,
                               MyIcons.bookPurple,
-                              'WORDS MASTERED',
+                              'MASTERED',
                             ),
                             _overviewItems(
                               color,
@@ -201,7 +200,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
             ),
           ),
         ),
-        ),
+        
       
     );
   }
@@ -466,12 +465,14 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                   'You ve mastered 12% more vocabulary than last month.',
                   style: MyTextStyle.poppinsMedium,
                 ),
-                LinearProgressIndicator(
-                  minHeight: 14.h,
+                ClipRRect(
                   borderRadius: BorderRadius.circular(10.r),
-                  backgroundColor: color.outline.withValues(alpha: 0.4),
-                  value: 6 / 10,
-                  valueColor: AlwaysStoppedAnimation<Color>(color.primary),
+                  child: LinearProgressIndicator(
+                    minHeight: 14.h,
+                    backgroundColor: color.outline.withValues(alpha: 0.4),
+                    value: 6 / 10,
+                    valueColor: AlwaysStoppedAnimation<Color>(color.primary),
+                  ),
                 ),
               ],
             ),
@@ -511,7 +512,9 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
             subTitle,
             style: MyTextStyle.poppinsMedium400.copyWith(
               color: color.outline.withValues(alpha: 0.5),
+              
             ),
+            softWrap:  true,
           ),
         ],
       ),

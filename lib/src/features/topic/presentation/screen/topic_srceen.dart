@@ -20,29 +20,19 @@ class TopicSrceen extends ConsumerWidget {
           return const Center(child: Text('Không có danh sách'));
         }
 
-        return ListTopic(
-            onTopicSelected: (topicId) {
-              // Set daily mode = false - xem tất cả flashcards của topic
-              ref.read(isDailyModeProvider.notifier).state = false;
-              ref.read(selectedTopicProvider.notifier).state = topicId;
-              // final topic = topics.firstWhere(
-              //   (t) => t.id == topicId,
-              //   orElse: () => topics.first,
-              // );
-              ref.read(selectedTopicDaily.notifier).state = topicId;
-              ref.read(flashcardIndexProvider.notifier).state = 0;
-              ref.read(homeTapProvider.notifier).state = 0;
-              // context.go(
-              //   '${AppRouter.flashcardPath}/$topicId',
-              //   extra: topic.name,
-              // );
-              // context.push(
-              //   '${AppRouter.flashcardPath}/$topicId',
-              //   extra: topic.name,
-              // );
-            },
-            topics: topics,
-          
+        return SafeArea(
+          child: ListTopic(
+              onTopicSelected: (topicId) {
+                // Set daily mode = false - xem tất cả flashcards của topic
+                ref.read(isDailyModeProvider.notifier).state = false;
+                ref.read(selectedTopicProvider.notifier).state = topicId;
+                ref.read(selectedTopicDaily.notifier).state = topicId;
+                ref.read(flashcardIndexProvider.notifier).state = 0;
+                ref.read(homeTapProvider.notifier).state = 0;
+              },
+              topics: topics,
+            
+          ),
         );
       },
       error: (error, _) {
