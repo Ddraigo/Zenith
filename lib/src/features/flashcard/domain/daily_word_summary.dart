@@ -27,4 +27,15 @@ abstract class DailyWordSummaryModel with _$DailyWordSummaryModel{
     final complete = completedWords ?? 0;
     return complete/totalWords;
   }
+
+  String get statusComplete{
+    if(completedWords! == 0) {
+      return 'Bỏ lỡ';
+    } else if(completedWords! < totalWords){
+      return 'Chưa hoàn thành';
+    } else if(completedWords == totalWords){
+      return 'Hoàn thành';
+    }  
+    return '';
+  }
 }

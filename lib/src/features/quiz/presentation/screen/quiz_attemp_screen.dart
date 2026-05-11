@@ -32,7 +32,6 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
   late final TextEditingController userAnswer;
   late final FocusNode _answerFocusNode;
   late final CardSwiperController _swiperController;
-  bool _isError = false;
   bool _isSubmitting = false;
   int _currentIndex = 0;
 
@@ -171,11 +170,9 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
                                   if (currentIndex != null) {
                                     _currentIndex = currentIndex;
                                   }
-                                  _isError = false;
                                 });
       
                                 userAnswer.clear();
-                                _isError = false;
                                 return true;
                               },
                             ),
@@ -256,7 +253,6 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
   Future<void> _handleNextOrSubmit(QuestionModel quizes) async {
     final text = userAnswer.text.trim();
     if (text.isEmpty) {
-      setState(() => _isError = true);
       Fluttertoast.showToast(
               msg: 'Không được bỏ trống đáp án',
               textColor: Colors.white,
@@ -285,14 +281,12 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
 
     if (!isLastQuestion) {
       setState(() {
-        _isError = false;
       });
       _swiperController.swipe(CardSwiperDirection.left);
       return;
     }
 
     setState(() {
-      _isError = false;
       _isSubmitting = true;
     });
 
@@ -327,7 +321,6 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
       focusNode: _answerFocusNode,
       cursorColor: color.primary,
       validator: (value) {
-        _isError = value == null || value.isEmpty;
         
         return null;
       },

@@ -1,4 +1,6 @@
 
+import 'package:intl/intl.dart';
+
 class Format {
 
   static String formatDMY(DateTime? date) {
@@ -23,6 +25,37 @@ class Format {
     return '${date.year.toString().padLeft(4, '0')}-'
         '${date.month.toString().padLeft(2, '0')}-'
         '${date.day.toString().padLeft(2,'0')}';
+  }
+
+  static String formatDM(DateTime? date){
+    if (date == null) return '';
+    return 
+        '${date.day.toString().padLeft(2,'0')} tháng '
+        '${date.month.toString().padLeft(2, '0')}';
+  }
+
+  static String dayOfWeek(DateTime? date){
+    if (date == null) return '';
+    final dayOfWeek = DateFormat.EEEE().format(date).toLowerCase();
+    switch (dayOfWeek) {
+      case 'monday':
+        return 'Thứ hai';
+      case 'tuesday':
+        return 'Thứ ba';
+      case 'wednesday':
+        return 'Thứ tư';
+      case 'thursday':
+        return 'Thứ năm';
+      case 'friday':
+        return 'Thứ sáu';
+      case 'saturday':
+        return 'Thứ bảy';
+      case 'sunday':
+        return 'Chủ nhật';
+       
+      default:
+    }
+    return dayOfWeek;
   }
 
   static Map<String, dynamic> asMap(dynamic value) {

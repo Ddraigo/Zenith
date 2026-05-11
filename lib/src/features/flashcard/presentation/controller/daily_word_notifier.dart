@@ -14,7 +14,7 @@ class DailyWordNotifier extends _$DailyWordNotifier{
   }
 
   Future<void> refresh(DateTime assignedDate) async{
-    state = const AsyncLoading();
+    // state = const AsyncLoading();
     state = await AsyncValue.guard(
       () => _loadDailyWord(assignedDate),
     );

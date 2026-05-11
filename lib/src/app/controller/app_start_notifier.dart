@@ -7,6 +7,12 @@ part 'app_start_notifier.g.dart';
 class AppStartNotifier extends _$AppStartNotifier {
   @override
   FutureOr<AppStartState> build() async {
+    // final sessionToken =
+    //     ref.read(supabaseClientProvider).auth.currentSession?.accessToken;
+    // if (sessionToken != null && sessionToken.isNotEmpty) {
+    //   return const AppStartState.authenticated();
+    // }
+
     final tokenService = ref.read(tokenServiceProvider);
     final token = await tokenService.fetchToken();
 

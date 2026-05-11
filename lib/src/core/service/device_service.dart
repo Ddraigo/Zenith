@@ -139,13 +139,18 @@ class UserDeviceService {
       final currentToken = await getUserFcmToken();
       final existsToken = currentToken.any((e) => e.fcmToken == token);
 
-
       if (!existsToken) {
+        // xóa hết token, chi giữ 1 token/user
+        for (final oldToken in currentToken) {
+          await deleteFcmToken(fcmToken: oldToken.fcmToken, userId: userId);
+        }
+        
+        // Save new token
         await _repo.saveFcmToken(userId: userId, fcmToken: token!);
         developer.log(
-        'UserDeviceService: FCM token saved',
-        name: 'setupFcmToken',
-      );
+          'UserDeviceService: FCM token saved (old tokens cleaned up)',
+          name: 'setupFcmToken',
+        );
       }
       if (subscribeToRefresh) {
         _startTokenRefreshListener(userId: userId, initialToken: token!);

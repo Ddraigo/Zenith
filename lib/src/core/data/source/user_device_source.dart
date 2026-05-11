@@ -62,7 +62,7 @@ class UserDeviceSource {
           .upsert({
             'fcm_token': fcmToken, 
             'user_id': userId,
-          }, onConflict: 'fcm_token');
+          }, onConflict: 'user_id, fcm_token');
       return const Either.right(true);
     } catch (e) {
       return Either.left(SupabaseErrorHandle.handle(e));

@@ -19,7 +19,7 @@ class FlashcardNotifier extends _$FlashcardNotifier {
 
   /// Refresh danh sách flashcards
   Future<void> refresh(int topicId, {DateTime? assignedDate}) async {
-    state = const AsyncLoading();
+    // state = const AsyncLoading();
     state = await AsyncValue.guard(
       () => ref.read(flashcardServiceProvider).getDailyFlashcards(
         topicId: topicId,

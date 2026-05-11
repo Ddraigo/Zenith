@@ -1,4 +1,5 @@
 import 'package:app_demo/src/app/widget/app_start_page.dart';
+import 'package:app_demo/src/core/presentation/screen/see_all_screen.dart';
 import 'package:app_demo/src/features/authentication/presentation/screen/onboarding/onboarding_page.dart';
 import 'package:app_demo/src/features/authentication/presentation/screen/onboarding/onboarding_screen.dart';
 import 'package:app_demo/src/features/authentication/presentation/screen/login/login_screen.dart';
@@ -89,6 +90,15 @@ final GoRouter appRouter = GoRouter(
       path: AppRouter.settingPath,
       builder: (context, state)=> SettingSreen(),
     ),
+    GoRoute(
+      path: AppRouter.seeAll,
+      builder: (context, state){
+        final config = state.extra as SeeAllPageConfig;
+        return SeeAllPageScreen(
+          config: config
+        );
+      }
+    )
 
   ],
   errorBuilder: (context, state) {
@@ -112,6 +122,7 @@ class AppRouter {
   static const String quizResultPath =  '/quiz_result';
   static const String userStatsPath = '/user_stats';
   static const String settingPath = '/setting';
+  static const String seeAll = '/all_list';
 
 
 }

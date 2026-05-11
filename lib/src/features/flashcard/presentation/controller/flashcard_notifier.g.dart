@@ -56,7 +56,7 @@ final class FlashcardNotifierProvider
   }
 }
 
-String _$flashcardNotifierHash() => r'8ecb416cc61c3cfafb7a1d622f06fa0aa7ded5d1';
+String _$flashcardNotifierHash() => r'd974c225a063e8da151e2245bdbce55dfcc07023';
 
 /// Presentation Layer - State Management (Notifier)
 /// Quản lý flashcards theo topicId và assignedDate

@@ -1,10 +1,10 @@
 import 'package:app_demo/configs/themes/text_style.dart';
 import 'package:app_demo/src/core/provider/shared_flashcard_notifier.dart';
+import 'package:app_demo/src/features/flashcard/domain/flashcard_model.dart';
 import 'package:app_demo/src/features/flashcard/presentation/screen/daily_word_bottom_sheet.dart';
 import 'package:app_demo/src/features/flashcard/presentation/screen/flashcard_list.dart';
 import 'package:app_demo/src/features/topic/domain/topic_model.dart';
 import 'package:app_demo/src/features/topic/presentation/controller/list_topic_notifier.dart';
-import 'package:app_demo/src/shared/constants/images_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,15 +13,35 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../../configs/routes/app_router.dart';
 import '../../../../core/provider/current_user_id_notifire.dart';
+import '../../../../shared/constants/images_constants.dart';
 import '../../../../shared/http/app_exception.dart';
 import '../../../../shared/utils/helper_function.dart';
 import '../../../../shared/widgets/my_avatar.dart';
 
-class FlashcardScreen extends ConsumerWidget {
+class FlashcardScreen extends ConsumerStatefulWidget {
   const FlashcardScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<FlashcardScreen> createState() => _FlashcardScreenState();
+}
+
+class _FlashcardScreenState extends ConsumerState<FlashcardScreen> {
+  List<FlashcardModel> _cachedFlashcards = const [];
+  bool _hasLoadedOnce = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() async {
+      ref.read(listTopicProvider.future);
+      ref.read(isDailyModeProvider.notifier).state = true;
+      ref.read(selectedTopicProvider.notifier).state = 0;
+      ref.read(getFlashcardsProvider(0).future);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
     final currentIndex = ref.watch(flashcardIndexProvider);
@@ -29,23 +49,55 @@ class FlashcardScreen extends ConsumerWidget {
 
     final selectedTopicId = ref.watch(selectedTopicProvider) ?? 0;
     final flashcardAsync = ref.watch(getFlashcardsProvider(selectedTopicId));
+    ref.listen<AsyncValue<List<FlashcardModel>>>(
+      getFlashcardsProvider(selectedTopicId),
+      (previous, next) {
+        if (next.hasValue || next.hasError) {
+          _hasLoadedOnce = true;
+        }
+
+        if (!next.hasValue) {
+          return;
+        }
+
+        final nextValue = next.value ?? const <FlashcardModel>[];
+
+        if (nextValue.isEmpty) {
+          _cachedFlashcards = const <FlashcardModel>[];
+          return;
+        }
+
+        _cachedFlashcards = nextValue;
+      },
+    );
+    final hasEmptyResult =
+        flashcardAsync.hasValue && (flashcardAsync.value?.isEmpty ?? true);
+    final flashcards =
+        hasEmptyResult
+        ? const <FlashcardModel>[]
+        : (flashcardAsync.hasValue &&
+                (flashcardAsync.value?.isNotEmpty ?? false)
+            ? (flashcardAsync.value ?? const <FlashcardModel>[])
+            : _cachedFlashcards);
+
+    final showSkeleton = flashcardAsync.isLoading && _cachedFlashcards.isEmpty;
+    final showInitialSkeleton =
+      showSkeleton && !_hasLoadedOnce;
 
     final userName = ref.watch(userNameProvider);
-    final avatarUrl = ref.watch(userAvatarProvider.select((a) => a.maybeWhen(
-      data: (url) => url,
-      orElse: () => '',
-    )));
+    final avatarUrl = ref.watch(
+      userAvatarProvider.select(
+        (a) => a.maybeWhen(data: (url) => url, orElse: () => ''),
+      ),
+    );
 
     final getTopicName = topicAsync.maybeWhen(
       data: (topics) {
-        if (flashcardAsync.hasValue) {
-          final flashcards = flashcardAsync.value ?? [];
-          if (flashcards.isNotEmpty) {
-            final topicId = flashcards.first.topicId;
-            for (final topic in topics) {
-              if (topic.id == topicId) {
-                return topic.name;
-              }
+        if (flashcards.isNotEmpty) {
+          final topicId = flashcards.first.topicId;
+          for (final topic in topics) {
+            if (topic.id == topicId) {
+              return topic.name;
             }
           }
         }
@@ -54,185 +106,211 @@ class FlashcardScreen extends ConsumerWidget {
       orElse: () => 'Lỗi: N/A',
     );
 
-    return flashcardAsync.when(
-      data: (defaultFlashcards) {
-        final getIndex = currentIndex.clamp(
-          0,
-          defaultFlashcards.isEmpty ? 0 : defaultFlashcards.length - 1,
-        );
-
-        return Scaffold(
-          appBar: AppBar(
-            backgroundColor: colorScheme.onPrimary,
-            toolbarHeight: 75.h,
-            titleSpacing: 0,
-            leadingWidth: 200.w,
-            leading: Container(
-              margin: EdgeInsets.only(left: 16.w),
-              padding: EdgeInsets.symmetric(vertical: 8.h),
-              child: Row(
-                spacing: 8.w,
-                children: [
-                  MyAvatar(
-                    userAvatar: avatarUrl,
-                    size: 35.r,
-                    onTap: () => context.push(AppRouter.settingPath),
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Xin chào', style: MyTextStyle.poppinsMedium),
-                      Text(userName, style: MyTextStyle.poppinsLarge600),
-                    ],
-                  ),
-                ],
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: colorScheme.onPrimary,
+        toolbarHeight: 75.h,
+        titleSpacing: 0,
+        leadingWidth: 200.w,
+        leading: Container(
+          margin: EdgeInsets.only(left: 16.w),
+          padding: EdgeInsets.symmetric(vertical: 8.h),
+          child: Row(
+            spacing: 8.w,
+            children: [
+              MyAvatar(
+                userAvatar: avatarUrl,
+                size: 35.r,
+                onTap: () => context.push(AppRouter.settingPath),
               ),
-            ),
-            actions: [
-              Padding(
-                padding: EdgeInsetsGeometry.only(right: 16.w),
-                child: Row(
-                  children: [
-                    _dailyListButoon(context, ref, colorScheme),
-                    // IconButton(
-                    //   onPressed: () {},
-                    //   icon: Badge.count(
-                    //     count: 2,
-                    //     // padding: EdgeInsetsDirectional.all(1.r),
-                    //     child: SvgPicture.asset(
-                    //       MyIcons.bell,
-                    //       colorFilter: ColorFilter.mode(
-                    //         colorScheme.primary,
-                    //         BlendMode.srcIn,
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
-                  ],
-                ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Xin chào', style: MyTextStyle.poppinsMedium),
+                  Text(userName, style: MyTextStyle.poppinsLarge600),
+                ],
               ),
             ],
           ),
-          body: Padding(
-            padding: EdgeInsets.fromLTRB(0, 8.h, 0, 16.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
+        ),
+        actions: [
+          Padding(
+            padding: EdgeInsetsGeometry.only(right: 16.w),
+            child: Row(
               children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: Text('Chủ đề', style: MyTextStyle.poppinsMedium,),
-                ),
-                SizedBox(height: 8.h,),
-                topicAsync.when(
-                  data: (topics) {
-                    return SizedBox(
-                      height: 50.h,
-                      child: _topicList(
-                        context,
-                        topics,
-                        colorScheme,
-                        onTopicSelected: (topicId) {
-                          ref.read(isDailyModeProvider.notifier).state = false;
-                          ref.read(selectedTopicProvider.notifier).state =
-                              topicId;
-                          ref.read(selectedTopicDaily.notifier).state = topicId;
-                          ref.read(flashcardIndexProvider.notifier).state = 0;
-                        },
-                      ),
-                    );
-                  },
-                  error: (error, _) {
-                    final msg = error is AppException
-                        ? MyHelper.getErrorMessage(error)
-                        : 'Đã xảy ra lỗi';
-                    return Placeholder(
-                      child: SizedBox(
-                        height: 100.h,
-                        width: double.maxFinite,
-                        child: Text(msg),
-                      ),
-                    );
-                  },
-                  loading: () => Placeholder(),
-                ),
-
-                SizedBox(height: 16),
-                _todayProgress(
-                  colorScheme,
-                  getTopicName.isEmpty ? 'N/A' : getTopicName,
-                  defaultFlashcards.isEmpty ? 0 : getIndex + 1,
-                  defaultFlashcards.isEmpty ? 0 : defaultFlashcards.length,
-                ),
-                SizedBox(height: 16),
-                if (defaultFlashcards.isEmpty)
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: _flashcardEmpty(colorScheme),
-                  )
-                else
-                  Expanded(
-                    child: FlashcardList(
-                      flashcards: defaultFlashcards,
-                      onSwiped: (index) {
-                        ref.read(flashcardIndexProvider.notifier).state = index;
-                      },
-                    ),
-                  ),
+                _dailyListButoon(context, ref, colorScheme),
+                // IconButton(
+                //   onPressed: () {},
+                //   icon: Badge.count(
+                //     count: 2,
+                //     // padding: EdgeInsetsDirectional.all(1.r),
+                //     child: SvgPicture.asset(
+                //       MyIcons.bell,
+                //       colorFilter: ColorFilter.mode(
+                //         colorScheme.primary,
+                //         BlendMode.srcIn,
+                //       ),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
-        );
-      },
-      error: (error, _) {
-        final msg = error is AppException
-            ? MyHelper.getErrorMessage(error)
-            : 'Đã xảy ra lỗi';
-        return Center(child: Text(msg));
-      },
-      loading: () => const Center(child: CircularProgressIndicator()),
+        ],
+      ),
+      body: Padding(
+        padding: EdgeInsets.fromLTRB(0, 8.h, 0, 16.h),
+        child: showInitialSkeleton
+            ? _flashcardSkeleton(context)
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: Text('Chủ đề', style: MyTextStyle.poppinsMedium),
+                  ),
+                  SizedBox(height: 8.h),
+                  topicAsync.when(
+                    data: (topics) {
+                      return SizedBox(
+                        height: 50.h,
+                        child: _topicList(
+                          context,
+                          topics,
+                          colorScheme,
+                          onTopicSelected: (topicId) {
+                            ref.read(isDailyModeProvider.notifier).state =
+                                false;
+
+                            Future.microtask(() {
+                              ref.read(getFlashcardsProvider(topicId));
+                            });
+                            ref.read(selectedTopicProvider.notifier).state =
+                                topicId;
+                            ref.read(selectedTopicDaily.notifier).state =
+                                topicId;
+                            ref.read(flashcardIndexProvider.notifier).state = 0;
+                          },
+                        ),
+                      );
+                    },
+                    error: (error, _) {
+                      final msg = error is AppException
+                          ? MyHelper.getErrorMessage(error)
+                          : 'Đã xảy ra lỗi';
+                      return Placeholder(
+                        child: SizedBox(
+                          height: 100.h,
+                          width: double.maxFinite,
+                          child: Text(msg),
+                        ),
+                      );
+                    },
+                    loading: () => const SizedBox.shrink(),
+                  ),
+
+                  SizedBox(height: 16),
+                  if (flashcardAsync.hasError)
+                    Builder(
+                      builder: (context) {
+                        final error = flashcardAsync.error;
+                        final msg = error is AppException
+                            ? MyHelper.getErrorMessage(error)
+                            : 'Đã xảy ra lỗi';
+                        return Expanded(child: Center(child: Text(msg)));
+                      },
+                    )
+                  else
+                    Expanded(
+                      child: Column(
+                        children: [
+                          _todayProgress(
+                            colorScheme,
+                            getTopicName.isEmpty ? 'N/A' : getTopicName,
+                            flashcards.isEmpty
+                                ? 0
+                                : currentIndex.clamp(0, flashcards.length - 1) +
+                                      1,
+                            flashcards.length,
+                          ),
+                          SizedBox(height: 8.h),
+                          Expanded(
+                            child: FlashcardList(
+                              flashcards: flashcards,
+
+                              onSwiped: (index) {
+                                ref
+                                        .read(flashcardIndexProvider.notifier)
+                                        .state =
+                                    index;
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+      ),
     );
   }
 
-  Widget _flashcardEmpty(ColorScheme colorScheme) {
-    return Expanded(
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(36.r),
+  Widget _flashcardSkeleton(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    Widget line(double width, double height) {
+      return Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color: colorScheme.outline.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(8.r),
         ),
-        elevation: 0,
-        color: colorScheme.surface,
-        child: Padding(
-          padding: EdgeInsets.all(30.r),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(height: 70.h),
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  'Không có từ vựng nào',
-                  textAlign: TextAlign.center,
-                  style: MyTextStyle.poppinsHeading2.copyWith(
-                    fontSize: 40.sp,
-                    color: colorScheme.primary,
-                  ),
-                ),
-              ),
-              SizedBox(height: 52.h),
-              Text(
-                'Quay lại sau',
-                style: MyTextStyle.poppinsMedium400.copyWith(
-                  color: colorScheme.outline,
-                ),
-              ),
-            ],
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          child: line(80.w, 16.h),
+        ),
+        SizedBox(height: 8.h),
+        SizedBox(
+          height: 50.h,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            itemBuilder: (_, _) => line(90.w, 36.h),
+            separatorBuilder: (_, _) => SizedBox(width: 8.w),
+            itemCount: 4,
           ),
         ),
-      ),
+        SizedBox(height: 16.h),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          child: Container(
+            height: 110.h,
+            decoration: BoxDecoration(
+              color: colorScheme.outline.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(10.r),
+            ),
+          ),
+        ),
+        SizedBox(height: 12.h),
+        Expanded(
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 16.w),
+            decoration: BoxDecoration(
+              color: colorScheme.outline.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(16.r),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -250,8 +328,9 @@ class FlashcardScreen extends ConsumerWidget {
       itemBuilder: (context, index) {
         final topic = topicList[index];
         return Padding(
-          
-          padding: EdgeInsets.only(right: index == topicList.length -1 ? 0 : 8.w),
+          padding: EdgeInsets.only(
+            right: index == topicList.length - 1 ? 0 : 8.w,
+          ),
           child: ElevatedButton.icon(
             onPressed: () => onTopicSelected?.call(topic.id),
             style: ElevatedButton.styleFrom(

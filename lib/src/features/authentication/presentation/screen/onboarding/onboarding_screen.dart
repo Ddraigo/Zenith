@@ -39,34 +39,35 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       child: Scaffold(
         body: Column(
           children: [
-            PageView(
-              controller: _pageController,
-              onPageChanged: (index) =>
-                  ref.read(onboardingPageProvider.notifier).state = index,
-              children: const [
-                OnBoardingPage(
-                  title: 'Welcome to the most tastiest app',
-                  image: MyImages.onBoardingImage1,
-                  subTitle:
-                      'You know, this app is edible meaning you can eat it!',
-
-                  index: 1,
-                ),
-                OnBoardingPage(
-                  title: 'We use nitro on bicycles for delivery!',
-                  image: MyImages.onBoardingImage2,
-                  subTitle:
-                      'For very fast delivery we use nitro on bicycles, kidding, but we’re very fast.',
-                  index: 2,
-                ),
-                OnBoardingPage(
-                  title: 'We’re the besties of birthday peoples',
-                  image: MyImages.onBoardingImage3,
-                  subTitle:
-                      'We send cakes to our plus members, (only one cake per person)',
-                  index: 3,
-                ),
-              ],
+            Expanded(
+              child: PageView(
+                controller: _pageController,
+                onPageChanged: (index) =>
+                    ref.read(onboardingPageProvider.notifier).state = index,
+                children: const [
+                  OnBoardingPage(
+                    title: 'Welcome to the most tastiest app',
+                    image: MyImages.onBoardingImage1,
+                    subTitle:
+                        'You know, this app is edible meaning you can eat it!',
+                    index: 1,
+                  ),
+                  OnBoardingPage(
+                    title: 'We use nitro on bicycles for delivery!',
+                    image: MyImages.onBoardingImage2,
+                    subTitle:
+                        'For very fast delivery we use nitro on bicycles, kidding, but we’re very fast.',
+                    index: 2,
+                  ),
+                  OnBoardingPage(
+                    title: 'We’re the besties of birthday peoples',
+                    image: MyImages.onBoardingImage3,
+                    subTitle:
+                        'We send cakes to our plus members, (only one cake per person)',
+                    index: 3,
+                  ),
+                ],
+              ),
             ),
             OnBoardingDotNavigation(controller: _pageController, count: 3),
             Row(

@@ -10,7 +10,7 @@ class DailyWordBottomSheet extends ConsumerWidget {
   const DailyWordBottomSheet({
     super.key,
     this.onItemSelected,
-    this.dayRange = 7,
+    this.dayRange = 60,
   });
   final Function(int topicId)? onItemSelected;
   final int dayRange;
@@ -55,7 +55,6 @@ class DailyWordBottomSheet extends ConsumerWidget {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                const SizedBox(height: 2,),
                 Center(
                 child: Container(
                   width: 45,
@@ -98,7 +97,7 @@ class DailyWordBottomSheet extends ConsumerWidget {
 
                         if (item.topic == null && item.date != null) {
                           return Padding(
-                            padding: EdgeInsets.only(top: 5.h, bottom: 8.h),
+                            padding: EdgeInsets.only(top: 5.h, bottom: 5.h),
                             child: Text(
                               ref.watch(formatDailyDateProvider(item.date!)),
                               style: MyTextStyle.poppinsLarge600.copyWith(
@@ -129,6 +128,7 @@ class DailyWordBottomSheet extends ConsumerWidget {
                                 Navigator.pop(context);
                               },
                               progress: item.topic!.progress,
+                              statusComplete: item.topic!.statusComplete,
                             ),
                           );
                         }
@@ -153,14 +153,22 @@ class _TopicTile extends StatelessWidget {
     required this.dailyTopic,
     required this.onTap,
     required this.progress,
+    required this.statusComplete,
   });
   final DailyWordSummaryModel dailyTopic;
   final String progress;
   final VoidCallback onTap;
+  final String statusComplete;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final Color statusColor = switch (statusComplete) {
+      'Bỏ lỡ' => colorScheme.error,
+      'Chưa hoàn thành' => Colors.amberAccent.shade400,
+      'Hoàn thành' => Colors.green,
+      _ => colorScheme.onInverseSurface,
+    };
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8.h),
       child: Material(
@@ -179,6 +187,7 @@ class _TopicTile extends StatelessWidget {
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: [
                 Expanded(
@@ -205,10 +214,16 @@ class _TopicTile extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(5.r),
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: colorScheme.onInverseSurface,
+                    shape: BoxShape.rectangle,
+                    // color: statusColor,
+                    border: Border.all(color: statusColor),
+                    borderRadius: BorderRadius.circular(10.r),
                   ),
-                  child: Icon(Icons.check, color: colorScheme.primary),
+                  // child: Icon(Icons.check, color: colorScheme.primary),
+                  child: Text(
+                    statusComplete,
+                    style: MyTextStyle.poppinsSmall.copyWith(color: statusColor),
+                  ),
                 ),
               ],
             ),

@@ -2,12 +2,12 @@ import 'package:app_demo/src/features/flashcard/application/flashcard_service.da
 import 'package:app_demo/src/features/flashcard/application/user_daily_word_service.dart';
 import 'package:app_demo/src/features/flashcard/domain/flashcard_model.dart';
 import 'package:app_demo/src/features/flashcard/presentation/controller/flashcard_notifier.dart';
-import 'package:app_demo/src/features/statistics/application/statistics_service.dart';
 import 'package:app_demo/src/features/topic/presentation/controller/topic_flashcard_notifier.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../features/flashcard/domain/daily_word_summary.dart';
+import '../../features/statistics/application/statistics_service.dart';
 import '../../features/topic/application/topic_service.dart';
 import '../../features/topic/domain/topic_model.dart';
 import '../../shared/constants/format.dart';
@@ -77,8 +77,6 @@ Future<Map<DateTime, List<DailyWordSummaryModel>>> getDailyAllTopicsGrouped (Ref
   return ref.watch(userDailyWordServiceProvider)
     .getDailyTopicsGrouped(startDate: DateTime(1999,1,1));
 }
-
-
 
 @riverpod
 String  formatDailyDate(Ref ref, DateTime date) {
