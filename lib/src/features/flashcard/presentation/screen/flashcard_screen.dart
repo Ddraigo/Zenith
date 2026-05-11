@@ -276,7 +276,7 @@ class _FlashcardScreenState extends ConsumerState<FlashcardScreen> {
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: line(80.w, 16.h),
+          child: line(80.w, 20.h),
         ),
         SizedBox(height: 8.h),
         SizedBox(

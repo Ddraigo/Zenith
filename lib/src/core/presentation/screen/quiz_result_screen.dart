@@ -511,8 +511,6 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen> {
             ),
 
             SizedBox(width: spacing),
-
-            
             Expanded(
               child: Column(
                 children: [
@@ -533,7 +531,7 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen> {
                             size: 20.sp,
                           ),
                           Text(
-                            '${widget.quizAttemp.correctAnswers}',
+                            'Đúng: ${widget.quizAttemp.correctAnswers}',
                             style: MyTextStyle.poppinsLarge.copyWith(fontSize: 16.sp),
                           ),
                         ],
@@ -554,7 +552,7 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen> {
                         children: [
                           Icon(Icons.cancel_rounded, color: color.error, size: 20.sp),
                           Text(
-                            '$inCorrectAnwer',
+                            'Sai: $inCorrectAnwer',
                             style: MyTextStyle.poppinsLarge.copyWith(fontSize: 16.sp),
                           ),
                         ],

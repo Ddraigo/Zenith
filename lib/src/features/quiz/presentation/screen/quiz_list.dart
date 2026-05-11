@@ -185,7 +185,7 @@ class QuizList extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16.r),
                   color: color.onPrimary,
                   border: Border.all(
-                    color: color.outlineVariant.withValues(alpha: 0.5),
+                    color: color.onPrimary.withValues(alpha: 0.5),
                   ),
                 ),
                 child: Column(
@@ -250,6 +250,12 @@ class QuizList extends StatelessWidget {
     DailyWordSummaryModel item,
     ColorScheme color,
   ) {
+    final Color statusColor = switch (item.statusComplete) {
+          'Bỏ lỡ' => color.error,
+          'Chưa hoàn thành' => Colors.amberAccent.shade400,
+          'Hoàn thành' => Colors.green,
+          _ => color.onInverseSurface,
+        };
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
 
@@ -272,7 +278,7 @@ class QuizList extends StatelessWidget {
             padding: EdgeInsets.all(12.r),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16.r),
-              color: color.outline.withValues(alpha: 0.06),
+              color: color.onPrimary,
               border: Border.all(
                 color: color.outlineVariant.withValues(alpha: 0.5),
               ),
@@ -300,33 +306,64 @@ class QuizList extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        item.topicName.isEmpty ? 'N/A' : item.topicName,
-                        style: MyTextStyle.poppinsLarge600.copyWith(
-                          fontSize: 18.sp,
-                          color: color.onPrimaryFixedVariant.withValues(
-                            alpha: 0.7,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            item.topicName.isEmpty ? 'N/A' : item.topicName,
+                            style: MyTextStyle.poppinsLarge600.copyWith(
+                              fontSize: 18.sp,
+                              color: color.onPrimaryFixedVariant.withValues(
+                                alpha: 0.7,
+                              ),
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
                           ),
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(10.r),
+                              border: Border.all(color: statusColor),
+                            ),
+                            child: Text(
+                              item.statusComplete,
+                              style: MyTextStyle.poppinsSmall500.copyWith(
+                                fontSize: 13.sp,
+                                color: statusColor,
+                              ),
+                            ),
+                          )
+                        ],
                       ),
-                      Text(
-                        Format.formatDMY(item.assignedDate).isEmpty
-                            ? 'N/A'
-                            : Format.formatDMY(item.assignedDate),
-                        style: MyTextStyle.poppinsMedium.copyWith(
-                          color: color.primary,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            Format.formatDMY(item.assignedDate).isEmpty
+                                ? 'N/A'
+                                : Format.formatDMY(item.assignedDate),
+                            style: MyTextStyle.poppinsMedium.copyWith(
+                              color: color.primary,
+                            ),
+                          ),
+                          Text(
+                            item.progress,
+                            style: MyTextStyle.poppinsMedium.copyWith(
+                              color: color.outlineVariant,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
-                Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: 18,
-                  color: color.outline.withValues(alpha: 0.6),
-                ),
+                // Icon(
+                //   Icons.arrow_forward_ios_rounded,
+                //   size: 18,
+                //   color: color.outline.withValues(alpha: 0.6),
+                // ),
               ],
             ),
           ),
@@ -371,7 +408,7 @@ class QuizList extends StatelessWidget {
                 padding: EdgeInsets.all(12.r),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16.r),
-                  color: color.outline.withValues(alpha: 0.06),
+                  color: color.onPrimary,
                   border: Border.all(
                     color: color.outlineVariant.withValues(alpha: 0.5),
                   ),

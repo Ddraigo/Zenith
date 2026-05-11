@@ -1,4 +1,3 @@
-import 'package:app_demo/configs/themes/text_style.dart';
 import 'package:app_demo/src/core/provider/shared_flashcard_notifier.dart';
 import 'package:app_demo/src/features/home/presentation/home_screen.dart';
 import 'package:app_demo/src/features/topic/presentation/controller/list_topic_notifier.dart';
@@ -8,6 +7,8 @@ import 'package:app_demo/src/shared/utils/helper_function.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../../shared/widgets/widget_fuction.dart';
 
 class TopicSrceen extends ConsumerWidget {
   const TopicSrceen({super.key});
@@ -29,11 +30,7 @@ class TopicSrceen extends ConsumerWidget {
               SizedBox(height: 32.h,),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: Text('Khám phá từ vựng', style: MyTextStyle.poppinsHeading2,),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: Text('Theo các chủ để dưới đây nào!', style: MyTextStyle.poppinsLarge400,),
+                child: header(title: 'Khám phá từ vựng', subTitle: 'Theo các chủ để dưới đây nào!'),
               ),
               SizedBox(height: 16.h,),
               Expanded(
@@ -62,4 +59,6 @@ class TopicSrceen extends ConsumerWidget {
       loading: () => const Center(child: CircularProgressIndicator()),
     );
   }
+
+  
 }

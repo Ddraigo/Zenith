@@ -17,6 +17,7 @@ import '../../../../shared/constants/format.dart';
 import '../../../../shared/http/app_exception.dart';
 import '../../../../shared/utils/helper_function.dart';
 import '../../../../shared/widgets/retry_widget.dart';
+import '../../../../shared/widgets/widget_fuction.dart';
 
 class StatisticsScreen extends ConsumerStatefulWidget {
   const StatisticsScreen({super.key});
@@ -84,8 +85,12 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                 return SingleChildScrollView(
                   padding: EdgeInsets.all(16.r),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     spacing: 8.h,
                     children: [
+                      // SizedBox(height: 8.h,),
+                      header(title: 'Cùng xem lại', subTitle: 'Các thành quả của bạn nha!'),
+                      SizedBox(height: 8.h,),
                       GridView.count(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
