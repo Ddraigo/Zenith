@@ -87,12 +87,12 @@ class SettingSreen extends ConsumerWidget {
               _profile(color, ref, context),
               _account(color, ref, context),
               SizedBox(height: 8.h),
-              _general(
-                color: color,
-                ref: ref,
-                notificationStatus: notificationStatus,
-                darkModeStatus: darkModeStatus,
-              ),
+              // _general(
+              //   color: color,
+              //   ref: ref,
+              //   notificationStatus: notificationStatus,
+              //   darkModeStatus: darkModeStatus,
+              // ),
             ],
           ),
         ),

@@ -3,7 +3,6 @@ import 'package:app_demo/src/core/provider/shared_flashcard_notifier.dart';
 import 'package:app_demo/src/features/flashcard/domain/flashcard_model.dart';
 import 'package:app_demo/src/features/flashcard/presentation/screen/daily_word_bottom_sheet.dart';
 import 'package:app_demo/src/features/flashcard/presentation/screen/flashcard_list.dart';
-import 'package:app_demo/src/features/topic/domain/topic_model.dart';
 import 'package:app_demo/src/features/topic/presentation/controller/list_topic_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,6 +16,7 @@ import '../../../../shared/constants/images_constants.dart';
 import '../../../../shared/http/app_exception.dart';
 import '../../../../shared/utils/helper_function.dart';
 import '../../../../shared/widgets/my_avatar.dart';
+import 'segment_topic.dart';
 
 class FlashcardScreen extends ConsumerStatefulWidget {
   const FlashcardScreen({super.key});
@@ -72,17 +72,15 @@ class _FlashcardScreenState extends ConsumerState<FlashcardScreen> {
     );
     final hasEmptyResult =
         flashcardAsync.hasValue && (flashcardAsync.value?.isEmpty ?? true);
-    final flashcards =
-        hasEmptyResult
+    final flashcards = hasEmptyResult
         ? const <FlashcardModel>[]
         : (flashcardAsync.hasValue &&
-                (flashcardAsync.value?.isNotEmpty ?? false)
-            ? (flashcardAsync.value ?? const <FlashcardModel>[])
-            : _cachedFlashcards);
+                  (flashcardAsync.value?.isNotEmpty ?? false)
+              ? (flashcardAsync.value ?? const <FlashcardModel>[])
+              : _cachedFlashcards);
 
     final showSkeleton = flashcardAsync.isLoading && _cachedFlashcards.isEmpty;
-    final showInitialSkeleton =
-      showSkeleton && !_hasLoadedOnce;
+    final showInitialSkeleton = showSkeleton && !_hasLoadedOnce;
 
     final userName = ref.watch(userNameProvider);
     final avatarUrl = ref.watch(
@@ -139,7 +137,7 @@ class _FlashcardScreenState extends ConsumerState<FlashcardScreen> {
             padding: EdgeInsetsGeometry.only(right: 16.w),
             child: Row(
               children: [
-                _dailyListButoon(context, ref, colorScheme),
+                _dailyListButton(context, ref, colorScheme),
                 // IconButton(
                 //   onPressed: () {},
                 //   icon: Badge.count(
@@ -176,10 +174,8 @@ class _FlashcardScreenState extends ConsumerState<FlashcardScreen> {
                     data: (topics) {
                       return SizedBox(
                         height: 50.h,
-                        child: _topicList(
-                          context,
-                          topics,
-                          colorScheme,
+                        child: SegmentTopic(
+                          topicList: topics,
                           onTopicSelected: (topicId) {
                             ref.read(isDailyModeProvider.notifier).state =
                                 false;
@@ -314,64 +310,6 @@ class _FlashcardScreenState extends ConsumerState<FlashcardScreen> {
     );
   }
 
-  Widget _topicList(
-    BuildContext context,
-    List<TopicModel> topicList,
-    ColorScheme color, {
-    final Function(int topicId)? onTopicSelected,
-  }) {
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      shrinkWrap: true,
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
-      itemCount: topicList.length,
-      itemBuilder: (context, index) {
-        final topic = topicList[index];
-        return Padding(
-          padding: EdgeInsets.only(
-            right: index == topicList.length - 1 ? 0 : 8.w,
-          ),
-          child: ElevatedButton.icon(
-            onPressed: () => onTopicSelected?.call(topic.id),
-            style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 5.h),
-              backgroundColor: color.primary.withValues(alpha: 0.05),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.r),
-                side: BorderSide(color: color.primary.withValues(alpha: 0.5)),
-              ),
-            ),
-            label: Text(
-              topic.name,
-              style: MyTextStyle.poppinsMedium.copyWith(color: color.primary),
-            ),
-            icon: topic.icon.isEmpty
-                ? SvgPicture.asset(
-                    MyIcons.learn,
-                    colorFilter: ColorFilter.mode(
-                      color.primary,
-                      BlendMode.srcIn,
-                    ),
-                    fit: BoxFit.contain,
-                    height: 24.h,
-                    width: 24.h,
-                  )
-                : SvgPicture.string(
-                    topic.icon,
-                    colorFilter: ColorFilter.mode(
-                      color.primary,
-                      BlendMode.srcIn,
-                    ),
-                    fit: BoxFit.contain,
-                    height: 24.h,
-                    width: 24.h,
-                  ),
-          ),
-        );
-      },
-    );
-  }
-
   Widget _todayProgress(
     ColorScheme color,
     String topicName,
@@ -439,7 +377,7 @@ class _FlashcardScreenState extends ConsumerState<FlashcardScreen> {
     );
   }
 
-  Widget _dailyListButoon(
+  Widget _dailyListButton(
     BuildContext context,
     WidgetRef ref,
     ColorScheme color,
