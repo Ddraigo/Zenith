@@ -14,7 +14,8 @@ class TextFieldCustom extends StatelessWidget {
     required this.controller,
     required this.focusNode,
     this.errorText, 
-    this.isEnabled = true,
+    this.isEnabled = true, 
+    this.suffixIcon,
   });
 
   final String icon;
@@ -26,6 +27,7 @@ class TextFieldCustom extends StatelessWidget {
   final TextEditingController controller;
   final String? errorText;
   final bool isEnabled;
+  final Widget? suffixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +77,7 @@ class TextFieldCustom extends StatelessWidget {
                 colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
               ),
             ),
+            suffixIcon: suffixIcon,
             prefixIconConstraints: BoxConstraints(
               minHeight: 24.h,
               minWidth: 52.w,

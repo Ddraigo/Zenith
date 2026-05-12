@@ -27,33 +27,33 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _passwordFocusNode = FocusNode();
   late final ProviderSubscription<AsyncValue<void>> _authSubscription;
   late bool isSubmitted;
+  bool _hidePassword = true;
 
   @override
-  void initState(){
+  void initState() {
     isSubmitted = false;
     super.initState();
-    _authSubscription = ref.listenManual<AsyncValue<void>>(authProvider, (prev, next){
+    _authSubscription = ref.listenManual<AsyncValue<void>>(authProvider, (
+      prev,
+      next,
+    ) {
       next.when(
-        data: (_){
-          // ScaffoldMessenger.of(
-          //   context,
-          // ).showSnackBar( const SnackBar(content: Text('Đăng nhập thành công!')));
+        data: (_) {
           _clearForm();
-
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted) {
               context.go(AppRouter.homePath);
             }
           });
-        }, 
-        loading: (){},
+        },
+        loading: () {},
         error: (error, _) {
-  if (error is AppException) {
-    SnackBarHelper.showError(context, error);
-  } else {
-    SnackBarHelper.showWarning(context, 'Đã xảy ra lỗi');
-  }
-},
+          if (error is AppException) {
+            SnackBarHelper.showError(context, error);
+          } else {
+            SnackBarHelper.showWarning(context, 'Đã xảy ra lỗi');
+          }
+        },
       );
     });
   }
@@ -68,15 +68,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.dispose();
   }
 
-  void _clearForm(){
+  void _clearForm() {
     _emailController.clear();
     _passwordController.clear();
     _emailFocusNode.unfocus();
     _passwordFocusNode.unfocus();
     isSubmitted = false;
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -91,12 +89,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               return SingleChildScrollView(
                 physics: NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.all(16.r),
-                
-                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
                 child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight: constraints.maxHeight,
-                  ),
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
                   child: Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -112,11 +109,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               width: 80.w,
                               height: 80.h,
                               colorFilter: ColorFilter.mode(
-                                  colorScheme.primary, BlendMode.srcIn),
+                                colorScheme.primary,
+                                BlendMode.srcIn,
+                              ),
                             ),
                             Text(
                               'Chào mừng đến với Zenith',
-                              style: MyTextStyle.poppinsHeading1.copyWith(fontWeight: FontWeight.w800),
+                              style: MyTextStyle.poppinsHeading1.copyWith(
+                                fontWeight: FontWeight.w800,
+                              ),
                               textAlign: TextAlign.center,
                             ),
                             Text(
@@ -185,31 +186,34 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           hintText: 'Địa chỉ Email',
           focusNode: _emailFocusNode,
           controller: _emailController,
-          errorText: isSubmitted 
-          ? loginNotifier.validateEmail(_emailController.text.trim()) 
-          : null, 
+          errorText: isSubmitted
+              ? loginNotifier.validateEmail(_emailController.text.trim())
+              : null,
         ),
         TextFieldCustom(
           icon: MyIcons.lockIcon,
           hintText: 'Mật khẩu',
           focusNode: _passwordFocusNode,
-          obscureText: true,
+          obscureText: _hidePassword,
           controller: _passwordController,
-          errorText: isSubmitted 
-          ? loginNotifier.validatePassword(_passwordController.text) 
-          : null, 
-
+          errorText: isSubmitted
+              ? loginNotifier.validatePassword(_passwordController.text)
+              : null,
+          suffixIcon: IconButton(
+            onPressed: () => setState(() => _hidePassword = !_hidePassword),
+            icon: Icon(_hidePassword ? Icons.visibility_off : Icons.visibility),
+          ),
         ),
         asyncState.when(
-          data: (_){
+          data: (_) {
             return ButtonCustom(
               onPressed: _handleLogin,
               type: ButtonType.elevated,
               label: 'Đăng nhập',
               minimumSize: Size(double.infinity, 58.h),
             );
-          }, 
-          loading: (){
+          },
+          loading: () {
             return ButtonCustom(
               onPressed: null,
               type: ButtonType.elevated,
@@ -217,28 +221,25 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               minimumSize: Size(double.infinity, 58.h),
             );
           },
-          error: (error, stack){
+          error: (error, stack) {
             return ButtonCustom(
               onPressed: _handleLogin,
               type: ButtonType.elevated,
               label: 'Đăng ký',
               minimumSize: Size(double.infinity, 58.h),
             );
-          }
+          },
         ),
-        
       ],
     );
   }
 
-  void _handleLogin(){
-    setState(() => isSubmitted = true,);
+  void _handleLogin() {
+    setState(() => isSubmitted = true);
 
-    ref.read(authProvider.notifier)
-    .login(
-      _emailController.text.trim(),
-      _passwordController.text.trim()
-    );
+    ref
+        .read(authProvider.notifier)
+        .login(_emailController.text.trim(), _passwordController.text.trim());
   }
 
   Widget _buildThirdPartyLogin() {
@@ -270,11 +271,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           style: TextButton.styleFrom(
             foregroundColor: colorScheme.primary,
             overlayColor: Colors.transparent,
-            textStyle: MyTextStyle.poppinsMedium700
+            textStyle: MyTextStyle.poppinsMedium700,
           ),
-          child: Text(
-            'Quên mật khẩu?',
-          ),
+          child: Text('Quên mật khẩu?'),
         ),
       ],
     );
@@ -299,9 +298,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             overlayColor: Colors.transparent,
             textStyle: MyTextStyle.poppinsMedium700,
           ),
-          child: Text(
-            'Đăng ký ngay',
-          ),
+          child: Text('Đăng ký ngay'),
         ),
       ],
     );

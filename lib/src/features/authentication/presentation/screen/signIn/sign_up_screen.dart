@@ -32,9 +32,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   final _rePasswordFocusNode = FocusNode();
   late final ProviderSubscription<AsyncValue<void>> _signUpSubscription;
 
+
   DateTime? _selectedDate;
   Gender _selectedGender = Gender.none;
   late bool isSubmit;
+
+  bool _hidePassword = true;
+  bool _hideConfirm = true;
 
   @override
   void initState() {
@@ -203,22 +207,27 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           errorText: isSubmit
               ? notifier.validateEmail(_emailController.text)
               : null,
+              
         ),
         TextFieldCustom(
           icon: MyIcons.lockIcon,
           hintText: 'Mật khẩu',
           focusNode: _passwordFocusNode,
-          obscureText: true,
+          obscureText: _hidePassword,
           controller: _passwordController,
           errorText: isSubmit
               ? notifier.validatePassword(_passwordController.text)
               : null,
+          suffixIcon: IconButton(
+            onPressed: () => setState(() => _hidePassword = !_hidePassword),
+            icon: Icon(_hidePassword ? Icons.visibility_off : Icons.visibility),
+          ),
         ),
         TextFieldCustom(
           icon: MyIcons.lockIcon,
           hintText: 'Xác nhận lại mật khẩu',
           focusNode: _rePasswordFocusNode,
-          obscureText: true,
+          obscureText: _hideConfirm,
           controller: _rePasswordController,
           errorText: isSubmit
               ? notifier.validateConfirmPassword(
@@ -226,6 +235,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   _rePasswordController.text,
                 )
               : null,
+          suffixIcon: IconButton(
+            onPressed: () => setState(() => _hideConfirm = !_hideConfirm),
+            icon: Icon(_hideConfirm ? Icons.visibility_off : Icons.visibility),
+          ),
         ),
         asyncState.when(
           data: (_) {
