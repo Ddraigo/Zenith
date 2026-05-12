@@ -6,13 +6,11 @@ import 'package:app_demo/src/features/quiz/domain/quiz_attempt_items_model.dart'
 import 'package:app_demo/src/features/quiz/domain/quiz_attempts_model.dart';
 import 'package:app_demo/src/core/presentation/controller/quiz_result_notifier.dart';
 import 'package:app_demo/src/core/provider/reward_summary_provider.dart';
-import 'package:app_demo/src/features/statistics/presentation/controller/statistics_notifier.dart';
 import 'package:app_demo/src/shared/constants/images_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../shared/http/app_exception.dart';
@@ -262,19 +260,12 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen> {
     // Watch reward provider
     final reward = ref.watch(rewardSummaryProvider);
 
-    final totalPoint = ref.watch(statisticsProvider.select(
-      (userStats) => userStats.maybeWhen(
-        data: (stats) => stats.userStatsModel.totalPoints , 
-        orElse: () => 0)
-    ));
-
-
     // Show dialog when reward detected
     if (reward != null && !_rewardDialogShown) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!_rewardDialogShown && context.mounted) {
           _rewardDialogShown = true;
-          _showRewardDialog(reward, color, totalPoint);
+          _showRewardDialog(reward, color, reward.totalPointsAfter);
         }
       });
     }

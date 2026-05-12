@@ -170,12 +170,6 @@ class StatisticsService {
                 streakCount > userStats.streakCount
                     ? streakCount - userStats.streakCount
                     : 0;
-            final rewardSummary = RewardSummary(
-              pointAdded: pointAdded,
-              streakAdded: streakAdded,
-              streakCount: streakCount,
-              streakReset: streakReset,
-            );
 
             final updateResult = await _repo.updatedUserStats(
               userStats: UserStatsModel(
@@ -192,6 +186,13 @@ class StatisticsService {
             return updateResult.fold(
               ifLeft: (e) => e.left(),
               ifRight: (updatedStats) {
+                final rewardSummary = RewardSummary(
+                  totalPointsAfter: updatedStats.totalPoints,
+                  pointAdded: pointAdded,
+                  streakAdded: streakAdded,
+                  streakCount: streakCount,
+                  streakReset: streakReset,
+                );
                 // developer.log(
                 //   'handleDailyReward: setting reward '
                 //   '(pointAdded=${rewardSummary.pointAdded}, '

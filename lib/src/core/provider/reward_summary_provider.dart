@@ -2,12 +2,14 @@ import 'package:flutter_riverpod/legacy.dart';
 
 class RewardSummary {
   const RewardSummary({
+    required this.totalPointsAfter,
     required this.pointAdded,
     required this.streakAdded,
     required this.streakCount,
     required this.streakReset,
   });
 
+  final int totalPointsAfter;
   final int pointAdded;
   final int streakAdded;
   final int streakCount;

@@ -304,7 +304,6 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
       },
       ifRight: (attempt) {
         ref.invalidate(getDailyTopicsGroupedProvider(dayRange: 7));
-       
         context.pushReplacement(
           AppRouter.quizResultPath,
           extra: QuizResultRouteArgs(quizAttemp: attempt, arg: widget.arg),
