@@ -288,6 +288,7 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
 
     setState(() {
       _isSubmitting = true;
+      _answerFocusNode.unfocus();
     });
 
     final result = await notifier.submitQuiz();
@@ -300,9 +301,6 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
     result.fold(
       ifLeft: (error) {
         SnackBarHelper.showError(context, MyHelper.getErrorMessage(error) as AppException);
-        // ScaffoldMessenger.of(
-        //   context,
-        // ).showSnackBar(SnackBar(content: Text(MyHelper.getErrorMessage(error))));
       },
       ifRight: (attempt) {
         ref.invalidate(getDailyTopicsGroupedProvider(dayRange: 7));

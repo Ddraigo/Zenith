@@ -327,7 +327,7 @@ final class GetDailyAllTopicsGroupedProvider
         argument: null,
         retry: null,
         name: r'getDailyAllTopicsGroupedProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -347,7 +347,7 @@ final class GetDailyAllTopicsGroupedProvider
 }
 
 String _$getDailyAllTopicsGroupedHash() =>
-    r'ca37817c61a544749298b6dcdcf9b5df60324732';
+    r'fd74f6987a07001c4b706e5b253f5dc1fa30ec24';
 
 @ProviderFor(formatDailyDate)
 final formatDailyDateProvider = FormatDailyDateFamily._();

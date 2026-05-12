@@ -37,6 +37,7 @@ class _FlashcardScreenState extends ConsumerState<FlashcardScreen> {
       ref.read(isDailyModeProvider.notifier).state = true;
       ref.read(selectedTopicProvider.notifier).state = 0;
       ref.read(getFlashcardsProvider(0).future);
+      ref.read(userAvatarProvider.future);
     });
   }
 

@@ -39,7 +39,7 @@ class AiSupportBottomSheet extends ConsumerWidget {
                 height: MediaQuery.of(context).size.height * 0.8,
                 child: Center(
                   child: Text(
-                    'Hiện đã hết lượt gọi AI, vui lòng chờ đến ngày mai',
+                    'Hiện đã hết lượt gọi AI, vui lòng thử lại sau 24h',
                     style: MyTextStyle.poppinsMedium,
                     textAlign: TextAlign.center,
                   ),

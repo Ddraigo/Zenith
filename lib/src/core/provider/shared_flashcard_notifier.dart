@@ -72,7 +72,7 @@ Future<Map<DateTime, List<DailyWordSummaryModel>>> getDailyTopicsGrouped (
     .getDailyTopicsGrouped(dayRange: dayRange);
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<Map<DateTime, List<DailyWordSummaryModel>>> getDailyAllTopicsGrouped (Ref ref) async{
   return ref.watch(userDailyWordServiceProvider)
     .getDailyTopicsGrouped(startDate: DateTime(1999,1,1));
@@ -80,6 +80,7 @@ Future<Map<DateTime, List<DailyWordSummaryModel>>> getDailyAllTopicsGrouped (Ref
 
 @riverpod
 String  formatDailyDate(Ref ref, DateTime date) {
+
   final todayOnly = Format.normalizeDate(DateTime.now());
   final dateOnly = Format.normalizeDate(date);
 
