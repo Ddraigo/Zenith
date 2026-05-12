@@ -32,9 +32,7 @@ class DailyWordBottomSheet extends ConsumerWidget {
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.onPrimary,
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(32),
-            ),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
           ),
           child: groupedAsync.when(
             data: (grouped) {
@@ -51,32 +49,21 @@ class DailyWordBottomSheet extends ConsumerWidget {
                   flattened.add((date: null, topic: topic));
                 }
               }
-
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                Center(
-                child: Container(
-                  width: 45,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.black12,
-                    borderRadius: BorderRadius.circular(12),
+                  Center(
+                    child: Text(
+                      'Từ vựng hằng ngày',
+                      style: MyTextStyle.poppinsLarge,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              Center(
-                child: Text(
-                  'Từ vựng hằng ngày',
-                  style: MyTextStyle.poppinsLarge,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              const SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Expanded(
                     child: ListView.builder(
                       itemCount: flattened.length,
+                      physics: const AlwaysScrollableScrollPhysics(),
                       controller: scrollController,
                       itemBuilder: (_, index) {
                         final item = flattened[index];
@@ -183,7 +170,9 @@ class _TopicTile extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20.r),
               color: colorScheme.error.withValues(alpha: 0.06),
-              border: Border.all(color: colorScheme.error.withValues(alpha: 0.3)),
+              border: Border.all(
+                color: colorScheme.error.withValues(alpha: 0.3),
+              ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -222,7 +211,9 @@ class _TopicTile extends StatelessWidget {
                   // child: Icon(Icons.check, color: colorScheme.primary),
                   child: Text(
                     statusComplete,
-                    style: MyTextStyle.poppinsSmall.copyWith(color: statusColor),
+                    style: MyTextStyle.poppinsSmall.copyWith(
+                      color: statusColor,
+                    ),
                   ),
                 ),
               ],

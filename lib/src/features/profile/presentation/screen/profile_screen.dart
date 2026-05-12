@@ -133,7 +133,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   void _startEdit() {
-    setState(() => _isEditing = true);
+    setState(() {
+      
+       _isEditing = true;
+       WidgetsBinding.instance.addPersistentFrameCallback((_){
+        if(mounted) _fullNameFocusNode.requestFocus();
+       });
+    });
   }
 
   void _onAvatarEditPressed() async {
@@ -308,7 +314,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ElevatedButton.icon(
           onPressed: onSubmit,
           style: ElevatedButton.styleFrom(
-            minimumSize: Size(double.maxFinite, 40.h),
+            minimumSize: Size(250.w, 45.h),
+            padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 32.w),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(48.r),
             ),

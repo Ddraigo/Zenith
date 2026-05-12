@@ -86,7 +86,7 @@ TypeSource _parseSource(String sourceString){
     );
   } catch (e) {
     developer.log(
-      'DTO: ',
+      'DTO: error parsing source "$sourceString"',
       error: e,
     );
     return TypeSource.unknown;

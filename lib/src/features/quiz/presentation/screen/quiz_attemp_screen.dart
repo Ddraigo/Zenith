@@ -303,7 +303,7 @@ class _QuizAttempScreenState extends ConsumerState<QuizAttempScreen> {
         SnackBarHelper.showError(context, MyHelper.getErrorMessage(error) as AppException);
       },
       ifRight: (attempt) {
-        ref.invalidate(getDailyTopicsGroupedProvider(dayRange: 7));
+        ref.invalidate(getDailyTopicsGroupedProvider(dayRange: 60));
         context.pushReplacement(
           AppRouter.quizResultPath,
           extra: QuizResultRouteArgs(quizAttemp: attempt, arg: widget.arg),

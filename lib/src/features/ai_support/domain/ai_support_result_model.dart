@@ -3,7 +3,7 @@ import 'flashcard_ai_support_model.dart';
 
 part 'ai_support_result_model.freezed.dart';
 
-enum TypeSource{cached, pending, quotaExceeded, unknown, timeout}
+enum TypeSource{cached, pending, quotaExceeded, failed, unknown, timeout}
 
 @freezed
 abstract class AISupportResultModel with _$AISupportResultModel {

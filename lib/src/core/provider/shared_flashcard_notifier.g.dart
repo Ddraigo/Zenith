@@ -246,7 +246,7 @@ final class GetDailyTopicsGroupedProvider
   }) : super(
          retry: null,
          name: r'getDailyTopicsGroupedProvider',
-         isAutoDispose: true,
+         isAutoDispose: false,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
@@ -284,7 +284,7 @@ final class GetDailyTopicsGroupedProvider
 }
 
 String _$getDailyTopicsGroupedHash() =>
-    r'9ee98ca8fb3a86ab60fd13bc1a5d03c50f409eee';
+    r'3e789387c9fbbfa7d82714dabbba15e87ada1961';
 
 final class GetDailyTopicsGroupedFamily extends $Family
     with
@@ -298,7 +298,7 @@ final class GetDailyTopicsGroupedFamily extends $Family
         name: r'getDailyTopicsGroupedProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
-        isAutoDispose: true,
+        isAutoDispose: false,
       );
 
   GetDailyTopicsGroupedProvider call({required int dayRange}) =>

@@ -6,6 +6,7 @@ import 'package:app_demo/src/features/flashcard/domain/flashcard_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../../../shared/http/app_exception.dart';
 import '../../../../shared/utils/helper_function.dart';
@@ -13,7 +14,7 @@ import '../../../../shared/widgets/retry_widget.dart';
 import 'componet_ai_content.dart';
 
 class AiSupportBottomSheet extends ConsumerWidget {
-   const AiSupportBottomSheet({
+  const AiSupportBottomSheet({
     super.key,
     required this.flashcard,
     this.controller,
@@ -25,9 +26,10 @@ class AiSupportBottomSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final color = Theme.of(context).colorScheme;
-    
 
+    // Watch with select to reduce rebuilds - only trigger on source/data changes, not metadata
     final aiSupportAsycn = ref.watch(aISupportProvider(_flashcardId));
+    
     return SafeArea(
       child: SingleChildScrollView(
         controller: controller,
@@ -58,6 +60,27 @@ class AiSupportBottomSheet extends ConsumerWidget {
                 ),
               );
             }
+            if (aiSupportData.source == TypeSource.failed) {
+              return SizedBox(
+                height: MediaQuery.of(context).size.height * 0.8,
+                child: Center(
+                  child: RetryWidget(
+                    msg: 'AI xử lý thất bại',
+                    onPressed: () {
+                      // Guard: only retry if not already pending/loading
+                      final currentSource = aiSupportAsycn.maybeWhen(
+                        data: (data) => data.source,
+                        orElse: () => null,
+                      );
+                      if (currentSource != TypeSource.pending && currentSource != TypeSource.failed) {
+                        return;
+                      }
+                      ref.read(aISupportProvider(_flashcardId).notifier).refresh(_flashcardId);
+                    },
+                  ),
+                ),
+              );
+            }
 
             final data = aiSupportData.data;
             final player = ref.watch(audioPlayerProvider);
@@ -73,7 +96,16 @@ class AiSupportBottomSheet extends ConsumerWidget {
                     color,
                     aiSupportData.phonetic,
                     onPressed: () async {
-                      if (aiSupportData.audioUs.isEmpty) return;
+                      if (aiSupportData.audioUs.isEmpty){
+                        Fluttertoast.showToast(
+                          timeInSecForIosWeb: 3,
+                          msg: 'Rất tiếc, hiện tại chưa có sẵn audio',
+                          textColor: Colors.white,
+                          backgroundColor: Colors.deepOrange.shade400, 
+                          gravity: ToastGravity.TOP,
+                        );
+                      return;
+                      } 
                       await player.setUrl(aiSupportData.audioUs);
                       player.play();
                     },
@@ -98,9 +130,11 @@ class AiSupportBottomSheet extends ConsumerWidget {
 
             return RetryWidget(
               msg: msg,
-              onPressed: () => ref
-                  .read(aISupportProvider(_flashcardId).notifier)
-                  .refresh(_flashcardId),
+              onPressed: () {
+                if (!aiSupportAsycn.isLoading && !aiSupportAsycn.isRefreshing) {
+                  ref.read(aISupportProvider(_flashcardId).notifier).refresh(_flashcardId);
+                }
+              },
             );
           },
           loading: () => SizedBox(
@@ -112,4 +146,3 @@ class AiSupportBottomSheet extends ConsumerWidget {
     );
   }
 }
-

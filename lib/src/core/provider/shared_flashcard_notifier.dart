@@ -64,7 +64,7 @@ Future<List<FlashcardModel>> getFlashcards( Ref ref, int selectedTopicId)async{
   return await ref.watch(topicFLashcardProvider(topicId).future);
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<Map<DateTime, List<DailyWordSummaryModel>>> getDailyTopicsGrouped (
   Ref ref,
   {required int dayRange}) async{
@@ -79,7 +79,7 @@ Future<Map<DateTime, List<DailyWordSummaryModel>>> getDailyAllTopicsGrouped (Ref
 }
 
 @riverpod
-String  formatDailyDate(Ref ref, DateTime date) {
+String formatDailyDate(Ref ref, DateTime date) {
 
   final todayOnly = Format.normalizeDate(DateTime.now());
   final dateOnly = Format.normalizeDate(date);

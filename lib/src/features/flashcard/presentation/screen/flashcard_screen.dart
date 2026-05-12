@@ -388,6 +388,7 @@ class _FlashcardScreenState extends ConsumerState<FlashcardScreen> {
         showModalBottomSheet(
           isScrollControlled: true,
           context: context,
+          showDragHandle: true,
           useSafeArea: true,
           backgroundColor: color.onPrimary,
           builder: (_) => const DailyWordBottomSheet(),

@@ -44,6 +44,8 @@ class AISupportNotifier extends _$AISupportNotifier {
       _quotaResetTimer?.cancel();
       _pendingPollTimer?.cancel();
     });
+    ref.keepAlive();
+    developer.log('AISupportNotifier.build: loading $flashcardId');
     _resetPendingCount();
     return _loadData(flashcardId);
   }
@@ -107,6 +109,14 @@ class AISupportNotifier extends _$AISupportNotifier {
   }
 
   Future<void> refresh(String flashcardId) async {
+    final currentState = state.whenData((data) => data);
+    
+    if (currentState.value?.source != TypeSource.pending) {
+      developer.log('AISupportNotifier.refresh: skipping - data already cached (source=${currentState.value?.source})');
+      return;
+    }
+    
+    developer.log('AISupportNotifier.refresh: fetching $flashcardId');
     state = await AsyncValue.guard(() => _loadData(flashcardId));
   }
 }
