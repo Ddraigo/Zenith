@@ -314,7 +314,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ElevatedButton.icon(
           onPressed: onSubmit,
           style: ElevatedButton.styleFrom(
-            minimumSize: Size(250.w, 45.h),
+            minimumSize: Size(250.w, 50.h),
             padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 32.w),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(48.r),

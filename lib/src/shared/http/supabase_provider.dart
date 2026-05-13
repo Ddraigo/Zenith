@@ -12,11 +12,12 @@ class SupabaseErrorHandle {
   static AppException handle(Object error) {
     if (error is AuthApiException) {
       final code = error.code;
+      final normalizedMessage = error.message.toLowerCase();
 
       switch (code) {
         case 'invalid_credentials':
           return const AppException.badRequest(
-            'Email hoặc mật khẩu không đúng',
+            'Tài khoản hoặc mật khẩu không đúng',
           );
 
         case 'email_exists':
@@ -25,6 +26,29 @@ class SupabaseErrorHandle {
 
         case 'email_not_confirmed':
           return const AppException.badRequest('Vui lòng xác thực email');
+
+        case 'email_address_invalid':
+          return const AppException.badRequest('Email không hợp lệ');
+
+        case 'signup_disabled':
+          return const AppException.badRequest(
+            'Chức năng đăng ký hiện đang tắt',
+          );
+
+        case 'otp_expired':
+          return const AppException.badRequest(
+            'Mã OTP đã hết hạn, vui lòng gửi lại',
+          );
+
+        case 'reauthentication_not_valid':
+          return const AppException.badRequest(
+            'Mã OTP không đúng',
+          );
+
+        case 'over_email_send_rate_limit':
+          return const AppException.server(
+            'Bạn đã yêu cầu quá nhiều email, vui lòng thử lại sau',
+          );
 
         case 'session_expired':
           return const AppException.unauthorized();
@@ -35,33 +59,50 @@ class SupabaseErrorHandle {
           );
 
         case 'user_not_found':
-          return const AppException.badRequest(
-            'Tài khoản không tồn tại. Vui lòng kiểm tra lại email.',
-          );
-
-        case 'unexpected_failure':
-          return const AppException.server(
-            'Không thể gửi email khôi phục. Vui lòng thử lại sau.',
-          );
+          return const AppException.badRequest('Email chưa được đăng ký');
         default:
+          if (_isUnregisteredEmailMessage(normalizedMessage)) {
+            return const AppException.badRequest('Email chưa được đăng ký');
+          }
+          if (_isSamePasswordMessage(normalizedMessage)) {
+            return const AppException.badRequest(
+              'Mật khẩu mới phải khác mật khẩu cũ',
+            );
+          }
           return AppException.errorWithMessage(error.message);
       }
     }
 
     if (error is AuthException) {
       final message = error.message.toLowerCase();
-      
-      
+
+      if (_isUnregisteredEmailMessage(message)) {
+        return const AppException.badRequest('Email chưa được đăng ký');
+      }
+      if (_isSamePasswordMessage(message)) {
+        return const AppException.badRequest(
+          'Mật khẩu mới phải khác mật khẩu cũ',
+        );
+      }
+
       if (message.contains('otp')) {
         if (message.contains('expired')) {
-          return const AppException.badRequest('Mã OTP đã hết hạn, vui lòng gửi lại');
+          return const AppException.badRequest(
+            'Mã OTP đã hết hạn, vui lòng gửi lại',
+          );
         }
         if (message.contains('invalid')) {
           return const AppException.badRequest('Mã OTP không chính xác');
         }
         return const AppException.badRequest('Mã OTP không hợp lệ');
       }
-      
+
+      if (message.contains('rate limit') || message.contains('too many')) {
+        return const AppException.server(
+          'Bạn thao tác quá nhanh, thử lại sau',
+        );
+      }
+
       return AppException.errorWithMessage(error.message);
     }
 
@@ -96,5 +137,21 @@ class SupabaseErrorHandle {
     }
 
     return const AppException.unknown();
+  }
+
+  static bool _isUnregisteredEmailMessage(String message) {
+    return message.contains('user not found') ||
+        message.contains('email not found') ||
+        message.contains('not registered') ||
+        message.contains('no user');
+  }
+
+  static bool _isSamePasswordMessage(String message) {
+    return message.contains(
+          'new password should be different from the old password',
+        ) ||
+        message.contains('password must be different from the old password') ||
+        message.contains('new password must be different') ||
+        message.contains('new password should be different');
   }
 }

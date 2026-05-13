@@ -101,61 +101,106 @@ class SettingSreen extends ConsumerWidget {
   }
 
   Widget _profile(ColorScheme color, WidgetRef ref, BuildContext context) {
-    final profileAsync = ref.watch(profileProvider);
+    final hasProfileAsync = ref.watch(hasProfileProvider);
     final userEmail = ref.watch(userEmailProvider);
-    return profileAsync.when(
-      data: (profile) {
+    return hasProfileAsync.maybeWhen(
+      data: (hasProfile) {
+        if (!hasProfile) {
+          return _profileCard(
+            color: color,
+            context: context,
+            userAvatar: '',
+            userName: 'Bạn',
+            userEmail: userEmail.isEmpty ? 'none@gmail.com' : userEmail,
+          );
+        }
 
-        return GestureDetector(
-          onTap: () => context.push(AppRouter.profilePath),
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-            decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.circular(16.r),
-              color: color.onTertiary,
-            ),
-            child: Row(
-              spacing: 8.w,
-              children: [
-                MyAvatar(userAvatar: profile.avatarUrl ?? '', size: 25.r),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 1.h,
-                    children: [
-                      Text(
-                        profile.userName.isEmpty ? 'Bạn': profile.userName, 
-                        style: MyTextStyle.poppinsLarge600.copyWith(
-                          color: color.inverseSurface,
-                        ),
-                      ),
-                      Text(
-                        userEmail.isEmpty ? 'none@gmail.com' : userEmail,
-                        style: MyTextStyle.poppinsMedium.copyWith(
-                          color: color.outline.withValues(alpha: 0.5),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  color: color.outline.withValues(alpha: 0.5),
-                  size: 20.r,
-                ),
-              ],
-            ),
+        final profileAsync = ref.watch(profileProvider);
+        return profileAsync.when(
+          data: (profile) {
+            return _profileCard(
+              color: color,
+              context: context,
+              userAvatar: profile.avatarUrl ?? '',
+              userName: profile.userName.isEmpty ? 'Bạn' : profile.userName,
+              userEmail: userEmail.isEmpty ? 'none@gmail.com' : userEmail,
+            );
+          },
+          loading: () => _profileCard(
+            color: color,
+            context: context,
+            userAvatar: '',
+            userName: 'Bạn',
+            userEmail: userEmail.isEmpty ? 'none@gmail.com' : userEmail,
+          ),
+          error: (_, _) => _profileCard(
+            color: color,
+            context: context,
+            userAvatar: '',
+            userName: 'Bạn',
+            userEmail: userEmail.isEmpty ? 'none@gmail.com' : userEmail,
           ),
         );
       },
-      loading: () => const Center(
-      child: CircularProgressIndicator(),
+      
+      orElse: () => _profileCard(
+        color: color,
+        context: context,
+        userAvatar: '',
+        userName: 'Bạn',
+        userEmail: userEmail.isEmpty ? 'none@gmail.com' : userEmail,
       ),
+    );
+  }
 
-      error: (e, _) {
-        return Text('Có lỗi xảy ra');
-      },
+  Widget _profileCard({
+    required ColorScheme color,
+    required BuildContext context,
+    required String userAvatar,
+    required String userName,
+    required String userEmail,
+  }) {
+    return GestureDetector(
+      onTap: () => context.push(AppRouter.profilePath),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(16.r),
+          color: color.onTertiary,
+        ),
+        child: Row(
+          spacing: 8.w,
+          children: [
+            MyAvatar(userAvatar: userAvatar, size: 25.r),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 1.h,
+                children: [
+                  Text(
+                    userName,
+                    style: MyTextStyle.poppinsLarge600.copyWith(
+                      color: color.inverseSurface,
+                    ),
+                  ),
+                  Text(
+                    userEmail,
+                    style: MyTextStyle.poppinsMedium.copyWith(
+                      color: color.outline.withValues(alpha: 0.5),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios_rounded,
+              color: color.outline.withValues(alpha: 0.5),
+              size: 20.r,
+            ),
+          ],
+        ),
+      ),
     );
   }
 

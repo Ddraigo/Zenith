@@ -19,6 +19,7 @@ void invalidateUserSessionProviders(WidgetRef ref) {
   ref.invalidate(userEmailProvider);
   ref.invalidate(hasProfileProvider);
   ref.invalidate(profileProvider);
+  ref.invalidate(userNameProvider);
   ref.invalidate(aISupportProvider);
   ref.invalidate(statisticsProvider);
   ref.invalidate(flashcardProvider);
