@@ -33,12 +33,35 @@ class SupabaseErrorHandle {
           return const AppException.server(
             'Bạn thao tác quá nhanh, thử lại sau',
           );
+
+        case 'user_not_found':
+          return const AppException.badRequest(
+            'Tài khoản không tồn tại. Vui lòng kiểm tra lại email.',
+          );
+
+        case 'unexpected_failure':
+          return const AppException.server(
+            'Không thể gửi email khôi phục. Vui lòng thử lại sau.',
+          );
         default:
           return AppException.errorWithMessage(error.message);
       }
     }
 
     if (error is AuthException) {
+      final message = error.message.toLowerCase();
+      
+      
+      if (message.contains('otp')) {
+        if (message.contains('expired')) {
+          return const AppException.badRequest('Mã OTP đã hết hạn, vui lòng gửi lại');
+        }
+        if (message.contains('invalid')) {
+          return const AppException.badRequest('Mã OTP không chính xác');
+        }
+        return const AppException.badRequest('Mã OTP không hợp lệ');
+      }
+      
       return AppException.errorWithMessage(error.message);
     }
 

@@ -179,6 +179,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
       spacing: 16,
       children: [
         TextFieldCustom(
@@ -267,7 +268,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       mainAxisSize: MainAxisSize.min,
       children: [
         TextButton(
-          onPressed: () {},
+          onPressed: () => context.push(AppRouter.resetPassword),
           style: TextButton.styleFrom(
             foregroundColor: colorScheme.primary,
             overlayColor: Colors.transparent,

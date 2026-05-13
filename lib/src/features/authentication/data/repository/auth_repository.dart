@@ -41,4 +41,23 @@ class AuthRepository {
       newPassword: newPassword,
     );
   }
+
+  Future<void> sendOtpEmail({
+    required String email,
+  })async{
+    await _source.sendOtpEmail(email: email);
+  }
+
+  Future<void> verifyOtp({
+    required String email,
+    required String token,
+  })async {
+    await _source.verifyOtp(email: email, token: token);
+  }
+
+  Future<void> resetPassword({
+    required String newPass
+  }) async{
+    await _source.resetPassword(newPass: newPass);
+  }
 }

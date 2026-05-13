@@ -9,9 +9,11 @@ import 'package:app_demo/src/features/profile/domain/profile_model.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:app_demo/src/shared/http/supabase_provider.dart';
 import 'package:app_demo/src/shared/utils/validator.dart';
+import 'package:dart_either/dart_either.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
 
 final authServiceProvider = Provider(AuthService.new);
 
@@ -29,7 +31,7 @@ class AuthService {
       final session = _client.auth.currentSession;
 
       if (session == null) {
-        throw const AppException.errorWithMessage('Session is null');
+        throw const AppException.errorWithMessage('Không tìm thấy phiên đăng nhập');
       }
 
       await _tokenService.saveToken(Token(token: session.accessToken));
@@ -78,7 +80,7 @@ class AuthService {
 
   void _validateLoginInput(String email, String password) {
     if (email.trim().isEmpty || password.trim().isEmpty) {
-      throw const AppException.badRequest('Emmail và mật khẩu không hợp lệ');
+      throw const AppException.badRequest('Email và mật khẩu không hợp lệ');
     }
     if (!Validator.isValidEmail(email)) {
       throw const AppException.badRequest('Email không hợp lệ');
@@ -218,4 +220,54 @@ class AuthService {
       throw const AppException.badRequest('Mật khẩu mới phải khác mật khẩu cũ');
     }
   }
+
+  Future<Either<AppException, bool>> sendOtpEmail({required String email})async {
+
+    if (email.isEmpty || !Validator.isValidEmail(email)) {
+      return Either.left(const AppException.badRequest('Email không hợp lệ'));
+    }
+    try {
+      developer.log('AuthService: Sending OTP email to $email');
+      await _repo.sendOtpEmail(email: email);
+      developer.log('AuthService: OTP email sent successfully to $email');
+      return Either.right(true);
+    } on AppException catch (e) {
+      developer.log('AuthService: AppException in sendOtpEmail: $e', name: 'AuthService.sendOtpEmail');
+      return Either.left(e);
+    } catch (e, st) {
+      developer.log('AuthService.sendOtpEmail unexpected error: $e', error: e, stackTrace: st, name: 'AuthService.sendOtpEmail');
+      return Either.left(const AppException.unknown());
+    }
+  }
+
+  Future<Either<AppException, bool>> resetPassWithOtp({
+    required String email,
+    required String otp,
+    required String newPass,
+  }) async{
+
+    // if (email.isEmpty || !Validator.isValidEmail(email)) {
+    //   return Either.left(const AppException.badRequest('Email không hợp lệ'));
+    // }
+    // if (otp.length < 6) {
+    //   return Either.left(const AppException.badRequest('Mã xác nhận không hợp lệ'));
+    // }
+    // if (!Validator.isValidPassword(newPass)) {
+    //   return Either.left(const AppException.badRequest('Mật khẩu không hợp lệ'));
+    // }
+    try {
+      await _repo.verifyOtp(email: email, token: otp);
+      await _repo.resetPassword(newPass: newPass);
+      return Either.right(true);
+    } on AppException catch (e){
+      return Either.left(e);
+    }catch(e, st){
+      developer.log('AuthService.resetPassWithOtp unexpected', error: e, stackTrace: st);
+      return Either.left(const AppException.unknown());
+    }
+  }
+
+
+
+  
 }

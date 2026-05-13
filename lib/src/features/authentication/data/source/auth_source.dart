@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:app_demo/src/features/authentication/data/dto/user_dto.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
 import 'package:app_demo/src/shared/http/supabase_provider.dart';
@@ -103,6 +105,51 @@ class AuthSource {
     } on AppException {
       rethrow;
     } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> sendOtpEmail({
+    required String email,
+  })async{
+    try {
+      developer.log('AuthSource: Attempting to send OTP email to $email');
+      await _client.auth.resetPasswordForEmail(email);
+      developer.log('AuthSource: OTP email sent successfully to $email');
+    } catch (e, st) {
+      developer.log(
+        'AuthSource: sendOtpEmail failed for email=$email, error=$e',
+        stackTrace: st,
+        name: 'AuthSource.sendOtpEmail',
+      );
+      throw SupabaseErrorHandle.handle(e);
+    }
+  }
+
+  Future<void> verifyOtp({
+    required String email,
+    required String token,
+  })async {
+    try {
+      await _client.auth.verifyOTP(
+        type: OtpType.recovery,
+        email: email,
+        token: token,
+      );
+    } catch (e, st) {
+      developer.log('AuthSource: verifyOTP error $e', stackTrace: st);
+      throw SupabaseErrorHandle.handle(e);
+    }
+  }
+
+  Future<void> resetPassword({
+    required String newPass
+  }) async{
+    try {
+      await _client.auth.updateUser(UserAttributes(password: newPass));
+    } on AuthException catch (e) {
+      throw SupabaseErrorHandle.handle(e);
+    } on AppException {
       rethrow;
     }
   }

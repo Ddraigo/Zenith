@@ -21,8 +21,8 @@ class SettingSreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final color = Theme.of(context).colorScheme;
-    final notificationStatus = ref.watch(pushNotificationProvider);
-    final darkModeStatus = ref.watch(darkModeProvider);
+    // final notificationStatus = ref.watch(pushNotificationProvider);
+    // final darkModeStatus = ref.watch(darkModeProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -103,8 +103,9 @@ class SettingSreen extends ConsumerWidget {
   Widget _profile(ColorScheme color, WidgetRef ref, BuildContext context) {
     final profileAsync = ref.watch(profileProvider);
     final userEmail = ref.watch(userEmailProvider);
-    return profileAsync.maybeWhen(
+    return profileAsync.when(
       data: (profile) {
+
         return GestureDetector(
           onTap: () => context.push(AppRouter.profilePath),
           child: Container(
@@ -124,13 +125,13 @@ class SettingSreen extends ConsumerWidget {
                     spacing: 1.h,
                     children: [
                       Text(
-                        profile.userName,
+                        profile.userName.isEmpty ? 'Bạn': profile.userName, 
                         style: MyTextStyle.poppinsLarge600.copyWith(
                           color: color.inverseSurface,
                         ),
                       ),
                       Text(
-                        userEmail,
+                        userEmail.isEmpty ? 'none@gmail.com' : userEmail,
                         style: MyTextStyle.poppinsMedium.copyWith(
                           color: color.outline.withValues(alpha: 0.5),
                         ),
@@ -148,7 +149,13 @@ class SettingSreen extends ConsumerWidget {
           ),
         );
       },
-      orElse: () => SizedBox.shrink(),
+      loading: () => const Center(
+      child: CircularProgressIndicator(),
+      ),
+
+      error: (e, _) {
+        return Text('Có lỗi xảy ra');
+      },
     );
   }
 

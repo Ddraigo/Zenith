@@ -18,6 +18,8 @@ import 'package:app_demo/src/shared/constants/images_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../src/features/authentication/presentation/screen/forgot_password_screen.dart';
+
 final GoRouter appRouter = GoRouter(
   initialLocation: AppRouter.startPage,
   
@@ -98,12 +100,16 @@ final GoRouter appRouter = GoRouter(
           config: config
         );
       }
-    )
+    ),
+    GoRoute(
+      path: AppRouter.resetPassword,
+      builder: (context, state) => ForgotPasswordScreen(),
+    ),
 
   ],
   errorBuilder: (context, state) {
     return const Scaffold(
-      body: Center(child: Text('Khôgn tìm thấy trang!')),
+      body: Center(child: Text('Không tìm thấy trang!')),
     );
   },
 );
@@ -112,6 +118,7 @@ class AppRouter {
   static const String loginPath = '/login';
   static const String onboardingPath = '/onboarding';
   static const String signUpPath = '/signUp';
+  static const String resetPassword = '/resetPassword';
   static const String homePath = '/home';
   static const String startPage = '/start';
   static const String flashcardPath = '/flashcard';

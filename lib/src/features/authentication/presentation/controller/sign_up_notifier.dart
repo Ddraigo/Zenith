@@ -120,7 +120,7 @@ class SignUpNotifier extends _$SignUpNotifier {
   }) async {
     // 1. Validate all fields
     final formState = validateForm(
-      userName: password.trim(),
+      userName: userName.trim(),
       email: email.trim(),
       password: password,
       rePassword: rePassword,
