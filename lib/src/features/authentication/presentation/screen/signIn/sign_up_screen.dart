@@ -169,7 +169,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           focusNode: _fullNameFocusNode,
           controller: _fullNameController,
           errorText: isSubmit
-              ? notifier.validateUsername(_fullNameController.text)
+              ? notifier.validateUsername(_fullNameController.text.trim())
               : null,
         ),
         DatePickerCustom(
@@ -205,7 +205,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           focusNode: _emailFocusNode,
           controller: _emailController,
           errorText: isSubmit
-              ? notifier.validateEmail(_emailController.text)
+              ? notifier.validateEmail(_emailController.text.trim())
               : null,
               
         ),
@@ -216,7 +216,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           obscureText: _hidePassword,
           controller: _passwordController,
           errorText: isSubmit
-              ? notifier.validatePassword(_passwordController.text)
+              ? notifier.validatePassword(_passwordController.text.trim())
               : null,
           suffixIcon: IconButton(
             onPressed: () => setState(() => _hidePassword = !_hidePassword),
@@ -231,8 +231,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           controller: _rePasswordController,
           errorText: isSubmit
               ? notifier.validateConfirmPassword(
-                  _passwordController.text,
-                  _rePasswordController.text,
+                  _passwordController.text.trim(),
+                  _rePasswordController.text.trim(),
                 )
               : null,
           suffixIcon: IconButton(
@@ -303,10 +303,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     ref
         .read(signUpProvider.notifier)
         .handleSignUp(
-          userName: _fullNameController.text,
-          email: _emailController.text,
-          password: _passwordController.text,
-          rePassword: _rePasswordController.text,
+          userName: _fullNameController.text.trim(),
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+          rePassword: _rePasswordController.text.trim(),
           gender: _selectedGender,
           dayOfBirth: _selectedDate,
         );

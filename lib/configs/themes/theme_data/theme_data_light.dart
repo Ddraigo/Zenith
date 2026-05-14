@@ -190,8 +190,9 @@ ThemeData getLightTheme() {
         color: lightColorScheme.error.withValues(alpha: 0.5),
         fontWeight: FontWeight.w600
       ),
-      prefixIconColor: lightColorScheme.outlineVariant,
-      suffixIconColor: lightColorScheme.outlineVariant,
+      prefixIconColor: lightColorScheme.surfaceTint.withValues(alpha: 0.9),
+      suffixIconColor: lightColorScheme.surfaceTint.withValues(alpha: 0.8),
+      
 
       border: defaultInputBorder,
       enabledBorder: defaultInputBorder,

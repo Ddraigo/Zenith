@@ -83,7 +83,7 @@ class AiSupportBottomSheet extends ConsumerWidget {
             }
 
             final data = aiSupportData.data;
-            final player = ref.watch(audioPlayerProvider);
+            final audioController = ref.watch(audioPlayerControllerProvider);
             return Column(
               spacing: 16.h,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -106,8 +106,7 @@ class AiSupportBottomSheet extends ConsumerWidget {
                         );
                       return;
                       } 
-                      await player.setUrl(aiSupportData.audioUs);
-                      player.play();
+                      await audioController.playUrl(aiSupportData.audioUs);
                     },
                   ),
                 if (data.easyMeaning.isNotEmpty)

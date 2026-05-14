@@ -47,4 +47,13 @@ class MyHelper {
     if (a == null || b == null) return false;
     return a.year == b.year && a.month == b.month && a.day == b.day;
   }
+
+  static String maskEmail(String email) {
+    final parts = email.split('@');
+    if (parts.length != 2) return email;
+    final name = parts[0];
+    final domain = parts[1];
+    final visible = name.isNotEmpty ? name[0] : '';
+    return '$visible***@$domain';
+  }
 }

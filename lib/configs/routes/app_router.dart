@@ -17,6 +17,7 @@ import 'package:app_demo/src/features/quiz/presentation/screen/quiz_screen.dart'
 import 'package:app_demo/src/shared/constants/images_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../../src/features/authentication/presentation/screen/forgot_password_screen.dart';
 
@@ -112,6 +113,7 @@ final GoRouter appRouter = GoRouter(
       body: Center(child: Text('Không tìm thấy trang!')),
     );
   },
+  observers: [SentryNavigatorObserver()],
 );
 
 class AppRouter {

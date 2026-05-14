@@ -17,6 +17,7 @@ import '../../../shared/http/app_exception.dart';
 import '../../../shared/utils/helper_function.dart';
 import '../../../shared/widgets/retry_widget.dart';
 import '../../domain/quiz_attempt_args.dart';
+import '../../provider/shared_flashcard_notifier.dart';
 
 class QuizResultScreen extends ConsumerStatefulWidget {
   const QuizResultScreen({
@@ -33,6 +34,10 @@ class QuizResultScreen extends ConsumerStatefulWidget {
 
 class _QuizResultScreenState extends ConsumerState<QuizResultScreen> {
   bool _rewardDialogShown = false;
+
+  void _refreshdateDaily() {
+    ref.refresh(getDailyTopicsGroupedProvider(dayRange: 7).future);
+  }
 
   void _showRewardDialog(RewardSummary reward, ColorScheme color, int totalPoint) {
     showDialog<void>(
@@ -62,13 +67,12 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen> {
                     color: color.primary,
                   ),
                 ),
-                SizedBox(height: 8.h),
-
+                SizedBox(height: 5.h),
                 // Subtitle
                 Text(
                   'Nhận được điểm thưởng',
                   style: MyTextStyle.poppinsMedium.copyWith(
-                    fontSize: 12.sp,
+                    fontSize: 13.sp,
                     color: color.outline.withValues(alpha: 0.6),
                   ),
                 ),
@@ -279,6 +283,7 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen> {
         title: const Text('Kết quả'),
         leading: IconButton(
           onPressed: () {
+            _refreshdateDaily();
             if (context.canPop()) {
               context.pop();
               return;
@@ -328,6 +333,7 @@ class _QuizResultScreenState extends ConsumerState<QuizResultScreen> {
                     
                   ),
                   onPressed: () {
+                    _refreshdateDaily();
                     ref.read(homeTapProvider.notifier).state = 0;
                     context.go(AppRouter.homePath);
                   },

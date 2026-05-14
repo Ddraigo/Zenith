@@ -76,5 +76,5 @@ class MyIcons{
   static const String themeMode = 'assets/icons/theme_mode.svg';
   static const String setting = 'assets/icons/setting.svg'; 
   static const String reward = 'assets/icons/reward.svg';  
-  
+  static const String otp = 'assets/icons/otp.svg';  
 }

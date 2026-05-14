@@ -73,12 +73,6 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
               return SingleChildScrollView(
                 physics: const NeverScrollableScrollPhysics(),
                 keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                // padding: EdgeInsets.fromLTRB(
-                //   16.r,
-                //   16.r,
-                //   16.r,
-                //   16.r + bottomSafePadding,
-                // ),
                 child: ConstrainedBox(
                   constraints: BoxConstraints(minHeight: constraints.maxHeight),
                   child: IntrinsicHeight(
@@ -167,7 +161,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                 ),
                 SizedBox(height: 16.h,),
             TextFieldCustom(
-              icon: MyIcons.userIcon,
+              icon: MyIcons.otp,
               hintText: 'Nhập mã xác nhận',
               focusNode: _verifyOtpFocusNode,
               controller: _verifyOtpController,
@@ -196,7 +190,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
             ),
             SizedBox(height: 16.h),
             TextFieldCustom(
-              icon: MyIcons.lockIcon,
+              icon: MyIcons.changePassword,
               hintText: 'Mật khẩu mới',
               focusNode: _passwordFocusNode,
               obscureText: _hidePassword,
@@ -211,7 +205,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
             ),
             SizedBox(height: 16.h),
             TextFieldCustom(
-              icon: MyIcons.lockIcon,
+              icon: MyIcons.changePassword,
               hintText: 'Xác nhận lại mật khẩu',
               focusNode: _rePasswordFocusNode,
               obscureText: _hideConfirm,

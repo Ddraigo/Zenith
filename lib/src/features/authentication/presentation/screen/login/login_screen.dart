@@ -31,8 +31,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   void initState() {
-    isSubmitted = false;
     super.initState();
+    
+    isSubmitted = false;
     _authSubscription = ref.listenManual<AsyncValue<void>>(authProvider, (
       prev,
       next,
@@ -56,6 +57,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         },
       );
     });
+
   }
 
   @override
@@ -198,7 +200,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           obscureText: _hidePassword,
           controller: _passwordController,
           errorText: isSubmitted
-              ? loginNotifier.validatePassword(_passwordController.text)
+              ? loginNotifier.validatePassword(_passwordController.text.trim())
               : null,
           suffixIcon: IconButton(
             onPressed: () => setState(() => _hidePassword = !_hidePassword),
@@ -237,10 +239,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   void _handleLogin() {
     setState(() => isSubmitted = true);
-
+    
     ref
         .read(authProvider.notifier)
-        .login(_emailController.text.trim(), _passwordController.text.trim());
+        .login(
+          _emailController.text.trim(), 
+          _passwordController.text.trim()
+        );
+
   }
 
   Widget _buildThirdPartyLogin() {

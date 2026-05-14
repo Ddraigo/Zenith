@@ -2,6 +2,7 @@ import 'package:app_demo/configs/themes/text_style.dart';
 import 'package:app_demo/src/features/ai_support/presentation/screen/ai_support_bottom_sheet.dart';
 import 'package:app_demo/src/features/flashcard/domain/flashcard_model.dart';
 import 'package:app_demo/src/shared/constants/images_constants.dart';
+import 'package:app_demo/src/shared/http/sentry_reporter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -136,6 +137,7 @@ class _FlashcardItemState extends State<FlashcardItem>
               alignment: Alignment.centerRight,
               child: IconButton(
                 onPressed: () {
+                  SentryReporter.addBreadcrumb('show showModalBottomSheet AI support');
                   showModalBottomSheet(
                     showDragHandle: true,
                     isScrollControlled: true,

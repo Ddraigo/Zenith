@@ -7,7 +7,9 @@ import 'package:app_demo/src/features/authentication/domain/token_model.dart';
 import 'package:app_demo/src/features/profile/application/profile_service.dart';
 import 'package:app_demo/src/features/profile/domain/profile_model.dart';
 import 'package:app_demo/src/shared/http/app_exception.dart';
+import 'package:app_demo/src/shared/http/sentry_reporter.dart';
 import 'package:app_demo/src/shared/http/supabase_provider.dart';
+import 'package:app_demo/src/shared/utils/helper_function.dart';
 import 'package:app_demo/src/shared/utils/validator.dart';
 import 'package:dart_either/dart_either.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -24,6 +26,23 @@ class AuthService {
   late final TokenService _tokenService = _ref.read(tokenServiceProvider);
   late final SupabaseClient _client = _ref.read(supabaseClientProvider);
   late final UserDeviceService _userDevice = _ref.read(userDeviceService);
+
+  void _reportAuthError(
+    Object error,
+    StackTrace stackTrace, {
+    required String action,
+    Map<String, dynamic>? extra,
+  }) {
+    SentryReporter.captureException(
+      error,
+      stackTrace: stackTrace,
+      context: {
+        'auth_action': action,
+        if (extra != null) ...extra,
+      },
+    );
+  }
+
   Future<void> login(String email, String password) async {
     _validateLoginInput(email, password);
     try {
@@ -33,6 +52,7 @@ class AuthService {
       if (session == null) {
         throw const AppException.errorWithMessage('Không tìm thấy phiên đăng nhập');
       }
+      
 
       await _tokenService.saveToken(Token(token: session.accessToken));
 
@@ -40,15 +60,16 @@ class AuthService {
       if (userId == null) {
         throw const AppException.errorWithMessage('Không tìm thấy users');
       }
-
+      SentryReporter.setUser(id: userId, email: MyHelper.maskEmail(email));
       await _setupUserFCM(userId: userId, subscribeToRefresh: true);
     } on AppException {
       rethrow;
     } catch (e, st) {
-      developer.log(
-        'AuthService: login unexpected error',
-        error: e,
-        stackTrace: st,
+      _reportAuthError(
+        e,
+        st,
+        action: 'login',
+        extra: {'email': MyHelper.maskEmail(email)},
       );
       throw const AppException.unknown();
     }
@@ -59,7 +80,7 @@ class AuthService {
     required bool subscribeToRefresh,
   }) async {
     final vapidKey = dotenv.env['FCM_VAPID_KEY'];
-    if(vapidKey == null || vapidKey.isEmpty){
+    if (vapidKey == null || vapidKey.isEmpty) {
       developer.log('FCM_VAPID_KEY is not configured');
       return;
     }
@@ -67,13 +88,14 @@ class AuthService {
       await _userDevice.setupFcmToken(
         userId: userId,
         vapidKey: vapidKey,
-        subscribeToRefresh: true,
+        subscribeToRefresh: subscribeToRefresh,
       );
     } catch (e, st) {
-      developer.log(
-        'AuthService: FCM setup failed',
-        error: e,
-        stackTrace: st,
+      _reportAuthError(
+        e,
+        st,
+        action: 'setup_fcm',
+        extra: {'user_id': userId},
       );
     }
   }
@@ -98,12 +120,17 @@ class AuthService {
     required String gender,
   }) async {
     _validateLoginInput(email, password);
-   _validateSignUpInput(userName: userName, dayOfBirth: dayOfBirth, gender: gender);
-  
+    _validateSignUpInput(
+      userName: userName,
+      dayOfBirth: dayOfBirth,
+      gender: gender,
+    );
+
     try {
-      final user = await _ref
-          .read(authRepositoryProvider)
-          .signUp(email: email.trim(), password: password.trim());
+      final user = await _repo.signUp(
+        email: email.trim(),
+        password: password.trim(),
+      );
 
       final profile = ProfileModel(
         userId: user.id,
@@ -117,7 +144,9 @@ class AuthService {
           .createNewProfile(profile);
       profileResult.fold(
         ifLeft: (e) => throw e,
-        ifRight: (_) {},
+        ifRight: (_) {
+
+        },
       );
 
       final token = _client.auth.currentSession?.accessToken;
@@ -129,11 +158,7 @@ class AuthService {
     } on AppException {
       rethrow;
     } catch (e, st) {
-      developer.log(
-        'AuthService: signUp unexpected error',
-        error: e,
-        stackTrace: st,
-      );
+      _reportAuthError(e, st, action: 'sign_up');
       throw const AppException.unknown();
     }
   }
@@ -162,21 +187,32 @@ class AuthService {
       if (userId != null) {
         try {
           await _userDevice.cleanupDeviceTokenOnSignOut(userId: userId);
-        } catch (e) {
-          developer.log('Cleanup device token failed', error: e);
+        } catch (e, st) {
+          _reportAuthError(
+            e,
+            st,
+            action: 'sign_out',
+            extra: {'flow': 'cleanup_device_token_on_sign_out'},
+          );
         }
       } else {
         _userDevice.dispose();
       }
       try {
         await _repo.signOut();
-      } catch (e) {
-        developer.log('Repo signOut failed', error: e);
+        SentryReporter.clearUser();
+      } catch (e, st) {
+        _reportAuthError(
+          e,
+          st,
+          action: 'sign_out',
+          extra: {'flow': 'sign_out'},
+        );
       }
       await _tokenService.remove();
-    } catch (e) {
-      developer.log('SignOut failed', error: e);
-      rethrow;
+    } catch (e, st) {
+      _reportAuthError(e, st, action: 'sign_out');
+      throw const AppException.unknown();
     }
   }
 
@@ -197,11 +233,7 @@ class AuthService {
     } on AppException {
       rethrow;
     } catch (e, st) {
-      developer.log(
-        'AuthService: changePassword unexpected error',
-        error: e,
-        stackTrace: st,
-      );
+      _reportAuthError(e, st, action: 'change_password');
       throw const AppException.unknown();
     }
   }
@@ -227,15 +259,12 @@ class AuthService {
       return Either.left(const AppException.badRequest('Email không hợp lệ'));
     }
     try {
-      developer.log('AuthService: Sending OTP email to $email');
       await _repo.sendOtpEmail(email: email);
-      developer.log('AuthService: OTP email sent successfully to $email');
       return Either.right(true);
     } on AppException catch (e) {
-      developer.log('AuthService: AppException in sendOtpEmail: $e', name: 'AuthService.sendOtpEmail');
       return Either.left(e);
     } catch (e, st) {
-      developer.log('AuthService.sendOtpEmail unexpected error: $e', error: e, stackTrace: st, name: 'AuthService.sendOtpEmail');
+      _reportAuthError(e, st, action: 'send_otp_email');
       return Either.left(const AppException.unknown());
     }
   }
@@ -246,28 +275,24 @@ class AuthService {
     required String newPass,
   }) async{
 
-    // if (email.isEmpty || !Validator.isValidEmail(email)) {
-    //   return Either.left(const AppException.badRequest('Email không hợp lệ'));
-    // }
-    // if (otp.length < 6) {
-    //   return Either.left(const AppException.badRequest('Mã xác nhận không hợp lệ'));
-    // }
-    // if (!Validator.isValidPassword(newPass)) {
-    //   return Either.left(const AppException.badRequest('Mật khẩu không hợp lệ'));
-    // }
+    if (email.isEmpty || !Validator.isValidEmail(email)) {
+      return Either.left(const AppException.badRequest('Email không hợp lệ'));
+    }
+    if (otp.length < 6) {
+      return Either.left(const AppException.badRequest('Mã xác nhận không hợp lệ'));
+    }
+    if (!Validator.isValidPassword(newPass)) {
+      return Either.left(const AppException.badRequest('Mật khẩu không hợp lệ'));
+    }
     try {
       await _repo.verifyOtp(email: email, token: otp);
       await _repo.resetPassword(newPass: newPass);
       return Either.right(true);
     } on AppException catch (e){
       return Either.left(e);
-    }catch(e, st){
-      developer.log('AuthService.resetPassWithOtp unexpected', error: e, stackTrace: st);
+    } catch (e, st) {
+      _reportAuthError(e, st, action: 'reset_pass_with_otp');
       return Either.left(const AppException.unknown());
     }
-  }
-
-
-
-  
+  }  
 }

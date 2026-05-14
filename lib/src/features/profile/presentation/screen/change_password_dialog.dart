@@ -139,6 +139,7 @@ class _ChangePasswordDialogState extends ConsumerState<ChangePasswordDialog> {
               controller: currentController,
               obscureText: hideCurrent,
               decoration: InputDecoration(
+                prefixIcon: Icon(Icons.lock_outline_rounded),
                 labelText: 'Mật khẩu hiện tại',
                 suffixIcon: IconButton(
                   onPressed: () => setState(() => hideCurrent = !hideCurrent),
@@ -151,6 +152,7 @@ class _ChangePasswordDialogState extends ConsumerState<ChangePasswordDialog> {
               controller: newController,
               obscureText: hideNew,
               decoration: InputDecoration(
+                prefixIcon: Icon(Icons.lock_reset_rounded),
                 labelText: 'Mật khẩu mới',
                 suffixIcon: IconButton(
                   onPressed: () => setState(() => hideNew = !hideNew),
@@ -163,6 +165,7 @@ class _ChangePasswordDialogState extends ConsumerState<ChangePasswordDialog> {
               controller: confirmController,
               obscureText: hideConfirm,
               decoration: InputDecoration(
+                prefixIcon: Icon(Icons.lock_reset_rounded),
                 labelText: 'Xác nhận mật khẩu',
                 suffixIcon: IconButton(
                   onPressed: () => setState(() => hideConfirm = !hideConfirm),

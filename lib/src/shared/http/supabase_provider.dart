@@ -1,7 +1,9 @@
 import 'dart:developer' as developer;
 
 import 'package:app_demo/src/shared/http/app_exception.dart';
+import 'package:app_demo/src/shared/http/sentry_reporter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final supabaseClientProvider = Provider<SupabaseClient>((ref) {
@@ -69,7 +71,10 @@ class SupabaseErrorHandle {
               'Mật khẩu mới phải khác mật khẩu cũ',
             );
           }
-          return AppException.errorWithMessage(error.message);
+          SentryReporter.captureException(
+            error
+          );
+          return AppException.errorWithMessage('Xảy ra lỗi, vui lòng thử lại');
       }
     }
 
@@ -103,16 +108,20 @@ class SupabaseErrorHandle {
         );
       }
 
-      return AppException.errorWithMessage(error.message);
+      SentryReporter.captureException(error);
+      return AppException.errorWithMessage('Xảy ra lỗi, vui lòng thử lại');
     }
 
     if (error is AuthInvalidJwtException ||
         error is AuthSessionMissingException) {
+      SentryReporter.captureException(error);
       return const AppException.unauthorized();
     }
 
     if (error is AuthRetryableFetchException) {
+      SentryReporter.captureException(error.toString());
       return const AppException.connectivity();
+      
     }
 
     if (error is PostgrestException) {
@@ -132,10 +141,11 @@ class SupabaseErrorHandle {
         'PostgrestException: code=${error.code}, message=${error.message}',
         error: error,
       );
+      SentryReporter.captureException(error);
 
       return AppException.errorWithMessage('Xảy ra lỗi, vui lòng thử lại');
     }
-
+    SentryReporter.captureException(error);
     return const AppException.unknown();
   }
 
