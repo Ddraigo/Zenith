@@ -31,14 +31,25 @@ class AuthService {
     Object error,
     StackTrace stackTrace, {
     required String action,
+    String? flow,
     Map<String, dynamic>? extra,
   }) {
     SentryReporter.captureException(
       error,
       stackTrace: stackTrace,
+      tags: {
+        'feature': 'auth',
+        'layer': 'service',
+        'action': action,
+        'flow': ?flow,
+      },
       context: {
-        'auth_action': action,
-        if (extra != null) ...extra,
+        'auth_context': {
+          'feature': 'auth',
+          'action': action,
+          'flow': ?flow,
+          if (extra != null) ...extra,
+        },
       },
     );
   }
@@ -142,12 +153,7 @@ class AuthService {
       final profileResult = await _ref
           .read(profileServiceProvider)
           .createNewProfile(profile);
-      profileResult.fold(
-        ifLeft: (e) => throw e,
-        ifRight: (_) {
-
-        },
-      );
+      profileResult.fold(ifLeft: (e) => throw e, ifRight: (_) {});
 
       final token = _client.auth.currentSession?.accessToken;
       if (token != null && token.isNotEmpty) {
@@ -158,8 +164,11 @@ class AuthService {
     } on AppException {
       rethrow;
     } catch (e, st) {
-      _reportAuthError(e, st, action: 'sign_up');
-      throw const AppException.unknown();
+      _reportAuthError(
+        e, st, action: 'sign_up',
+        flow: 'setup_user_fcm',
+      );
+      
     }
   }
 
@@ -168,14 +177,13 @@ class AuthService {
     required DateTime dayOfBirth,
     required String gender,
   }) {
-    if(userName.trim().isEmpty){
+    if (userName.trim().isEmpty) {
       throw const AppException.badRequest('Tên người dùng đang trống');
     }
-    if(!Validator.isValidDayOfBirth(dayOfBirth)){
+    if (!Validator.isValidDayOfBirth(dayOfBirth)) {
       throw const AppException.badRequest('Ngày sinh không hợp lệ');
-
     }
-    if(gender.isEmpty){
+    if (gender.trim().isEmpty) {
       throw const AppException.badRequest('Giới tính đang trống');
     }
   }
@@ -192,7 +200,7 @@ class AuthService {
             e,
             st,
             action: 'sign_out',
-            extra: {'flow': 'cleanup_device_token_on_sign_out'},
+            flow: 'cleanup_device_token_on_sign_out',
           );
         }
       } else {
@@ -206,7 +214,7 @@ class AuthService {
           e,
           st,
           action: 'sign_out',
-          extra: {'flow': 'sign_out'},
+          flow: 'repo_sign_out',
         );
       }
       await _tokenService.remove();
@@ -264,7 +272,12 @@ class AuthService {
     } on AppException catch (e) {
       return Either.left(e);
     } catch (e, st) {
-      _reportAuthError(e, st, action: 'send_otp_email');
+      _reportAuthError(
+        e,
+        st,
+        action: 'send_otp_email',
+        extra: {'email': MyHelper.maskEmail(email)},
+      );
       return Either.left(const AppException.unknown());
     }
   }
@@ -291,7 +304,12 @@ class AuthService {
     } on AppException catch (e){
       return Either.left(e);
     } catch (e, st) {
-      _reportAuthError(e, st, action: 'reset_pass_with_otp');
+      _reportAuthError(
+        e,
+        st,
+        action: 'reset_pass_with_otp',
+        extra: {'email': MyHelper.maskEmail(email)},
+      );
       return Either.left(const AppException.unknown());
     }
   }  

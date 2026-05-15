@@ -80,6 +80,11 @@ class ProfileSource {
 
   Map<String, dynamic> _buildPayload(ProfileDTO userProfile) {
     final payload = userProfile.toJson();
+    payload.updateAll((key, value) {
+      if (value is DateTime) return value.toUtc().toIso8601String();
+      return value;
+    });
+
     payload.removeWhere((_, value) => (value == null || value == ''));
     return payload;
   }
@@ -137,7 +142,7 @@ class ProfileSource {
           .from('profiles')
           .update({
             'avatar_url': cacheBustedUrl,
-            'updated_at': DateTime.now().toUtc(),
+            'updated_at': DateTime.now().toUtc().toIso8601String(),
           })
           .eq('id', userId)
           .select()

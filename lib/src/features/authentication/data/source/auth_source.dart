@@ -44,8 +44,6 @@ class AuthSource {
       throw SupabaseErrorHandle.handle(e);
     } on AppException{
       rethrow;
-    }catch (e){
-      rethrow;
     }
   }
 
@@ -72,8 +70,6 @@ class AuthSource {
     } on AuthException catch (e) {
       throw SupabaseErrorHandle.handle(e);
     } on AppException{
-      rethrow;
-    }catch (e){
       rethrow;
     }
 
@@ -103,8 +99,6 @@ class AuthSource {
     } on AuthException catch (e) {
       throw SupabaseErrorHandle.handle(e);
     } on AppException {
-      rethrow;
-    } catch (e) {
       rethrow;
     }
   }

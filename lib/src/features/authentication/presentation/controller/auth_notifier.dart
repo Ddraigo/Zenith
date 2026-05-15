@@ -40,7 +40,7 @@ class AuthNotifier extends _$AuthNotifier {
   Future<void> login(String email, String password) async {
     
     if(!isValidForm(email.trim(), password)) return;
-
+    
     state = const AsyncLoading();
     state = await AsyncValue.guard(
       () => ref.read(authServiceProvider).login(email.trim(), password),

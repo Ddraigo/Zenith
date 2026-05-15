@@ -11,7 +11,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../../core/provider/current_user_id_notifire.dart';
 import '../../../../../shared/utils/snackbar_helper.dart';
+import '../../../../profile/presentation/controller/profile_notifier.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -43,6 +45,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           _clearForm();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted) {
+              ref.invalidate(currentUserIdProvider);
+              ref.invalidate(userEmailProvider);
+              ref.invalidate(hasProfileProvider);
+              ref.invalidate(profileProvider);
+              ref.invalidate(userNameProvider);
               context.go(AppRouter.homePath);
             }
           });

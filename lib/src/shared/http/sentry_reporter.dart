@@ -7,6 +7,7 @@ class SentryReporter {
     Object error, {
     StackTrace? stackTrace,
     Map<String, dynamic>? context,
+    Map<String, dynamic>? tags,
     String? fingerprint,
 
     /// Mặc định nhóm lỗi theo stackTrace
@@ -24,9 +25,16 @@ class SentryReporter {
         stackTrace: stackTrace,
         withScope: (scope) {
           context?.forEach((key, value) {
-            scope.setContexts(key, value);
+            if (value is Map<String, dynamic>) {
+              scope.setContexts(key, value);
+            } else {
+              scope.setContexts(key, {'value': value});
+            }
           });
-          scope.setTag('environment', kReleaseMode ? 'prod' : 'dev');
+          tags?.forEach((key, value) {
+            scope.setTag(key, value);
+          });
+          scope.setTag('environment', kReleaseMode ? 'production' : 'development');
         },
       );
     } catch (e) {

@@ -7,6 +7,8 @@ import 'package:app_demo/src/core/service/firebase_messaging_service.dart';
 import 'package:app_demo/src/shared/http/supabase_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter/foundation.dart';
+import '../../shared/http/sentry_reporter.dart';
 
 final userDeviceService = Provider(UserDeviceService.new);
 
@@ -23,21 +25,36 @@ class UserDeviceService {
 
   Future<String?> getCurrentFcmToken({String? vapidKey}) async {
     if (_isBlank(vapidKey)) {
-      developer.log(
-        'UserDeviceService: skip get token because vapidKey is empty',
-        name: 'getCurrentFcmToken',
-      );
+      if (kDebugMode) {
+        developer.log(
+          'UserDeviceService: skip get token because vapidKey is empty',
+          name: 'getCurrentFcmToken',
+        );
+      }
       return null;
     }
     try {
       return await _fcmService.getToken(vapidKey: vapidKey);
     } catch (e, st) {
-      developer.log(
-        'UserDeviceService: getCurrentFcmToken failed',
-        error: e,
-        stackTrace: st,
-        name: 'getCurrentFcmToken',
-      );
+      if (kDebugMode) {
+        developer.log(
+          'UserDeviceService: getCurrentFcmToken failed',
+          error: e,
+          stackTrace: st,
+          name: 'getCurrentFcmToken',
+        );
+      }
+
+      Future.microtask(() => SentryReporter.captureException(
+            e,
+            stackTrace: st,
+            tags: {
+              'feature': 'device',
+              'action': 'get_current_fcm_token',
+              'layer': 'service'
+            },
+          ));
+
       return null;
     }
   }
@@ -48,13 +65,23 @@ class UserDeviceService {
 
     return result.fold(
       ifLeft: (error) {
-        developer.log(
-          'UserDeviceService: getUserFcmToken failed',
-          error: error,
-          stackTrace: StackTrace.current,
-          name: 'getUserFcmToken',
-        );
-        throw error;
+          if (kDebugMode) {
+            developer.log(
+              'UserDeviceService: getUserFcmToken failed',
+              error: error,
+              stackTrace: StackTrace.current,
+              name: 'getUserFcmToken',
+            );
+          }
+
+          Future.microtask(() => SentryReporter.captureException(
+                error,
+                stackTrace: StackTrace.current,
+                tags: {'feature': 'device', 'action': 'get_user_fcm_token', 'layer': 'service'},
+                context: {'user_context': {'user_id': currentUser}},
+              ));
+
+          throw error;
       },
       ifRight: (tokens) => tokens,
     );
@@ -75,12 +102,22 @@ class UserDeviceService {
 
     return result.fold(
       ifLeft: (error) {
-        developer.log(
-          'UserDeviceService: saveFcmToken failed',
-          error: error,
-          stackTrace: StackTrace.current,
-          name: '_saveFcmTokenIfNeeded',
-        );
+        if (kDebugMode) {
+          developer.log(
+            'UserDeviceService: saveFcmToken failed',
+            error: error,
+            stackTrace: StackTrace.current,
+            name: '_saveFcmTokenIfNeeded',
+          );
+        }
+
+        Future.microtask(() => SentryReporter.captureException(
+              error,
+              stackTrace: StackTrace.current,
+              tags: {'feature': 'device', 'action': 'save_fcm_token', 'layer': 'service'},
+              context: {'operation_context': {'resource_id': userId}},
+            ));
+
         throw error;
       },
       ifRight: (_) => true,
@@ -98,11 +135,21 @@ class UserDeviceService {
 
     return result.fold(
       ifLeft: (error) {
-        developer.log(
-          'UserDeviceService: Error deleteFcmToken',
-          error: error,
-          stackTrace: StackTrace.current,
-        );
+        if (kDebugMode) {
+          developer.log(
+            'UserDeviceService: Error deleteFcmToken',
+            error: error,
+            stackTrace: StackTrace.current,
+          );
+        }
+
+        Future.microtask(() => SentryReporter.captureException(
+              error,
+              stackTrace: StackTrace.current,
+              tags: {'feature': 'device', 'action': 'delete_fcm_token', 'layer': 'service'},
+              context: {'operation_context': {'resource_id': userId}},
+            ));
+
         throw error;
       },
       ifRight: (_) => true,
@@ -147,21 +194,45 @@ class UserDeviceService {
         
         // Save new token
         await _repo.saveFcmToken(userId: userId, fcmToken: token!);
-        developer.log(
-          'UserDeviceService: FCM token saved (old tokens cleaned up)',
-          name: 'setupFcmToken',
-        );
+        if (kDebugMode) {
+          developer.log(
+            'UserDeviceService: FCM token saved (old tokens cleaned up)',
+            name: 'setupFcmToken',
+          );
+        }
+
+        try {
+          Future.microtask(() => SentryReporter.addBreadcrumb(
+                'FCM token saved',
+                category: 'device',
+                data: {'token_prefix': token.substring(0, 10), 'user_id': userId},
+              ));
+        } catch (_) {}
       }
       if (subscribeToRefresh) {
         _startTokenRefreshListener(userId: userId, initialToken: token!);
       }
     } catch (e, st) {
-      developer.log(
-        'UserDeviceService: setupFcmToken failed',
-        error: e,
-        stackTrace: st,
-        name: 'setupFcmToken',
-      );
+      if (kDebugMode) {
+        developer.log(
+          'UserDeviceService: setupFcmToken failed',
+          error: e,
+          stackTrace: st,
+          name: 'setupFcmToken',
+        );
+      }
+
+      Future.microtask(() => SentryReporter.captureException(
+            e,
+            stackTrace: st,
+            tags: {
+              'feature': 'device',
+              'action': 'setup_fcm_token',
+              'layer': 'service'
+            },
+            context: {'user_context': {'user_id': userId}},
+          ));
+
       rethrow;
     }
   }
@@ -192,12 +263,26 @@ class UserDeviceService {
 
         currentToken = newToken;
       } catch (e, st) {
-        developer.log(
-          'UserDeviceService: token refresh stream error',
-          error: e,
-          stackTrace: st,
-          name: '_startTokenRefreshListener',
-        );
+        if (kDebugMode) {
+          developer.log(
+            'UserDeviceService: token refresh stream error',
+            error: e,
+            stackTrace: st,
+            name: '_startTokenRefreshListener',
+          );
+        }
+
+        Future.microtask(() => SentryReporter.captureException(
+              e,
+              stackTrace: st,
+              tags: {
+                'feature': 'device',
+                'action': 'token_refresh_listener',
+                'layer': 'service',
+                'flow': 'listener_callback'
+              },
+              context: {'device_context': {'token_status': 'refresh_error'}},
+            ));
       }
     });
   }
@@ -212,11 +297,19 @@ class UserDeviceService {
 
       await _fcmService.deleteToken();
     } catch (e, st) {
-      developer.log(
-        'UserDeviceService: Error cleanupDeviceTokenOnSignOut',
-        error: e,
-        stackTrace: st,
-      );
+      if (kDebugMode) {
+        developer.log(
+          'UserDeviceService: Error cleanupDeviceTokenOnSignOut',
+          error: e,
+          stackTrace: st,
+        );
+      }
+
+      Future.microtask(() => SentryReporter.captureException(
+            e,
+            stackTrace: st,
+            tags: {'feature': 'device', 'action': 'cleanup_on_signout', 'layer': 'service'},
+          ));
     } finally {
       _tokenRefreshSubscription?.cancel();
       _tokenRefreshSubscription = null;
